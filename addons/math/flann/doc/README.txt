@@ -1,0 +1,37 @@
+Hooks for J to talk to libFLANN.
+
+Tested with fresh libFLANN 1.8.4 build and 1.7.1 that 
+comes with ubuntu and debian (bonus: it works on the 
+Raspberry Pi). 
+
+http://www.cs.ubc.ca/research/flann/
+
+TODO:  
+ - consider storing the parameters as well as the tree
+
+
+What's it for?
+Near neighbor calculations on arrays with a modest number of features, d
+(aka columns) and a large number of rows, N is O(Nd) when done via
+brute force. 
+The default "spatial tree" method in libflann allows for more efficient search via
+a hybrid kd-tree (it also supports Locality Hashing, though I have yet to test this).
+Such searches are O(log(N))
+
+Usage:
+For multiple queries:
+
+tree=: conew 'jflann'
+create__tree dataset
+search__tree testset;nn
+radsearch__tree moretestset;nn;rad  NB. radius search
+paramsof__tree ''                               NB. tells you what the params of the tree are
+destroy__tree''
+
+For single queries:
+allsearch dataset;testset;nn
+
+Altering from default parameters:
+((<vals) setparams <'key1';'key2') create_tree ...
+((<vals) setparams <'key1';'key2') allsearch ...
+

@@ -1,0 +1,13 @@
+NB. project: ~Addons/types/datetime/source
+NB.
+NB. defines list of source files.
+NB. path defaults to project directory.
+
+init.ijs
+utils.ijs
+dayno.ijs
+arithmetic.ijs
+formatout.ijs
+formatin.ijs
+timezone.ijs
+zfns.ijs

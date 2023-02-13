@@ -1,0 +1,17 @@
+digraph G {
+  rankdir=LR;
+  node  [shape=ellipse];
+  edge [fontname=Courier];
+
+  start [shape=point, label=""];
+  a [shape=doublecircle];
+
+  start->x;
+  x->x [label="x",arrowhead=vee];
+  x->a [label="a",arrowhead=inv];
+
+  a->x [label="x",arrowhead=onormal];
+  a->a [label="a",arrowhead=vee];
+
+  label="Cut words";
+}

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>websocket demo4</title>
+<link rel="stylesheet" href="../demo.css" />
+<script src="demo.js"></script>
+</head>
+<body>
+<div id='top'>
+<div id="hdr"><span id="title">J websocket demo4</span>
+<span id="wiki"><a href="http://code.jsoftware.com/wiki/Addons/net/websocket">
+Guides/Websocket</a></span></div>
+<p>This example displays multi-dimensional data from J. It is not supported in Firefox, see
+the Guides/Websocket page.</p>
+<p>Run jconsole and start the server:</p>
+<pre>   load 'net/websocket/demo4/run'</pre>
+<p>Then connect to display the data. Select slices from the dropdowns, or move the tiles to rearrange the axes.</p>
+<input type="button" id='bon' value="connect" onclick="connect()" />
+<input type="button" id='boff' value="disconnect" onclick="ws.close()" />
+<input type="button" id='bint' value="interrupt" onclick="interrupt()" />
+</div>
+<div id='main'></div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>websocket demo2</title>
+<link rel="stylesheet" href="../demo.css" />
+<script src="demo.js"></script>
+</head>
+<body>
+<div id='top'>
+<div id="hdr"><span id="title">J websocket demo2</span>
+<span id="wiki"><a href="http://code.jsoftware.com/wiki/Addons/net/websocket">
+Guides/Websocket</a></span></div>
+<p>This example calls J to read the chinook database included with the
+<a href="http://code.jsoftware.com/wiki/Addons/data/sqlite">data/sqlite</a> addon.</p>
+<p>First ensure that the data/sqlite addon is installed and tested. Run jconsole and start the server:</p>
+<pre>   load 'net/websocket/demo2/run'</pre>
+<p>Then connect and try the examples. The showtables button shows the first 5 records of each table.
+The example buttons show typical select queries. You can edit the text box to try other select queries.</p>
+<input type="button" id='bon' value="connect" onclick="connect()" />
+<input type="button" id='boff' value="disconnect" onclick="ws.close()" />
+<input type="button" id='bint' value="interrupt" onclick="interrupt()" />
+<input type="button" id='bshowtables' value="showtables" onclick="showtables()"
+style='margin-left:30px;margin-right:30px' />
+<input type="button" id='bexample1' value="example1" onclick="example1()" />
+<input type="button" id='bexample2' value="example2" onclick="example2()" /><br/>
+<form>
+<input type="text" id="query"  value="" maxlength="200" style="width:510px;margin-top:10px;" />
+<input type="submit" id='brunquery' value="run query" onclick="return runquery()" /><br/>
+</form>
+</div>
+<div id='tab'></div>
+</body>
+</html>

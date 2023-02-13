@@ -1,0 +1,13 @@
+NB. project: ~Addons/format/publish/source/classes/table
+NB.
+NB. defines list of source files.
+NB. path defaults to project directory.
+
+init.ijs
+util.ijs
+add.ijs
+back.ijs
+cell.ijs
+draw.ijs
+std.ijs
+table.ijs

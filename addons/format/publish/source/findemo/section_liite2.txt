@@ -1,0 +1,14 @@
+NB. Liite 2
+<newpage/>
+<b>LIITE 2 KESKEYTYSMÄÄRÄN AIKAJAKAUMA ASIAKKAALLA VUODESSA</b>
+<skip>1</skip>
+Luvut eivät sisällä jälleenkytkentöjä.
+<skip>1</skip>
+<b>1. Maaseutujohtolähtöjen keskeytykset</b>
+<j>gettable 'tab_L2_1_1_tab1'</j>
+<skip>1</skip>
+<b>2. Taajamajohtolähtöjen keskeytykset</b>
+<j>gettable 'tab_L2_1_2_tab1'</j>
+<newpage/>
+<b>3. Cityjohtolähtöjen keskeytykset</b>
+<j>gettable 'tab_L2_1_3_tab1'</j>

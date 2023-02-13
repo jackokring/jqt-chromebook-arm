@@ -1,0 +1,21 @@
+
+== Idea ==
+
+Existing verbs calculate all possible types of info needed 
+and then select the ones specified in the format string.
+May be more efficient to work out which types of info are 
+required and only create them. Could create individual verbs
+for each infotype then select appropriate verbs from gerund 
+based on the format string:
+NB. Given Day number (Julian or J equivalent)
+NB. create a set of short verbs to retrieve individual formats
+2 4 getYear
+1 2 3 4 getMonth
+1 2 3 4 getDay
+1 2 getHour  (0 1 2 getAM)
+1 2 getMinute
+1 2 3 getSeconds
+1 2 3 getMSeconds
+
+Check fmtDate/fmtTime for codes, retreive matching verbs from gerund and apply to y
+using eachunderv or eachv.

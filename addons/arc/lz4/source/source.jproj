@@ -1,0 +1,9 @@
+NB. project: ~Addons/arc/lz4/source
+NB.
+NB. defines list of source files.
+NB. path defaults to project directory.
+
+init.ijs
+lz4s.ijs
+util.ijs
+zdefs.ijs

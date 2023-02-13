@@ -1,0 +1,7 @@
+stats/rlibrary - change history
+
+== 1.0.0 ==
+ * initial release with library splines
+
+== 1.0.2 ==
+ * s/wdinfo/sminfo/

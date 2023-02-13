@@ -1,0 +1,19 @@
+NB. section 4
+<h1>KESKEYTYSTUNNUSLUKUJEN JAKAUMA VERKONHALTIJOITTAIN</h1>
+
+<h2>Keskeytysaika asiakkaalla vuodessa</h2>
+<b>Keskeytysaika asiakkaalla verkonhaltijoittain h/a (ei jälleenkytkentöjä)
+sisältäen vikakeskeytykset ja suunnitellut keskeytykset</b>
+
+<image>plot_4_1_pic1.jpf</image>
+
+<h2>Keskeytysten lukumäärä asiakkaalla vuodessa</h2>
+<b>Keskeytysmäärä asiakkaalla verkonhaltijoittain kpl/a (ei jälleenkytkentöjä)
+sisältäen vikakeskeytykset ja suunnitellut keskeytykset</b>
+
+<image>plot_4_2_pic1.jpf</image>
+
+<h2>Vikakeskeytysmäärät vuoden aikana</h2>
+<b>Vikakeskeytysmäärien jakautuminen vuoden aikana kpl/100km</b>
+
+<image>plot_4_3_pic1.jpf</image>

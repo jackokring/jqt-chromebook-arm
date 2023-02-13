@@ -1,0 +1,35 @@
+NB. section 5
+<h1>KESKEYTYSMÄÄRIEN JA -AIKOJEN VUOSITTAINEN VAIHTELU</h1>
+Liitteessä 3 on esitetty muuntopiiriluvuista (aikaisempien keskeytystilastojen menetelmällä)
+lasketut vuosivaihtelut.
+
+<h2>Keskijänniteverkon keskeytystaajuudet</h2>
+
+<h3>Vikakeskeytystaajuudet</h3>
+<b>Keskijänniteverkon vikakeskeytystaajuudet kpl/100km vuosina 1973-2005, ei jälleenkytkentöjä</b>
+
+
+<image>plot_5_1_1_pic1.jpf</image>
+
+<h3>Aikajälleenkytkennät</h3>
+<b>Keskijänniteverkon jälleenkytkennät kpl/100km vuosina 1973-2005</b>
+
+<image>plot_5_1_2_pic1.jpf</image>
+
+
+<h3>Suunnitellut keskeytykset</h3>
+<b>Keskijänniteverkon suunniteltujen keskeytysten taajuudet kpl/100km vuonna 2005</b>
+
+<image>plot_5_1_3_pic1.jpf</image>
+
+<newpage/>
+<h2>Asiakkaan keskimääräinen keskeytysaika</h2>
+
+<h3>Vikakeskeytysaika</h3>
+<b>Asiakkaan keskimääräinen vikakeskeytysaika h/a vuosina 1973-2005, ei jälleenkytkentöjä</b>
+<image>plot_5_2_1_pic1.jpf</image>
+
+<h3>Suunniteltu keskeytysaika</h3>
+<b>Asiakkaan keskeytysaika suunnitelluista keskeytyksistä johtuen h/a vuonna 2005</b>
+<image>plot_5_2_2_pic1.jpf</image>
+Kuvaajien laskentatapa on muuttunut ja tulee täydentymään tulevien vuosien tilastoissa.

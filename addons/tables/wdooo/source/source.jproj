@@ -1,0 +1,12 @@
+NB. project: ~Addons/tables/wdooo/source
+NB.
+NB. defines list of source files.
+NB. path defaults to project directory.
+
+init.ijs
+olecomerror.ijs
+oleutil.ijs
+oleooo.ijs
+excelh.ijs
+main.ijs
+

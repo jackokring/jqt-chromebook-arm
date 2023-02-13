@@ -1,0 +1,12 @@
+NB. project: ~Addons/format/publish/source/base/util
+NB.
+NB. defines list of source files.
+NB. path defaults to project directory.
+
+init.ijs
+cut.ijs
+util.ijs
+ascii85.ijs
+event.ijs
+log.ijs
+roman.ijs

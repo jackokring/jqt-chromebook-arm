@@ -1,0 +1,11 @@
+NB. publish manager file: /home/chris/deb/addons/format/publish/findemo/findemo
+
+coclass 'ppubman'
+
+SCRIPTFILES=: ''
+
+STYLEFILES=: ''
+
+TEXTFILES=: ''
+
+OTHERFILES=: ''

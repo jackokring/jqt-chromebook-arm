@@ -1,0 +1,132 @@
+*** man
+   man_jaf_''      NB. list sections
+   man_jaf_'intro' NB. show intro section
+   man_jaf_'man'   NB. show man section
+
+*** intro
+J-ArrayFire cd bindings - https://arrayfire.org
+
+arrayfire backend must be initialized before it can be used
+ cpu    - always available and uses cpu memory and cores
+ opencl - always available (arrayfire includes it) - uses available hardware
+ cuda   - available if you have cuda software and suitable hardware installed
+
+   init_jaf_'cpu'   NB. 'cpu' or 'cuda' or 'opencl'
+
+   tut_jaf_ ''      NB. list tutorials
+   tut_jaf_ 'basic' NB. run basic
+   
+   man_jaf_''       NB. man pages
+
+*** tutorials
+   tut_jaf_''            NB. list tutorials
+   tut_jaf_'basic'       NB. run basic
+
+*** change backend
+you can switch to another backend
+   freeall_jaf_''    NB. release storage in current backend
+   close_jaf_''      NB. allow init of new backend
+   init_jaf_'opencl'
+
+*** tests
+tutorial scripts also serve as tests
+
+   load  JAFP,'/tutorial/basic.ijs' NB. run basic - check for errors
+   loadd JAFP,'/tutorial/basic.ijs' NB. run basic with display
+   loadd (<JAFP,'/tutorial/'),each tuts_jaf_,each<'.ijs' NB. run all 
+
+*** benchmarks
+   study files in folder: JAFP,'bench'
+
+*** row major vs col major
+J array is row major - AF array is column major
+ af_create_array creates an AF array with verb rcc
+ get reads the array back with an rcc inverse
+ J data to set AF array with (i.2 3) is: 0 3 1 4 2 5
+
+browse: https://arrayfire.org/docs/classaf_1_1array.htm
+ and searchfor: {0, 1, 2, 3, 4, 5}
+ to see how host data (raveled row major order) populates an AF array
+ and to understand why rcc is necessary
+
+*** bugs
+sparse
+ display/af_print_array sparse array messes up ref counts
+
+*** utils
+util/util.ijs tools that create files from c headers
+ families.ijs     - J cd  bindings for families of routines
+ util/proto.txt   - all arrayfire c protypes
+ util/famcnts.txt - count and 1st member of each family with same prototype
+
+*** install arrayfire
+you need to have arrayfire installed
+ https://arrayfire.org
+  download installer and follow the instructions
+
+Windows: ArrayFire v3.8.0 (Cuda 10.1)
+ depends on normal install that:
+  adds path to install folder to PATH env var 
+  sets path to install folder in AF_PATH env var
+ default install: C:\Program Files\ArrayFire\v?
+
+Linux:
+ ldconfig steps are important!
+ default install: /opt/arrayfire
+
+MacOS:
+ default install: /opt/arrayfire
+ alternatively install via homebrew
+ $ brew install arrayfire
+
+loading arraryfire.ijs sets libtemplate for loading the library
+ after load, and before init, you could change libtemplate if required
+
+test the installation with J
+   load'~addons/math/arrayfire.ijs'
+   man_jaf_
+   init_jaf_'cpu'
+   ...
+   
+you can also build and run the arrayfire tests
+ but these can be complicated and may require cuda
+
+*** install cuda
+cuda (Nvidia gpu toolkit) requires suitable Nvidia hardware
+ and complicated cuda software install
+
+you can do a lot with arrayfire with cpu backend
+ you to NOT need Nvidia hardware/software to use arrayfire
+
+https://docs.nvidia.com/cuda/
+ 
+information from use install experience is required here
+
+*** credits
+Pascal Jasmin was the J-ArrayFire pioneer in 2015 with
+ https://github.com/Pascal-J/Jfire
+ 
+Alex Shroyer, in late 2021, did some new work and wrote a paper:
+ https://alexshroyer.com/papers/matmul_j_gpu.pdf
+
+this addon started with a clean slate - it might be interesting 
+ to see if it could be improved/replaced by the work of Pascal or Alex
+ 
+*** preload
+some linux distributions have a mismatch with libraries required by arrayfire
+web search: MKL FATAL ERROR: Cannot load libmkl_avxavx2.so or libmkl_def.so
+
+export LD_PRELOAD to load required libs before starting J is a workaround
+
+* afrunjhs.sh - script to run JHS with preload
+#!/bin/bash
+export LD_PRELOAD=/opt/arrayfire/lib64/libmkl_def.so:/opt/arrayfire/lib64/libmkl_avx2.so:/opt/arrayfire/lib64/libmkl_core.so:/opt/arrayfire/lib64/libmkl_intel_lp64.so:/opt/arrayfire/lib64/libmkl_intel_thread.so:/opt/arrayfire/lib64/libiomp5.so
+j903/bin/jconsole ~addons/ide/jhs/config/jhs.cfg
+*
+
+* afrunjqt.sh - script to run Jqt with preload
+#!/bin/bash
+export LD_PRELOAD=/opt/arrayfire/lib64/libmkl_def.so:/opt/arrayfire/lib64/libmkl_avx2.so:/opt/arrayfire/lib64/libmkl_core.so:/opt/arrayfire/lib64/libmkl_intel_lp64.so:/opt/arrayfire/lib64/libmkl_intel_thread.so:/opt/arrayfire/lib64/libiomp5.so
+j903/bin/jqt
+*
+

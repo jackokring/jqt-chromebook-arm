@@ -1,0 +1,31 @@
+graphics/graphviz - change history
+
+== 2.0.0 ==
+ * rework for JQT wd and webview
+ * redo doc for .html format for webview
+ * migrate from .doc default to .gv 
+ * use last used graph directory
+ * add warning message display
+ * create linux version
+ * support linux limited spawn
+ * add linux wd open filter values
+ * upgrade Windows binaries from 2.8 to latest 2.38 versions
+ 
+== 0.1.7 ==
+ * fix: support spaces in path
+
+== 0.1.6 ==
+ * chg: j602
+
+== 0.1.5 ==
+ * add: graphs/uml samples
+
+== 0.1.4 ==
+ * add: graphviz: darwin support
+ * chg: graphviz: renamed to win
+ * add: darwin: darwin third party cmd
+ * chg: help: updated
+
+== 0.1.0 ==
+ * JAL
+ 

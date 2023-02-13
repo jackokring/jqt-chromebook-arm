@@ -1,0 +1,12 @@
+NB. project: Ide/pacman
+NB.
+NB. defines list of source files.
+NB. path defaults to project directory.
+
+init.ijs
+util.ijs
+event.ijs
+main.ijs
+msg.ijs
+select.ijs
+win.ijs

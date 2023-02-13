@@ -1,0 +1,37 @@
+There are 5 test scripts
+
+script database    test for
+-------------------------------------
+test1  sqlserver   column-wise access
+test2  msaccess    column-wise access
+test3  sqlserver   row-wise access
+test4  msaccess    row-wise access
+test5  sqlserver   bigint
+
+test scripts use utf8 encoding but csv files use Latin-1, there are 2 verbs a2u and u2a for conversion.
+
+the translated column names are (if you are puzzled)
+
+table asiak
+Meterpoint;Customer;CustomerId;Address;ZipCode;City;PersonalId;InvoicingMethod;StartDate;EndDate
+
+table kaikki
+Meterpoint;Customer;CustomerId;Address;StartDate;StopDate
+
+1. use an existing database or create a new one.
+
+2. create a dns testdata for sqlserver and set the default database.
+   beware 32/64 bit dsn for 32/64 bit J.
+
+3. for msaccess, create a dns jdata (if not yet)
+   probably only 32-bit driver is available.
+
+4. change the dsn user/password in test*.ijs if needed
+
+5.  start test by
+
+       load '~addons/data/sqltable/test/test1.ijs'  NB. sqlserver
+       load '~addons/data/sqltable/test/test2.ijs'  NB. msaccess
+
+    it will raise a domain error if anything has gone wrong, otherwise
+    it probably works fine.

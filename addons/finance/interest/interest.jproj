@@ -1,0 +1,6 @@
+NB. project: ~Addons/finance/interest
+NB.
+NB. defines list of source files.
+NB. path defaults to project directory.
+
+interest.ijs

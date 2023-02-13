@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>websocket demo3</title>
+<script src="codemirror/codemirror.js"></script>
+<script src="codemirror/active-line.js"></script>
+<script src="codemirror/autorefresh.js"></script>
+<link rel="stylesheet" href="codemirror/codemirror.css"/>
+<link rel="stylesheet" href="../demo.css" />
+<script src="demo.js"></script>
+</head>
+<body>
+<div id='top'>
+<div id="hdr"><span id="title">J websocket demo3</span>
+<span id="wiki"><a href="http://code.jsoftware.com/wiki/Addons/net/websocket">
+Guides/Websocket</a></span></div>
+<p>This example shows a simple J front end. First start the server by running jconsole and entering:</p>
+<pre>   load 'net/websocket/demo3/run'</pre>
+<p>Then connect and try the examples, or enter J expressions in the terminal.</p>
+<input type="button" id='bon' value="connect" onclick="connect()" />
+<input type="button" id='boff' value="disconnect" onclick="disconnect()" />
+<input type="button" id='bint' value="interrupt" onclick="interrupt()" />
+<input type="button" id='bexample1' value="example1" onclick="example1()" style='margin-left:30px;' />
+<input type="button" id='bexample2' value="example2" onclick="example2()" />
+<input type="button" id='bclearterm' value="clear terminal" onclick="clearterm()" style='margin-left:30px;' />
+</div>
+<div id='term'></div>
+</body>
+</html>

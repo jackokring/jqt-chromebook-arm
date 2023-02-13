@@ -1,0 +1,130 @@
+LABTITLE=: 'FVJ4: raster.ijs Raster image tools'
+LABAUTHOR=: 0 : 0
+Cliff Reiter
+Mathematics Department
+Lafayette College
+Easton, PA 18042 USA
+reiterc@lafayette.edu
+)
+LABCOMMENTS=: 'Meant to give sample useage for raster.ijs which is a script designed for use with the 4th edition of Fractals, Visualization and J (part 1) and the media/imagekit addon.'
+LABFOCUS=: 0
+
+NB. =========================================================
+Lab Section Introduction
+This lab introduces the main utilities in the script
+raster.ijs which is for use with the book Fractals, Visualization and J, 3rd edition. It is assumed that script is available in the subdirectory of the J addon directory called graphics/fvj3 and that the media/image3 addon is available. If you stored the script in another directory, load it before continuing. Note that routine image i/o is easier done directly with the image addon and it has its own labs.
+)
+load  '~addons/graphics/fvj4/raster.ijs'
+
+NB. =========================================================
+Lab Section A white and black image of an array
+As our first example we create a white and black palette
+and a Siepinski triangle array. Then we view the image with view_image. That utilitiy can take a palette of up to 256 colors and an array (linked together as a boxed list) as its argument. Here p denotes the palette and b denotes the array of indices into the palette.
+)
+]p=: 255 255 255,:0 0 0
+(,,.~)^:3 ,1
+$b=: (,,.~)^:9 ,1
+view_image p;b
+
+NB. =========================================================
+Lab Section A more complex bitmap
+Next we create an array with a more possible entries. See
+the nub shows there are 9 differnt entries.
+)
+$b=:(+/ . * |:) #:i.2^8
+~.,b
+
+NB. =========================================================
+Lab Section A palette for the more complex bitmap
+Here we create a 9 color bitmap and save/view
+the resulting file. Notice that we use the hue
+function to select 8 pure hues between red (0)
+and magenta (5r6).
+)
+]p=:255,Hue 5r6*(i.%<:)8
+view_image p;b
+
+NB. =========================================================
+Lab Section Modifying a palette and bitmap
+We can also write/read the paletted bitmap images as a boxed list giving the palette and the arrray of indices into the palette. However, if we read the file, we get a 3-dimensional array.
+)
+(p;b) write_image fn=:jpath '~temp/temp.png'
+$b1=:read_image fn
+b1-:b{p
+
+NB. =========================================================
+Lab Section Two ways to get more colors
+Next we discuss the situation when more than 256 colors are required. Here we accomplish that with another fractal version of the Sierpinski triangle. We can also save the image b{p in any of the 24-bit image types.
+)
+$b=: (#.@|: . * |:) #:i.2^9
+#~.,b
+p=:0,Hue 5r6*(i.@-%<:) 511
+view_image b{p
+
+NB. =========================================================
+Lab Section Loading a 24-bit image
+Next we will load a 24-bit image and manipulate it slightly. This image is assumed to be in the directory fvj3. If you stored it somewhere else, you should load it from that directory before continuing.
+)
+$B=: read_image jpath '~addons/graphics/fvj4/keys.jpg'
+
+NB. =========================================================
+Lab Section Manipulating a 24-bit image
+Here we negate the image.
+)
+view_image 255-B
+
+NB. =========================================================
+Lab Section
+And we can rotate the RGB color planes independently. You may close the image window before continuing.
+)
+view_image |: 10 0 _10 |."0 2 |:B
+
+NB. =========================================================
+Lab Section Virtual raster arrays
+Sometimes we create a set of points and want to be able to mark corresponding pixels (or line segments) in a raster image. Virtual raster array (VRA) utilities loaded in the raster.ijs script provide those facilities. In general, the line segment utilities here are primitive, so users are advised to use object graphics in most situation where line drawing is desired.
+)
+(?%]) 3 2$1e9                      NB. three random points
+_1 _1 1 1 vwin 'VRA window'        NB. open a window
+vpixel ? 10000 2$0                 NB. mark 1000 pts
+vshow ''                           NB. show them
+
+NB. =========================================================
+Lab Section Virtual raster arrays and lines
+Notice 10000 random point were marked in the upper right since the window bounds range from _1 to 1 but the random pints were all positeve. Here we add a square by drawing VRA lines.
+)
+vline 0.5* 1 1,_1 1,_1 _1,1 _1,:1 1
+vshow ''
+
+NB. =========================================================
+Lab Section Multicolor raster arrays and lines
+These VRA utilities have multicolor counterparts. One way
+to add color is to use a left argument with the vpixel or vline functions. Then call vshow with a suitable palette
+on the right. This time the random points should have random colors. (If you get an error, check that you have a VRA window open; if not, open one as in section 12).
+)
+
+vclear ''
+(1+?10000$255) vpixel ? 10000 2$0    NB. mark 10000 colored pts
+vshow 255,Hue (i.%<:)255             NB. show them
+
+NB. =========================================================
+Lab Section Multicolor frequency raster arrays
+The second manner in which multicolor raster arrays are created use frequecy counting of the number of visits to pixels. Here we create a function family (the logitic family) and study its iterates for various members of the family. 
+)
+wd'reset;'                   NB. close other windows
+
+lg=: * * -.@]                NB. the function
+
+3.3 lg^:(100+i.5) 0.1        NB. some iterates
+
+lam=: 4*(i.%<:)400           NB. some left arguemnts
+
+NB. =========================================================
+Lab Section
+Now we plot the lam versus long term iterate values noting the frequency of the visits. The window is openned as before, but the pixels are marked with vfpixel. Much better schemes for coloring such attractors are discussed in FVJ4.
+)
+wd 'reset;'
+VRAWH=:1200 300
+0 0 4 1 vwin 'logistic'
+vfpixel ,/lam ,."1 lam lg^:(100+i.10000) 0.1
+vfshow ''
+

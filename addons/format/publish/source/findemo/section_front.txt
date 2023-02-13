@@ -1,0 +1,88 @@
+NB. front page
+
+<image scale=0.7>j_logo.jpg</image>
+
+<h0 style=bigpara>DEMO PUBLICATION<br/>(In Finnish)</h0>
+
+<b>ALKUSANAT</b><br/>
+Energiateollisuus ry:n vuoden 2005 keskeytystilasto on uudistunut aikaisempien
+vuosien keskeytystilastoista. Uudistus perustuu Energiateollisuus ry:n
+keskeytystilastointi-työryhmien kehittämään uuteen tilastointitapaan.
+Lisäksi keskeytystilasto-työryhmät ovat uudistaneet keskeytystilaston ulkoasun.
+Uudistetun raportin laatii Enease Oy.
+
+Uudistetun keskeytystilaston tavoitteena on antaa aikaisempaa selkeämpi kuva
+jakeluverkkojen asiakkaiden kokemista sähköntoimituksen keskeytyksistä.
+Tiedot tähän tilastoon on kerätty verkkoyhtiöiden yksityiskohtaisista
+keskeytysraporteista, minkä vuoksi tilasto ottaa tarkasti
+huomioon jokaisen keskeytyksen osa-alueet ja erotintoiminnolla jakelun
+piiriin eri vaiheissa palautetut asiakkaat. Tilaston aineistona toimivat siis
+keskeytyksen kokeneiden asiakkaiden todelliset määrät ja energiat.
+Verkkoyhtiöt voivat helposti verrata keskeytystilaston lukuja omassa
+yhtiössä saavutettuihin vastaaviin lukuihin. Lisäksi yhtiöiden verkkojen
+jakoperiaatteita on uudistettu.
+
+Ensimmäinen versio keskeytystilastosta 2005 julkaistiin 6.9.2006.
+Kyseisessä versiossa tilastoluvut laskettiin kaikkien vastanneiden verkkoyhtiöiden
+keskiarvona ilman asiakas- tai verkkopituuspainotusta. Energiateollisuuden
+keskeytystilasto-työryhmä päätti kuitenkin 11.10.2006 pidetyssä kokouksessaan,
+että tulevaisuudessa tilastoluvut painotetaan yhtiöiden verkkopituuksilla. Tällainen
+painotus antaa painottamattomia keskiarvoja kuvaavampia keskeytystunnuslukuja
+koko valtakunnan osalta.
+
+Tämä asiakirja on keskeytystilaston 2005 toinen versio, jossa tilastoluvut on
+tulevien keskeytystilastojen tapaan laskettu verkkopituuksilla painotettuina
+keskiarvoina. Lisäksi tilastoon on kirjoitettu uusi lukuohje ja epäluotettaviin
+tietoihin perustuvat luvut on merkitty taulukoiden yhteyteen.
+
+
+<skip>2</skip>
+<b>LUKUHJE</b><br/>
+Tilaston luvut on esitetty taulukoina ja erilaisina kuvaajina kuten piirakoina,
+trendiviivoina ja pylväskuvioina. Keskeytystunnuslukuja koskevissa taulukoissa on
+kiinnitettävä huomiota siihen, että kaikki kentät on laskettu vastaajien antamista
+tunnusluvuista. Seuraava taulukko esittää asiaa.
+
+<table>
+<top>Keskeytyslaji</top>
+<col>"Maaseutu","Taajama","City","Kaikki yhteensä"</col>
+<row>"Vikakeskeytykset yhteensä","Suunnitellut keskeytykset","Kaikki keskeytykset"</row>
+<high>0 0 0 0 1</high>
+<data>2.77 0.45 0.08 2.74 0.51? 0.08 0.03 0.48 3.40 0.55 0.13 3.32</data>
+</table>
+
+Keskeytystietojen jakaminen verkkotyyppeihin "Maaseutu", "Taajama" ja "City" perustuu vikatapauksien
+yhteydessä annettuun johtolähdön kaapelointiasteeseen. Tämä tieto puuttui osalta vastaajista, jolloin keskeytykset
+tilastoidaan verkon keskimääräisen kaapelointiastten mukaan. Samoin osalta vastaajista puuttui eritellyt
+verkkotiedot. Näistä syistä "yhteensä"-sarakkeisiin ("Kaikki yhteensä" ja "Kaikki keskeytykset") on saattanut
+tulla joko tarkempia tai vähemmän tarkkoja vastauksia kuin muihin kenttiin, "yhteensä"-sarakkeiden
+summa ei vastaa yksittäisiä näkyviä lukuja. Kun yhtiöiden vastaukset tarkentuvat tulevissa
+tilastoissa, tällaisista epäjohdonmukaisuuksista päästään.
+
+?-merkki numeron yhteydessä tarkoittaa, että tieto perustuu alle viiteen vastaukseen.
+
+Tämä tilasto poikkeaa aikaisemmista tilastoista myös verkkotyyppien jaottelussa. Jakeluverkot
+on nyt jaettu kaapelointiasteen perusteella kolmeen koko maan kattavaan verkkotyyppiin:
+maaseutuun, jossa kaapelointiaste on enintään 30 %, taajamaan, jossa kaapelointiaste on
+vähintään 30 %, mutta enintään 75 %, sekä cityyn, jossa kaapelointiaste on vähintään 75 %.
+Tämä ei vastaa aikaisempien tilastojen verkkotyyppien jakoa, joten vertailua aikaisempaan
+ei voi tehdä muutoin kuin kaikkien verkkotyyppien yhteisistä luvuista.
+
+Koska tilasto tuotetaan automaattisella raporttisovelluksella, eri verkonosilla tai
+yksittäisille yhtiöille voidaan tuottaa samanmuotoisia keskeytysraportteja. Tätä mahdollisuutta
+tutkitaan tulevissa keskeytystilastoissa.
+
+<skip>2</skip>
+Helsinki 2006<br/>
+<j>'(Version timestamp: ',(isotimestamp 6!:0 ''),')'</j>
+
+
+
+<newpage/>
+<toc align=center,tocalign=right>SISÄLLYSLUETTELO</toc>
+<skip>2</skip>
+LIITTEET<br/>
+LIITE 1 KESKEYTYKSIÄ KOSKEVAT TUNNUSLUVUT<br/>
+LIITE 2 KESKEYTYSMÄÄRÄN AIKAJAKAUMA ASIAKKAALLA VUODESSA<br/>
+LIITE 3  KESKEYTYSTEN VUOSIVAIHTELUT MUUNTOPIIRITUNTEIHIN PERUSTUEN<br/>
+LIITE 4  KESKEYTYSTEN JAKAUTUMINEN  VERKON ERI OSIIN SEKÄ KESKEYTYSTEN SYYT

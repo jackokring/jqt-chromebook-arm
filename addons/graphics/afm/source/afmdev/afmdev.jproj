@@ -1,0 +1,7 @@
+NB. project: ~Addons/graphics/afm/source/afmdev
+NB.
+NB. defines list of source files.
+NB. path defaults to project directory.
+
+readafm.ijs
+afmdevrun.ijs

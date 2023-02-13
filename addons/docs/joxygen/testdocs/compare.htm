@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>compare.ijs</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="joxygen.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">compare.ijs</h1>
+</header>
+<p>This script defines comparison utilities and is included in the J standard library. Definitions are loaded into the jcompare locale with cover functions in z.</p>
+<h2>Definitions</h2>
+<table class="map">
+<tr>
+<td class="key">
+C
+</td>
+<td>
+<a href="#compare">compare</a>
+</td>
+</tr>
+<tr>
+<td class="key">
+F
+</td>
+<td>
+<a href="#fcompare">fcompare</a>, <a href="#fcompares">fcompares</a>
+</td>
+</tr>
+</table>
+<h2 class="hdef" id="compare">compare (verb)</h2>
+<p>Compare character data.</p>
+<h3>Syntax</h3>
+<pre><code>text1 compare text2</code></pre>
+<p>Arguments may be character strings or character matrices with trailing blanks ignored.</p>
+<p>Result shows lines not matched, in form:</p>
+<pre><code>n [l] text</code></pre>
+<p>where:</p>
+<div class="line-block">  n = 0=left argument, 1=right argument<br />
+ [l] = line number<br />
+ text = text on line</div>
+<h2 class="hdef" id="fcompare">fcompare (verb)</h2>
+<p>Compare two text files.</p>
+<h3>Syntax</h3>
+<pre><code>opt fcompare files</code></pre>
+<p>where:</p>
+<div class="line-block"> opt is optional suffix<br />
+ files is 2 file names or prefixes, given<br />
+ either as character string cut on blanks<br />
+ or as 2-element boxed list</div>
+<h3>Example</h3>
+<pre><code>fcompare &#39;~mywork/myutil.ijs ~/jbak/mywork/myutil.ijs&#39;
+&#39;/myutil.ijs&#39; fcompare jpath &#39;~mywork&#39;;&#39;/jbak/mywork&#39;</code></pre>
+<h2 class="hdef" id="fcompares">fcompares (verb)</h2>
+<p>as fcompare but ignoring different line separators</p>
+</body>
+</html>

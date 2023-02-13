@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>websocket demo1</title>
+<link rel="stylesheet" href="../demo.css" />
+</head>
+<body>
+<div id="hdr"><span id="title">J websocket demo1</span>
+<span id="wiki"><a href="http://code.jsoftware.com/wiki/Addons/net/websocket">
+Guides/Websocket</a></span></div>
+<p>In this example, sentences can be sent to J for execution.</p>
+<p>First start the server. To do so, run jconsole then enter:</p>
+<pre>   load 'net/websocket/demo1/run'</pre>
+<p>Then connect, enter an expression and send to J:</p>
+<form>
+ <input type="button" value="connect" onclick="connect()" />
+ <input type="text" id="inp" value="?~10" />
+ <input type="submit" value="send" onclick="return send()" />
+ <input type="button" value="disconnect" onclick="ws.close()" />
+</form>
+<textarea id="out" rows=10 cols=60></textarea>
+<script>
+var ws,inp=document.getElementById("inp"),out=document.getElementById("out");
+function connect(){
+ if ("WebSocket" in window) {
+  ws=new WebSocket("ws://localhost:5021/");
+  out.value="connecting..." ;
+  ws.onopen=function(e){out.value="connected";}
+  ws.onclose=function(e){out.value="disconnected";}
+  ws.onmessage=function(e){out.value=out.value + "\n" + e.data;}
+  ws.onerror=function(e){out.value=e.data;}
+ }
+ else alert("WebSockets not supported on your browser.");
+}
+function send(){
+ if (inp.value.length)
+  ws.send(inp.value);
+ return false;
+}
+</script>
+</body>
+</html>

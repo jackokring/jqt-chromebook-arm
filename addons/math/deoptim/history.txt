@@ -1,0 +1,46 @@
+math/deoptim - change history
+
+== 1.0.19 ==
+ * chg: update for j802
+
+== 1.0.17/18 ==
+ * fix: start up errors on Mac
+ * chg: simplify initialisation of vars
+ * chg: minwh
+
+== 1.0.16 ==
+ * chg: drop pre j8 support
+ * chg: re-impliment eg_deoptim using qt
+
+== 1.0.13/15 ==
+ * chg: update for j801
+
+== 1.0.7/12 ==
+ * chg: qt
+
+== 1.0.7/11 ==
+ * chg: cover verb for wd query cmds
+
+== 1.0.7/10 ==
+ * chg: j701 gtkwd
+
+== 1.0.5/6 ==
+ * add: option to re-evaluate best population member
+ * add: sampling utilities
+ * fix: Refresh of outputs for demo in Jwdp
+
+== 1.0.4 ==
+ * fix: Fix bugs when providing constraint function
+ * add: Test case for providing a constraint function
+
+== 1.0.3 ==
+ * chg: Minor improvements and simplification of demo
+
+== 1.0.2 ==
+ * chg: Demo updates during optimization
+ * fix: Fix bug when providing initial population
+ * add: Test case for providing an initial population
+ * chg: Simplify incrementing generations
+
+== 1.0.1 ==
+ * publish in JAL

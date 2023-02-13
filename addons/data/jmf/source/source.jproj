@@ -1,0 +1,14 @@
+NB. project: ~Addons/data/jmf/source
+NB.
+NB. defines list of source files.
+NB. path defaults to project directory.
+
+init.ijs
+doc.ijs
+api.ijs
+util.ijs
+errors.ijs
+main.ijs
+map.ijs
+unmap.ijs
+memshare.ijs

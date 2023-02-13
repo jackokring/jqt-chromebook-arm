@@ -1,0 +1,17 @@
+NB. project: 
+NB.
+NB. defines list of source files.
+NB. path defaults to project directory.
+
+init.ijs
+buf.ijs
+cmd.ijs
+main.ijs
+place.ijs
+print2.ijs
+printn.ijs
+prints.ijs
+putil.ijs
+query.ijs
+util.ijs
+zdefs.ijs

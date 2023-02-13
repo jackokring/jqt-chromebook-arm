@@ -1,0 +1,24 @@
+NB. project: ~Addons/graphics/afm/source/afm
+NB.
+NB. defines list of source files.
+NB. path defaults to project directory.
+
+init.ijs
+util.ijs
+defs.ijs
+methods.ijs
+cid.ijs
+courier.ijs
+courierbold.ijs
+courierboldoblique.ijs
+courieroblique.ijs
+helvetica.ijs
+helveticabold.ijs
+helveticaboldoblique.ijs
+helveticaoblique.ijs
+symbol.ijs
+timesbold.ijs
+timesbolditalic.ijs
+timesitalic.ijs
+timesroman.ijs
+zapfdingbats.ijs

@@ -1,0 +1,15 @@
+NB. project:
+NB.
+NB. defines list of source files.
+NB. path defaults to project directory.
+NB. script main.ijs and other.ijs run in z-locale
+
+init.ijs
+util.ijs
+addons.ijs
+keys.ijs
+help.ijs
+multiline.ijs
+winlib.ijs
+other.ijs
+version.ijs

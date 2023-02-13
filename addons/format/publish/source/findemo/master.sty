@@ -1,0 +1,32 @@
+NB. style file
+
+PAGESIZE=: PSa4
+
+NB. PAGEMARGINS in twips (72 = 1 inch)
+NB. left, top, right, bottom
+NB. or one setting for all
+NB.
+NB. For example: 1/2 inch left and right
+NB.              1 inch top and bottom:
+NB. PAGEMARGINS=: 36 72 36 72
+NB. PAGEMARGINS=: 72 NB. default
+PAGEMARGINS=: 72 36 36 36
+
+TCOLOR=: ". ;._2 (0 : 0)
+0 0 0 216 216 220
+0 0 0 255 255 255
+0 0 0 255 255 255
+0 0 0 216 216 220
+0 0 0 153 153 255
+255 0 0 255 255 255
+255 255 255 0 128 128
+)
+
+NB. =========================================================
+NB. following is a demo of user-defined styles
+NB. see section3.txt for an example:
+BIGPARA=: 0 : 0
+FONTH0=: 'sans 20 bold'
+FONTP=: 'sans 20 bold'
+ALIGN=: 'just'
+)

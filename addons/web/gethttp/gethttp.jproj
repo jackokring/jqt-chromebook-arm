@@ -1,0 +1,6 @@
+NB. project: ~Addons/web/gethttp
+NB.
+NB. defines list of source files.
+NB. path defaults to project directory.
+
+gethttp.ijs

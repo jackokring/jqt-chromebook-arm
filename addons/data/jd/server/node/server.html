@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html><head></head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<body><div><h2>Jd Interface</h2>
+<button type="button" id="run" onclick="run()">run</button>
+<button type="button" onclick="runnxt()">run nxt</button>
+<button type="button" id="next" onclick="seenxt()">see nxt</button>
+<button type="button" id="next" onclick="see1st()">see 1st</button>
+<button type="button" id="repeat" onclick="repeat()">repeat</button>
+<button type="button" id="cancel" onclick="cancel()">cancel</button></div><br/>
+<input type="text" id="cmd" size="80" value="info summary" onkeydown = "if (event.keyCode == 13) run('cmd')">
+<br/><textarea id="out" rows=10 cols=80></textarea><br/>
+<hr/>
+<button type="button" id="logon" onclick="logon()">logon</button>
+user: <input type="text" id="usr" value="u" size="6">
+pswd: <input type="text" id="pwd" value="p" size="6">
+<button type="button" id="logout" onclick="logout()">logout</button>
+ 
+<hr/>service: <input type="text" id="host" value="s1" size="6">
+<pre>SVCREPORT</pre>
+</div>
+
+<script>
+var rq;    
+var busy= 0; // prevent new request until previous has completed
+var repflag= 0;
+var repcnt= 0;
+var ix=-1;
+
+let examples = [
+"droptable f",
+"createtable f a int,b int,c byte 3",
+ 'insert f # [ "a",2,"b",3,"c","xyz"]',
+ 'insert f # [ "a",[2,3],"b",[5,6],"c",["xyz","zzz"]]',
+ 'read from f','info summary','info schema',"xdo i.3","xdo i.3 4","xdo +a."];
+
+function runnxt(){seenxt();run();}
+
+function seenxt()
+{
+  ix+=1;
+  if(ix==examples.length) ix=0;
+  byid("cmd").value= examples[ix];
+  idvs("out","");
+}
+
+function see1st(){ix=-1;seenxt()}
+
+function run()
+{
+  idvs("out","busy");
+  idvs("cmd",idv("cmd"));
+  ajaxrun("jds="+encode(idv("host")+" "+idv("cmd")));
+}
+
+function ajaxrun(p)
+{
+ if(1==busy) {idvs("out","busy on previous request"); return;}
+ busy= 1;
+ rq= new XMLHttpRequest();
+ rq.onreadystatechange= ajax;
+ rq.open("POST","", true);
+ rq.send(p);
+}
+
+function ajax()
+{
+  if(rq.readyState==4)
+  {
+    busy= 0;
+    t= rq.responseText;
+    if(repflag) t= "repeat count:"+repcnt+"\n"+t;
+    idvs("out",t);
+    if(repflag) {repcnt+= 1;ajaxrun("jds="+encode(idv("host")+" "+idv("cmd")))};
+  }
+}
+
+function logout()
+{
+  try{ajaxrun("lgx=")} catch(err) {;};
+  document.cookie = "jds_cookie=0";
+  idvs("out","logout - cookie cleared");
+}
+
+function repeat(){repflag= 1;run('cmd');}
+function logon(){ajaxrun("lgn="+encode(idv("usr")+"/"+idv("pwd")));}
+function cancel(){busy= 0;repflag= 0;rq.abort();idvs("out","cancelled");}
+function byid(id){return document.getElementById(id);}
+function idv(id){return byid(id).value;}
+function idvs(id,v){byid(id).value=v;}
+function encode(d){return(encodeURIComponent(d)).replace("/%20/g","+");}
+</script>
+</body></html>

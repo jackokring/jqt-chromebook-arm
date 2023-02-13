@@ -1,0 +1,6 @@
+NB. project: ~Addons/format/publish/source/classes/group
+NB.
+NB. defines list of source files.
+NB. path defaults to project directory.
+
+init.ijs

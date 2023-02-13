@@ -1,0 +1,13 @@
+fld1,fld2,fd3
+1,2,3
+a,b,c
+aa,12,cc
+"one,two",three,four
+one,"two,three",four
+"""quote""",12,"quote""inside"
+"12,34","qq,zz","12 ""34"", 56"
+empty,,there
+1,2,3
+1,23"45,6
+1,23""45,6
+1,23""",6

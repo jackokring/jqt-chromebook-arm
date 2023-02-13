@@ -1,0 +1,15 @@
+NB. project: ~Addons/stats/r/rserve
+NB.
+NB. defines list of source files.
+NB. path defaults to project directory.
+
+init.ijs
+util.ijs
+defs.ijs
+event.ijs
+map.ijs
+methods.ijs
+sock.ijs
+toj.ijs
+tor.ijs
+zfns.ijs

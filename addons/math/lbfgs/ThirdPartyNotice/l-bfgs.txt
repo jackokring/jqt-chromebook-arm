@@ -1,0 +1,20 @@
+L-BFGS
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Software for Large-scale Unconstrained Optimization
+
+L-BFGS is a limited-memory quasi-Newton code for unconstrained optimization. The code has
+been developed at the Optimization Center, a joint venture of Argonne National Laboratory
+and Northwestern University.
+
+Downloading and Installing L-BFGS
+
+You are welcome to grab the full Unix distribution, containing source code, makefile, and
+user guide.
+
+    Condition for Use: This software is freely available for educational or commercial
+    purposes. We expect that all publications describing work using this software quote at
+    least one of the references given below. This software is released under the BSD
+    License
+

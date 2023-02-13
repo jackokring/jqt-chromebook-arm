@@ -1,0 +1,12 @@
+digraph abstract {
+  rankdir=LR;
+  node  [shape=ellipse];
+  start [shape=point, label=""];
+  empty [label=""];
+  then [shape=ellipse];
+  start->empty;
+  empty->t [label=t];
+  t->th [label=h];
+  th->the [label=e];
+  the->then [label=n];
+}

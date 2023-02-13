@@ -1,0 +1,4 @@
+data/sqltable - change history
+
+== 1.0.0 ==
+ * initial public release

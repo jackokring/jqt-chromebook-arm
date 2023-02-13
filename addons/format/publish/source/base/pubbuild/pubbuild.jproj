@@ -1,0 +1,16 @@
+NB. project: ~Addons/format/publish/source/base/pubbuild
+NB.
+NB. defines list of source files.
+NB. path defaults to project directory.
+
+init.ijs
+util.ijs
+pubbuild.ijs
+font.ijs
+number.ijs
+outline.ijs
+page.ijs
+section.ijs
+url.ijs
+wrap.ijs
+xobject.ijs

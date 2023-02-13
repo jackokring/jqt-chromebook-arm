@@ -1,0 +1,37 @@
+NB. project: ~Addons/math/mt
+NB.
+NB. defines list of source files.
+NB. path defaults to project directory.
+
+bak.ijs
+bal.ijs
+benchmark.ijs
+cond.ijs
+dbg.ijs
+eq.ijs
+ev.ijs
+evc.ijs
+exp.ijs
+fork.ijs
+gq.ijs
+hrd.ijs
+iso.ijs
+mq.ijs
+mt.ijs
+norm.ijs
+pf.ijs
+pow.ijs
+qf.ijs
+quatern.ijs
+rand.ijs
+ref.ijs
+rot.ijs
+scl.ijs
+sm.ijs
+struct.ijs
+sv.ijs
+test.ijs
+trf.ijs
+tri.ijs
+trs.ijs
+util.ijs

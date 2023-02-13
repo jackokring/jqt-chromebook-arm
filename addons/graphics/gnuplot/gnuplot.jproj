@@ -1,0 +1,11 @@
+NB. project: ~Addons/graphics/gnuplot
+NB.
+NB. defines list of source files.
+NB. path defaults to project directory.
+
+init.ijs
+defs.ijs
+util.ijs
+main.ijs
+run.ijs
+zdef.ijs

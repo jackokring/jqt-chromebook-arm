@@ -1,0 +1,33 @@
+games/2048 - change history
+
+== 1.0.8 ==
+ * chg: tidy up engine
+ * chg: renamed commands for console ui
+
+== 1.0.6 ==
+ * chg: use arrow keys for movement
+
+== 1.0.5 ==
+ * fix: score when win
+ * chg: refactor update into engine
+ * chg: tidy up AddonPath
+
+== 1.0.4 ==
+ * chg: release for J806 beta
+
+== 1.0.3 ==
+ * new: Resizable window
+ * fix: tidy up numeric locales
+ * fix: prevent selecting table cells
+ * chg: move direction verbs to engine
+
+== 1.0.2 ==
+ * chg: release for J805 beta
+
+== 1.0.1 ==
+ * fix: Line merging behaviour
+ * fix: Use J path to fix console on Windows
+ * chg: Display score in static control not statusbar
+
+== 1.0.0 ==
+ * Initial release

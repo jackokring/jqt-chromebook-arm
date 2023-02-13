@@ -1,0 +1,10 @@
+# The following is an example of a tab-delimited file with
+ # comment lines at the start of the file indicated by the fact they
+ 	# start with the # symbol.
+id	bar code	name
+24582621	119533	DELTOP DAVINCI
+25422991	155439	AMBZED ROSCOE S2F
+25784612	135624	TEF SHADOW BLARIS
+22063188	102545	BIG P BLONDEL PRIM
+20803506	137609	MONGA FLOL
+27360900	107865	FRAMBIN R NOGN ET
