@@ -1,7 +1,7 @@
 # Running GCC
 To get a stripped lib opening code with blank read/write use
 ```
-gcc libj.so jeload.c jconsoul.c -ldl
+gcc jh/jeload.c jconsoul.c -ldl
 ```
 
 # `jeload.c`

@@ -21,12 +21,8 @@
 #include <xlocale.h>
 #endif
 
-#include "j.h"
-#include "jeload.h"
-
-#if !defined(_WIN32) && !defined(__OpenBSD__) && !defined(__FreeBSD__) //temporary
-#include "backtrace.h"
-#endif
+#include "jh/j.h"
+#include "jh/jeload.h"
 
 #define J_STACK  0xc00000uL // 12mb
 
