@@ -15,3 +15,6 @@
 ## The Controls (`Master`)
   * `Sync` a trigger input to synchronize the `Done` signals and data presentation. If it is not present, `Done` will not occur and `Output` extender modules will not present a calculated `Output` signal.
   * `Reload` a button to trigger a refresh of the J core including a reload of the `profile.ijs` file.
+  
+## Computational Considerations
+The `J` engine uses a string IO interface. Conversion of `char*` to and from `float` can consume CPU, but as the engine runs on its own thread this will be just ocassional delay by a number of `Sync` intervals at the worst. Consider it a feature. 
