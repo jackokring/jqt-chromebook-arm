@@ -10,7 +10,7 @@
   * `Done` a gate output to indicate the `Master` has completed the processing.
   * `Input` (`Input` only) is the input to sample.
   * `Output` (`Output` only) is the generated output.
-  * `Lock` button to prevent `Select` changes from unintentional overwriting an `Input` and to lock an `Output`.
+  * `Lock` a toggle button to prevent `Select` changes from unintentional overwriting an `Input` and to lock an `Output`.
   
 ## The Controls (`Master`)
   * `Sync` a trigger input to synchronize the `Done` signals and data presentation. If it is not present, `Done` will not occur and `Output` extender modules will not present a calculated `Output` signal.
@@ -20,6 +20,8 @@
   * `Init` a light indicating a new `profile.ijs` is detected differing from the patch (only 1 `Master` is required, and contexts of 2 can differ).
   * `Dominate` a button to force a stored patch `profile.ijs` to be the global one and only. Needs slave `Master`'s of the `Master` to `Reload`.
   * `Saved` an light indicating a JSON save since a load. Technically `profile.ijs` is loaded thrice. Once by `J` and just before (de-)serialization.
+  * `Lock On` a master momentary button to lock all IO.
+  * `Lock Off` a master momentary button to unlock all IO.
   
 ## Computational Considerations
 The `J` engine uses a string IO interface. Conversion of `char*` to and from `float` can consume CPU, but as the engine runs on its own thread this will be just ocassional delay by a number of `Sync` intervals at the worst. Consider it a feature.
