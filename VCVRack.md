@@ -24,7 +24,9 @@
 ## Computational Considerations
 The `J` engine uses a string IO interface. Conversion of `char*` to and from `float` can consume CPU, but as the engine runs on its own thread this will be just ocassional delay by a number of `Sync` intervals at the worst. Consider it a feature.
 
-Other data formats or errors other than `float` are not supported and should trigger a `Lock` on previous data. The `Master` indicates a returned error condition and also things like infinities, rationals or string data parse errors when technically the return is not a `J` error seperately.
+There maybe later adaptation to other console language handlers as the sub-process spawned by the engine thread should be quite generic based on some parse and stringify configuration. There is a menu option for the engine selection. Using a sub-process also means that the engine does not need any strange compile doing, just place a suitable `./jconsole` and the associated libraries in the plugin directory.  
+
+Other data formats or errors other than `float` are not supported and should trigger a `Lock` on previous data, needing a press of the `Lock` button to continue processing. The `Master` indicates a returned error condition and also things like infinities, rationals or string data parse errors when technically the return is not a `J` error seperately.
 
 ## Patch Saves
 The `Master` (maybe multiple copies) use `profile.ijs` so apparently a checksum `Init` warning is required. The patch then does not have the totality of the save. This simplifies the design of `Master` and the `Dominate` button clears this on that `Master` by writing `profile.ijs` from the patch. `Saved` helps with not destroying a profile. Nope, never a bug then.
