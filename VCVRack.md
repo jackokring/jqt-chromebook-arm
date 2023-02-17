@@ -18,8 +18,8 @@
   * `Error` a light indicating a returned error (latching until same expanders all get good results).
   * `Format` a light indicating invalid `float` data (latching until same expanders all get good results).
   * `Init` a light indicating a new `profile.ijs` is detected differing from the patch (only 1 `Master` is required, and contexts of 2 can differ).
-  * `Dominate` a button to force a stored patch `profile.ijs` to be the global one and only.
-  * `Saved` an light indicating a JSON save since a load.
+  * `Dominate` a button to force a stored patch `profile.ijs` to be the global one and only. Needs slave `Master`'s of the `Master` to `Reload`.
+  * `Saved` an light indicating a JSON save since a load. Technically `profile.ijs` is loaded thrice. Once by `J` and just before (de-)serialization.
   
 ## Computational Considerations
 The `J` engine uses a string IO interface. Conversion of `char*` to and from `float` can consume CPU, but as the engine runs on its own thread this will be just ocassional delay by a number of `Sync` intervals at the worst. Consider it a feature.
