@@ -1,2 +1,6 @@
-a.out
-
+/build
+/dist
+/plugin-arm64.so
+/plugin.dylib
+/plugin.dll
+.DS_Store

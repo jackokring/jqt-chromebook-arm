@@ -1,0 +1,50 @@
+{
+  "slug": "KRTPluginJ",
+  "name": "KRTPluginJ",
+  "version": "2.3.1",
+  "license": "GPL-3.0-only",
+  "brand": "KRT",
+  "description": "The GPL plugin set from KRT.",
+  "author": "@jackokring",
+  "authorEmail": "jackokring@gmail.com",
+  "authorUrl": "https://kring.co.uk",
+  "pluginUrl": "https://jackokring.github.io/KRTPluginADemo/KRTPluginJ",
+  "manualUrl": "https://github.com/jackokring/jqt-chromebook-arm/blob/libj-wrapper/VCVRack.md",
+  "sourceUrl": "https://github.com/jackokring/jqt-chromebook-arm/blob/libj-wrapper",
+  "donateUrl": "https://www.paypal.com/donate/?hosted_button_id=Y94P8UE7PYCJY",
+  "changelogUrl": "https://github.com/jackokring/jqt-chromebook-arm/blob/libj-wrapper/changes.md",
+  "modules": [
+    {
+      "slug": "M",
+      "name": "Master",
+      "description": "A script processing master using J by default.",
+      "tags": [
+      	"External",
+      	"Sequencer",
+        "Polyphonic"
+      ]
+    },
+    {
+      "slug": "I",
+      "name": "Input",
+      "description": "A variable set input expander for the Master.",
+      "tags": [
+      	"Expander",
+      	"External",
+      	"Sequencer",
+        "Polyphonic"
+      ]
+    },
+    ,
+    {
+      "slug": "O",
+      "name": "Output",
+      "description": "A set from process output expander for the Master.",
+      "tags": [
+        "Expander",
+      	"External",
+      	"Sequencer",
+        "Polyphonic"
+      ]
+    }
+}
