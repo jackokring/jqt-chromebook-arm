@@ -37,3 +37,8 @@ The `Master` (maybe multiple copies) use `profile.ijs` so apparently a checksum 
 If you actually want to take advantage of this effect, include another `.ijs` file inside `profile.ijs`, as this is not saved with the patch. It might be good for editing a nice library of features without having to have an `Init` complaint. As `Init` like `Error` and `Format` can trigger a `Lock` but, unlike those two, it is a master `Lock On` as it affects all IO.
 
 This simplifies the design of `Master` and the `Dominate` button clears this effect on the respective `Master` by writing `profile.ijs` from the patch and clearing any `Init` signal on the dominating `Master`. `Saved` helps with not destroying a profile. Nope, never a bug then. Though be aware it is any save including saving machine presets too, not just autosaves and project saves. `Saved` means it saved somewhere for some reason. A `Reload` can clear the `Saved` state, and also can cause an `Init` state. As `Init` is both for `profile.ijs` changes during loading and also profile not matching internal state loaded state (different from `profile.ijs` and so not dominated until a `Reload`, and does not trigger `Lock On`).
+
+## Other Possible Environments
+  * `python` by `env PYTHONSTARTUP=profile.py python`.
+  * `emacs` by `emacs --batch -l profile.el --eval "(while t (print (eval (read))))"`.
+  
