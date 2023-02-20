@@ -12,11 +12,14 @@ gainuverters
 gimpathizer
 gravimitator
 Jacko
+jconsole
+jsoftware
 Linkwitz
 modulable
 Nyquist
 populator
 Prework
+PYTHONSTARTUP
 quantizer
 randomizer
 retrigger

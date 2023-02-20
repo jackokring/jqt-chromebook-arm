@@ -1,7 +1,7 @@
 # VCVRack Plugin
   * Needs a `./jconsole` or other architecture specific version of `J` 9 or greater (not the Java tool but [jsoftware](https://github.com/jsoftware/jsource)).
   * The plugin is built around `lin-arm64` and as such a default `./jconsole` and a bonus `jqt` are included.
-  * Insert a `Master` module for the main interpretor thread.
+  * Insert a `Master` module for the main interpreter thread.
   * Add `Input` and `Output` extenders.
   * The `Master` loads `profile.ijs` form the plugin's directory. (The program and configuration file).
   
@@ -25,14 +25,14 @@
   * `Lock Off` a master momentary button to unlock all IO.
   
 ## Computational Considerations
-The `J` engine uses a string IO interface. Conversion of `char*` to and from `float` can consume CPU, but as the engine runs on its own thread this will be just ocassional delay by a number of `Sync` intervals at the worst. Consider it a feature.
+The `J` engine uses a string IO interface. Conversion of `char*` to and from `float` can consume CPU, but as the engine runs on its own thread this will be just occasional delay by a number of `Sync` intervals at the worst. Consider it a feature.
 
 There maybe later adaptation to other console language handlers as the sub-process spawned by the engine thread should be quite generic based on some parse and stringify configuration. There is a menu option for the engine selection. Using a sub-process also means that the engine does not need any strange compile doing, just place a suitable `./jconsole` and the associated libraries in the plugin directory.  
 
-Other data formats or errors other than `float` are not supported and should trigger a `Lock` on previous data, needing a press of the `Lock` button to continue processing. The `Master` indicates a returned error condition and also things like infinities, rationals or string data parse errors when technically the return is not a `J` error seperately.
+Other data formats or errors other than `float` are not supported and should trigger a `Lock` on previous data, needing a press of the `Lock` button to continue processing. The `Master` indicates a returned error condition and also things like infinities, rationals or string data parse errors when technically the return is not a `J` error separately.
 
 ## Patch Saves
-The `Master` (maybe multiple copies) use `profile.ijs` so apparently a checksum `Init` warning is required (when the before and after engine load comparison fails). The patch then might not have the totality of the save, and writing a temporary `profile.ijs` from the save might have been dominated. The defualt patch obviously loads the `profile.ijs` as it is loaded before the save state is applied. In this way the `profile.ijs` is stored in the save to overwrite definitions in the default patch. So `profile.ijs` can be edited after the fact with altered and extra definitions. Dynamic dispatching can call these profile definitions.
+The `Master` (maybe multiple copies) use `profile.ijs` so apparently a checksum `Init` warning is required (when the before and after engine load comparison fails). The patch then might not have the totality of the save, and writing a temporary `profile.ijs` from the save might have been dominated. The default patch obviously loads the `profile.ijs` as it is loaded before the save state is applied. In this way the `profile.ijs` is stored in the save to overwrite definitions in the default patch. So `profile.ijs` can be edited after the fact with altered and extra definitions. Dynamic dispatching can call these profile definitions.
 
 If you actually want to take advantage of this effect, include another `.ijs` file inside `profile.ijs`, as this is not saved with the patch. It might be good for editing a nice library of features without having to have an `Init` complaint. As `Init` like `Error` and `Format` can trigger a `Lock` but, unlike those two, it is a master `Lock On` as it affects all IO.
 
@@ -42,3 +42,4 @@ This simplifies the design of `Master` and the `Dominate` button clears this eff
   * `python` by `env PYTHONSTARTUP=profile.py python`.
   * `emacs` by `emacs --batch -l profile.el --eval "(while t (print (eval (read))))"`.
   
+These may be added as the project develops. There are other tools that could produce data to be used by the plugin, but some of them are too simplistic, and some would have difficulty producing `float` data arrays. There is also the matter of hard baking the list into the plugin as a precise order has to be maintained even if a particular installation does not include one of the methods.
