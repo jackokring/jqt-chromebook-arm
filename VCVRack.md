@@ -39,7 +39,11 @@ If you actually want to take advantage of this effect, include another `.ijs` fi
 This simplifies the design of `Master` and the `Dominate` button clears this effect on the respective `Master` by writing `profile.ijs` from the patch and clearing any `Init` signal on the dominating `Master`. `Saved` helps with not destroying a profile. Nope, never a bug then. Though be aware it is any save including saving machine presets too, not just autosaves and project saves. `Saved` means it saved somewhere for some reason. A `Reload` can clear the `Saved` state, and also can cause an `Init` state. As `Init` is both for `profile.ijs` changes during loading and also profile not matching internal state loaded state (different from `profile.ijs` and so not dominated until a `Reload`, and does not trigger `Lock On`).
 
 ## Other Possible Environments
-  * `python` by `env PYTHONSTARTUP=profile.py python`.
-  * `emacs` by `emacs --batch -l profile.el --eval "(while t (print (eval (read))))"`.
+  * `j` by `./jconsole` (default original).
+  * `python` by `env PYTHONSTARTUP=profile.py python` (uses current virtual environment).
+  * `emacs` by `emacs --batch -l profile.el --eval "(while t (print (eval (read))))"` (easy package install on Linux `emacs`).
   
 These may be added as the project develops. There are other tools that could produce data to be used by the plugin, but some of them are too simplistic, and some would have difficulty producing `float` data arrays. There is also the matter of hard baking the list into the plugin as a precise order has to be maintained even if a particular installation does not include one of the methods.
+
+## Alphanumeric Data
+TBD.
