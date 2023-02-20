@@ -39,6 +39,8 @@ If you actually want to take advantage of this effect, include another `.ijs` fi
 This simplifies the design of `Master` and the `Dominate` button clears this effect on the respective `Master` by writing `profile.ijs` from the patch and clearing any `Init` signal on the dominating `Master`. `Saved` helps with not destroying a profile. Nope, never a bug then. Though be aware it is any save including saving machine presets too, not just autosaves and project saves. `Saved` means it saved somewhere for some reason. A `Reload` can clear the `Saved` state, and also can cause an `Init` state. As `Init` is both for `profile.ijs` changes during loading and also profile not matching internal state loaded state (different from `profile.ijs` and so not dominated until a `Reload`, and does not trigger `Lock On`).
 
 ## Other Possible Environments
+As `asset::plugin(pluginInstance, "jconsole")` could get the path if necessary, and other things would use `$PATH` to find them, I think much is possible.
+
   * `j` by `./jconsole` (default original).
   * `python` by `env PYTHONSTARTUP=profile.py python` (uses current virtual environment).
   * `emacs` by `emacs --batch -l profile.el --eval "(while t (print (eval (read))))"` (easy package install on Linux `emacs`).
