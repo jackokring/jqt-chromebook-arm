@@ -175,3 +175,12 @@ struct plist {
 	plist<kind>* supply(kind* what);
 	kind* resolve(plist<kind>* what);
 };
+
+////////////////////
+// Threading
+////////////////////
+#include <pthread.h>
+#include <unistd.h>
+#define THREAD(id, thread, fn, in) pthread_t threads; int id = pthread_create(&threads, NULL, fn, (void *)in)
+#define THREADXIT() pthread_exit(NULL)
+void FORK(char* fn)
