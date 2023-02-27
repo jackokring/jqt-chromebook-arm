@@ -192,4 +192,7 @@ enum PIPE_FD {
 //pipe streams
 int parentToChild[MAX_FD];
 int childToParent[MAX_FD];
+// simple file descriptor macros
+#define EXEC_W parentToChild[WRITE_FD]
+#define EXEC_R childToParent[READ_FD]
 
