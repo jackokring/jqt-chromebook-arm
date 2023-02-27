@@ -148,7 +148,7 @@ kind* plist<kind>::resolve(plist<kind>* what) {
 }
 
 // process fork
-pid_t FORK(char* fn) {
+pid_t FORK(char* fn, char** args) {
 	pid_t pid = fork();
     if (pid == -1) {
         WARN("fork failed");
@@ -163,7 +163,7 @@ pid_t FORK(char* fn) {
 		dup2(childToParent[WRITE_FD], STDERR_FILENO);
 		close(parentToChild[WRITE_FD]);
 		close(childToParent[READ_FD]);
-		execvp(fn, NULL);
+		execvp(fn, args);
 		WARN("child exited with error");
 		_exit(EXIT_SUCCESS);
     } else {

@@ -181,9 +181,9 @@ struct plist {
 ////////////////////
 #include <pthread.h>
 #include <unistd.h>
-#define THREAD(id, thread, fn, in) pthread_t threads; int id = pthread_create(&threads, NULL, fn, (void *)in)
+#define THREAD(id, thread, fn, in) pthread_t thread; int id = pthread_create(&thread, NULL, fn, (void *)in)
 #define THREADXIT() pthread_exit(NULL)
-extern pid_t FORK(char* fn);
+extern pid_t FORK(char* fn, char** args);
 enum PIPE_FD {
 	READ_FD = 0,
 	WRITE_FD = 1,
