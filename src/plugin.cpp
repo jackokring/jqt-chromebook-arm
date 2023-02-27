@@ -146,3 +146,29 @@ kind* plist<kind>::resolve(plist<kind>* what) {
 	delete what;
 	return here;
 }
+
+// process fork
+pid_t FORK(char* fn) {
+	pid_t pid = fork();
+    if (pid == -1) {
+        WARN("fork failed");
+    } else if (pid == 0) {
+        INFO("child opening");
+		// do fn(), maybe parse args
+		// hook in streams, combine stderr to stdout
+		pipe(parentToChild);
+  		pipe(childToParent);
+		dup2(parentToChild[READ_FD], STDIN_FILENO);
+      	dup2(childToParent[WRITE_FD], STDOUT_FILENO);
+      	dup2(childToParent[WRITE_FD], STDERR_FILENO);
+      	close(parentToChild[WRITE_FD]);
+     	close(childToParent[READ_FD]);
+		execvp(fn, NULL);
+		WARN("child exited with error");
+        _exit(EXIT_SUCCESS);
+    } else {
+        //int status;
+        //(void)waitpid(pid, &status, 0);
+    }
+}
+
