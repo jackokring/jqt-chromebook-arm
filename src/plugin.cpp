@@ -173,6 +173,7 @@ pid_t FORK(char* fn, char** args) {
     }
 }
 
+#include <sys/wait.h>
 // process join
 void JOIN(pid_t pid) {
 	close(EXEC_W);// close stream input
