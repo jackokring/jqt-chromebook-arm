@@ -161,8 +161,9 @@ pid_t FORK(char* fn, char** args) {
 		dup2(parentToChild[READ_FD], STDIN_FILENO);
 		dup2(childToParent[WRITE_FD], STDOUT_FILENO);
 		dup2(childToParent[WRITE_FD], STDERR_FILENO);
-		close(parentToChild[WRITE_FD]);
-		close(childToParent[READ_FD]);
+		// fd duplication, so close down handle count
+		close(parentToChild[READ_FD]);
+		close(childToParent[WRITE_FD]);
 		execvp(fn, args);
 		WARN("child exited with error");
 		_exit(EXIT_SUCCESS);
@@ -172,3 +173,11 @@ pid_t FORK(char* fn, char** args) {
     }
 }
 
+// process join
+void JOIN(pid_t pid) {
+	close(EXEC_W);// close stream input
+	char x;
+	while(read(EXEC_R, &x, 1));// EOF?
+	close(EXEC_R);
+	waitpid(pid, NULL, 0);
+}

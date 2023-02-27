@@ -181,8 +181,11 @@ struct plist {
 ////////////////////
 #include <pthread.h>
 #include <unistd.h>
-#define THREAD(id, thread, fn, in) pthread_t thread; int id = pthread_create(&thread, NULL, fn, (void *)in)
+// for craeting a thread with an exec process
+// FORK inside the fn of THREAD
+#define THREAD(name, fn) static pthread_t name; if(pthread_create(&name, NULL, fn, NULL)) WARN("thread create failed")
 #define THREADXIT() pthread_exit(NULL)
+extern void JOIN(pid_t pid);
 extern pid_t FORK(char* fn, char** args);
 enum PIPE_FD {
 	READ_FD = 0,
@@ -192,7 +195,7 @@ enum PIPE_FD {
 //pipe streams
 int parentToChild[MAX_FD];
 int childToParent[MAX_FD];
-// simple file descriptor macros
+// simple file descriptor macros for fread/fwrite etc.
 #define EXEC_W parentToChild[WRITE_FD]
 #define EXEC_R childToParent[READ_FD]
 
