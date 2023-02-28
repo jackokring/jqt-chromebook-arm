@@ -148,6 +148,11 @@ kind* plist<kind>::resolve(plist<kind>* what) {
 }
 
 //pipe streams
+enum PIPE_FD {
+	READ_FD = 0,
+	WRITE_FD = 1,
+	MAX_FD = 2
+};
 int parentToChild[MAX_FD];
 int childToParent[MAX_FD];
 
@@ -191,6 +196,14 @@ void JOIN(pid_t pid) {
 	waitpid(pid, NULL, 0);
 }
 
+int FORK_R(char *buff, int count) {
+	return read(EXEC_R, buff, count);
+}
+
+int FORK_W(char *buff, int count) {
+	return write(EXEC_W, buff, count);
+}
+
 // modes add one external MenuSelection to .hpp
 // extend enum of MenuSelection
 // add names and which &MenuSelection
@@ -228,5 +241,47 @@ void appendMenu(MenuSelection *var, Menu *menu, char* name) {
 		modeItem->mode = (MenuSelection)i;
 		modeItem->rightText = CHECKMARK(*var == (MenuSelection)i);
 		menu->addChild(modeItem);
+	}
+}
+
+void menuToJson(json_t* rootJ, MenuSelection *var) {
+	char *named;
+	MenuSelection m;
+	for (int i = 0; i < MAX_MENU; i++) {
+		if(var != modeMenu[i]) continue;
+		named = modeNames[i];
+		m = (MenuSelection)i;
+		break;
+	}
+	bool found = false;
+	for (int i = 0; i < MAX_MENU; i++) {
+		if(var != modeMenu[i]) continue;
+		if(*var == (MenuSelection)i) {
+			found = true;
+			break;
+		}
+	}
+	if(!found) {
+		WARN("saved menu configuration error");
+		*var = m;//reset
+	}
+	json_object_set_new(rootJ, named, json_integer(*var));
+}
+
+void menuFromJson(json_t* rootJ, MenuSelection *var) {
+	char *named;
+	MenuSelection m;
+	for (int i = 0; i < MAX_MENU; i++) {
+		if(var != modeMenu[i]) continue;
+		named = modeNames[i];
+		m = (MenuSelection)i;
+		break;
+	}
+	json_t* modeJ = json_object_get(rootJ, named);
+	if (modeJ)
+		*var = (MenuSelection)json_integer_value(modeJ);
+	if(*var >= MAX_MENU || *var < 0 || modeMenu[*var] != var) {
+		WARN("loaded menu configuration error");
+		resetMenu(var);
 	}
 }

@@ -190,11 +190,8 @@ struct plist {
 #define THREADXIT() pthread_exit(NULL)
 extern void JOIN(pid_t pid);
 extern pid_t FORK(char* fn, char** args);
-enum PIPE_FD {
-	READ_FD = 0,
-	WRITE_FD = 1,
-	MAX_FD = 2
-};
+extern int FORK_R(char *buff, int count);
+extern int FORK_W(char *buff, int count);
 
 ////////////////////
 // Menu Additions
@@ -207,3 +204,5 @@ enum MenuSelection {
 extern MenuSelection modeScript;
 extern void resetMenu(MenuSelection *var);
 extern void appendMenu(MenuSelection *var, Menu *menu, char* name);
+extern void menuToJson(json_t* rootJ, MenuSelection *var);
+extern void menuFromJson(json_t* rootJ, MenuSelection *var);
