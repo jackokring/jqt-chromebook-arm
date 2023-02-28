@@ -199,27 +199,42 @@ int FORK_W(char *buff, int count) {
 	return write(EXEC_W, buff, count);
 }
 
-// modes add one external MenuSelection to .hpp
-// extend enum of MenuSelection
+// modes add one enum MenuSelection to plugin.hpp
 // add names and which &MenuSelection
-MenuSelection modeScript;
+MenuSelection modeScript[MAX_MENU];//good enough
+
+// fill MenuSelectiion *modeMenu[]
+#define MENU_SET(sel) (&modeScript[sel])
+
+#undef ENTRY
+#define ENTRY(name, parent) #name
 char *modeNames[MAX_MENU] = {
-
+#include "menus.hpp"
 };
+
+#undef ENTRY
+#define ENTRY(name, parent) MENU_SET(MENU_ ## parent)
 MenuSelection *modeMenu[MAX_MENU] = {
-
+#include "menus.hpp"
 };
+#undef ENTRY
+//safe?
 
-void resetMenu(MenuSelection *var) {
+void resetMenu(MenuSelection var) {
+	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
+		*MENU_SEL(var) = MAX_MENU;//false
+		return;//pop
+	}
 	for (int i = 0; i < MAX_MENU; i++) {
-		if(var != modeMenu[i]) continue;
-		*var = (MenuSelection)i;
+		if(MENU_SEL(var) != modeMenu[i]) continue;
+		*MENU_SEL(var) = (MenuSelection)i;
+		break;// bool resets as true
+		// ACTUALLY: when extending states a .json load will reset new MAX_MENU (false)
+		// as olderer MAX_MENU might have been taken by extra menus.
 	}
 }
 
-void appendMenu(MenuSelection *var, Menu *menu, char* name, bool separate = false) {
-	if(separate) menu->addChild(new MenuSeparator);
-	if(name) menu->addChild(createMenuLabel(name));
+void appendMenu(MenuSelection var, Menu *menu) {
 
 	struct ModeItem : MenuItem {
 		MenuSelection *var;
@@ -229,88 +244,106 @@ void appendMenu(MenuSelection *var, Menu *menu, char* name, bool separate = fals
 		}
 	};
 
+	struct BoolItem : MenuItem {
+		MenuSelection *var;
+		MenuSelection mode;
+		void onAction(const event::Action& e) override {
+			*var = MENU_BOOL(*var) ? MAX_MENU : mode;//bool flip
+		}
+	};
+
+	// special to have a bool tick by MENU_SET(self) in modeMenu[self]
+	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
+		BoolItem* boolItem = createMenuItem<BoolItem>(modeNames[var]);
+		boolItem->var = MENU_SEL(var);
+		boolItem->mode = var;
+		boolItem->rightText = CHECKMARK(MENU_BOOL(var));
+		menu->addChild(boolItem);
+		return; //pop
+	}
+
 	for (int i = 0; i < MAX_MENU; i++) {
-		if(var != modeMenu[i]) continue;
+		if(MENU_SEL(var) != modeMenu[i]) continue;
 		ModeItem* modeItem = createMenuItem<ModeItem>(modeNames[i]);
-		modeItem->var = var;
+		modeItem->var = MENU_SEL(var);
 		modeItem->mode = (MenuSelection)i;
-		modeItem->rightText = CHECKMARK(*var == (MenuSelection)i);
+		modeItem->rightText = CHECKMARK(*MENU_SEL(var) == (MenuSelection)i);
 		menu->addChild(modeItem);
 	}
 }
 
-void menuToJson(json_t* rootJ, MenuSelection *var) {
-	char *named;
-	MenuSelection m;
-	for (int i = 0; i < MAX_MENU; i++) {
-		if(var != modeMenu[i]) continue;
-		named = modeNames[i];
-		m = (MenuSelection)i;
-		break;
-	}
+void appendMenuLabel(MenuSelection var, Menu *menu) {
+	menu->addChild(createMenuLabel(modeNames[var]));
+}
+
+void findOrReset(MenuSelection var) {
 	bool found = false;
-	for (int i = 0; i < MAX_MENU; i++) {
-		if(var != modeMenu[i]) continue;
-		if(*var == (MenuSelection)i) {
+	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
+		if(*MENU_SEL(var) == var || *MENU_SEL(var) == MAX_MENU) {
 			found = true;
-			break;
+		}
+	} else {
+		for (int i = 0; i < MAX_MENU; i++) {
+			if(MENU_SEL(var) != modeMenu[i]) continue;
+			if(*MENU_SEL(var) == (MenuSelection)i) {
+				found = true;
+				break;
+			}
 		}
 	}
 	if(!found) {
-		WARN("saved menu configuration error");
-		*var = m;//reset
+		WARN("menu configuration error");
+		resetMenu(var);//reset
 	}
-	json_object_set_new(rootJ, named, json_integer(*var));
 }
 
-void menuFromJson(json_t* rootJ, MenuSelection *var) {
-	char *named;
-	MenuSelection m;
-	for (int i = 0; i < MAX_MENU; i++) {
-		if(var != modeMenu[i]) continue;
-		named = modeNames[i];
-		m = (MenuSelection)i;
-		break;
-	}
+void menuToJson(json_t* rootJ, MenuSelection var) {
+	char *named = modeNames[var];
+	findOrReset(var);
+	json_object_set_new(rootJ, named, json_integer(*MENU_SEL(var)));
+}
+
+void menuFromJson(json_t* rootJ, MenuSelection var) {
+	char *named = modeNames[var];
 	json_t* modeJ = json_object_get(rootJ, named);
 	if (modeJ)
-		*var = (MenuSelection)json_integer_value(modeJ);
-	if(*var >= MAX_MENU || *var < 0 || modeMenu[*var] != var) {
-		WARN("loaded menu configuration error");
-		resetMenu(var);
-	}
+		*MENU_SEL(var) = (MenuSelection)json_integer_value(modeJ);
+	findOrReset(var);
 }
 
-void menuRandomize(MenuSelection *var) {
+void menuRandomize(MenuSelection var) {
+	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
+		*MENU_SEL(var) = random::u32() & 1 ? MAX_MENU : var;
+		return;
+	}
 	int count = 0;
 	for (int i = 0; i < MAX_MENU; i++) {
-		if(var != modeMenu[i]) continue;
+		if(MENU_SEL(var) != modeMenu[i]) continue;
 		count++;
 	}
 	if(count > 0) {
 		int mode = random::u32() % count;
 		for (int i = 0; i < MAX_MENU; i++) {
-			if(var != modeMenu[i]) continue;
+			if(MENU_SEL(var) != modeMenu[i]) continue;
 			if(mode-- == 0) {
-				*var = (MenuSelection)i;
+				*MENU_SEL(var) = (MenuSelection)i;
 				break;
 			}
 		}
 	}
 }
 
-void appendSubMenu(MenuSelection *var, Menu *menu, char* name, bool separate = false) {
+void appendSubMenu(MenuSelection var, Menu *menu) {
 	struct NestItem : MenuItem {
-		MenuSelection *lvar;
+		MenuSelection lvar;
 		Menu *createChildMenu() override {
 			Menu *subMenu = new Menu;
-			appendMenu(lvar, subMenu, NULL);
+			appendMenu(lvar, subMenu);
 			return subMenu;
 		}
 	};
 
-	NestItem *ni = createMenuItem<NestItem>(name, RIGHT_ARROW);
+	NestItem *ni = createMenuItem<NestItem>(modeNames[var], RIGHT_ARROW);
 	ni->lvar = var;
-	if(separate) menu->addChild(new MenuSeparator);
 	menu->addChild(ni);
 }

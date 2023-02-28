@@ -193,16 +193,26 @@ extern int FORK_W(char *buff, int count);
 ////////////////////
 // Menu Additions
 ////////////////////
-// add MenuSelection enum values and then do in .cpp
+// add MenuSelection enum values and then do in plugin.cpp
+#define ENTRY(name, parent) MENU_ ## name
 enum MenuSelection {
-
+#include "menus.hpp"
 	MAX_MENU
 };
-extern MenuSelection modeScript;
-extern void resetMenu(MenuSelection *var);
-extern void appendMenu(MenuSelection *var, Menu *menu, char* name, bool separate = false);
-extern void menuToJson(json_t* rootJ, MenuSelection *var);
-extern void menuFromJson(json_t* rootJ, MenuSelection *var);
-extern void menuRandomize(MenuSelection *var);
-extern void appendSubMenu(MenuSelection *var, Menu *menu, char* name, bool separate = false);
+extern MenuSelection modeScript[MAX_MENU];
+extern MenuSelection *modeMenu[MAX_MENU];
+
+// POINTER TO SELECTED STATE
+#define MENU_SEL(sel) (modeMenu[sel])
+
+// THE MAIN MENU STATE BOOLEAN TEST FOR ACTIVE
+#define MENU_BOOL(sel) (*MENU_SEL(sel) == sel)
+
+extern void resetMenu(MenuSelection var);
+extern void appendMenu(MenuSelection var, Menu *menu);
+extern void appendMenuLabel(MenuSelection var, Menu *menu); 
+extern void menuToJson(json_t* rootJ, MenuSelection var);
+extern void menuFromJson(json_t* rootJ, MenuSelection var);
+extern void menuRandomize(MenuSelection var);
+extern void appendSubMenu(MenuSelection var, Menu *menu);
 
