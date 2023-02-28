@@ -217,9 +217,9 @@ void resetMenu(MenuSelection *var) {
 	}
 }
 
-void appendMenu(MenuSelection *var, Menu *menu, char* name) {
-	//menu->addChild(new MenuEntry);
-	menu->addChild(createMenuLabel(name));
+void appendMenu(MenuSelection *var, Menu *menu, char* name, bool separate = false) {
+	if(separate) menu->addChild(new MenuSeparator);
+	if(name) menu->addChild(createMenuLabel(name));
 
 	struct ModeItem : MenuItem {
 		MenuSelection *var;
@@ -299,17 +299,18 @@ void menuRandomize(MenuSelection *var) {
 	}
 }
 
-void appendSubMenu(MenuSelection *var, Menu *menu, char* name) {
-	//menu->addChild(new MenuEntry);
-	// static to use as GUI single threading context
-	static MenuSelection *lvar = var;
-	static char *lname = name;
+void appendSubMenu(MenuSelection *var, Menu *menu, char* name, bool separate = false) {
 	struct NestItem : MenuItem {
+		MenuSelection *lvar;
 		Menu *createChildMenu() override {
 			Menu *subMenu = new Menu;
-			appendMenu(lvar, subMenu, lname);
+			appendMenu(lvar, subMenu, NULL);
 			return subMenu;
 		}
 	};
-	menu->addChild(createMenuItem<NestItem>(name, RIGHT_ARROW));
+
+	NestItem *ni = createMenuItem<NestItem>(name, RIGHT_ARROW);
+	ni->lvar = var;
+	if(separate) menu->addChild(new MenuSeparator);
+	menu->addChild(ni);
 }
