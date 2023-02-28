@@ -147,6 +147,14 @@ kind* plist<kind>::resolve(plist<kind>* what) {
 	return here;
 }
 
+//pipe streams
+int parentToChild[MAX_FD];
+int childToParent[MAX_FD];
+
+// simple file descriptor macros for fread/fwrite etc.
+#define EXEC_W parentToChild[WRITE_FD]
+#define EXEC_R childToParent[READ_FD]
+
 // process fork
 pid_t FORK(char* fn, char** args) {
 	pid_t pid = fork();
@@ -181,4 +189,44 @@ void JOIN(pid_t pid) {
 	while(read(EXEC_R, &x, 1));// EOF?
 	close(EXEC_R);
 	waitpid(pid, NULL, 0);
+}
+
+// modes add one external MenuSelection to .hpp
+// extend enum of MenuSelection
+// add names and which &MenuSelection
+MenuSelection modeScript;
+char *modeNames[MAX_MENU] = {
+
+};
+MenuSelection *modeMenu[MAX_MENU] = {
+
+};
+
+void resetMenu(MenuSelection *var) {
+	for (int i = 0; i < MAX_MENU; i++) {
+		if(var != modeMenu[i]) continue;
+		*var = (MenuSelection)i;
+	}
+}
+
+void appendMenu(MenuSelection *var, Menu *menu, char* name) {
+	menu->addChild(new MenuEntry);
+	menu->addChild(createMenuLabel(name));
+
+	struct ModeItem : MenuItem {
+		MenuSelection *var;
+		MenuSelection mode;
+		void onAction(const event::Action& e) override {
+			*var = mode;
+		}
+	};
+
+	for (int i = 0; i < MAX_MENU; i++) {
+		if(var != modeMenu[i]) continue;
+		ModeItem* modeItem = createMenuItem<ModeItem>(modeNames[i]);
+		modeItem->var = var;
+		modeItem->mode = (MenuSelection)i;
+		modeItem->rightText = CHECKMARK(*var == (MenuSelection)i);
+		menu->addChild(modeItem);
+	}
 }

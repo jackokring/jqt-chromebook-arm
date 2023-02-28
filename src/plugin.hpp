@@ -144,6 +144,9 @@ extern int maxPoly(Module *m, const int numIn, const int numOut);
 extern void populate(ModuleWidget *m, int hp, int lanes, int rungs, const int ctl[],
 							const char *lbl[], const int kind[]);
 
+////////////////////
+// Synchronization
+////////////////////
 // atomic forward parallel list
 // item made atomic to prevent non-NULL save before sheduled after
 // any field in item used for sequencing must be atomic (i.e. bool done)
@@ -192,10 +195,15 @@ enum PIPE_FD {
 	WRITE_FD = 1,
 	MAX_FD = 2
 };
-//pipe streams
-int parentToChild[MAX_FD];
-int childToParent[MAX_FD];
-// simple file descriptor macros for fread/fwrite etc.
-#define EXEC_W parentToChild[WRITE_FD]
-#define EXEC_R childToParent[READ_FD]
 
+////////////////////
+// Menu Additions
+////////////////////
+// add MenuSelection enum values and then do in .cpp
+enum MenuSelection {
+
+	MAX_MENU
+};
+extern MenuSelection modeScript;
+extern void resetMenu(MenuSelection *var);
+extern void appendMenu(MenuSelection *var, Menu *menu, char* name);
