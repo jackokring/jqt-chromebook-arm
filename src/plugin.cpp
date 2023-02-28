@@ -285,3 +285,21 @@ void menuFromJson(json_t* rootJ, MenuSelection *var) {
 		resetMenu(var);
 	}
 }
+
+void menuRandomize(MenuSelection *var) {
+	int count = 0;
+	for (int i = 0; i < MAX_MENU; i++) {
+		if(var != modeMenu[i]) continue;
+		count++;
+	}
+	if(count > 0) {
+		int mode = random::u32() % count;
+		for (int i = 0; i < MAX_MENU; i++) {
+			if(var != modeMenu[i]) continue;
+			if(mode-- == 0) {
+				*var = (MenuSelection)i;
+				break;
+			}
+		}
+	}
+}

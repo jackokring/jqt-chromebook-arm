@@ -206,3 +206,4 @@ extern void resetMenu(MenuSelection *var);
 extern void appendMenu(MenuSelection *var, Menu *menu, char* name);
 extern void menuToJson(json_t* rootJ, MenuSelection *var);
 extern void menuFromJson(json_t* rootJ, MenuSelection *var);
+extern void menuRandomize(MenuSelection *var);
