@@ -311,5 +311,5 @@ void appendSubMenu(MenuSelection *var, Menu *menu, char* name) {
 			return subMenu;
 		}
 	};
-	menu->addChild(createMenuItem<NestItem>(name));
+	menu->addChild(createMenuItem<NestItem>(name, RIGHT_ARROW));
 }
