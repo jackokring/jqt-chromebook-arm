@@ -196,20 +196,28 @@ extern int FORK_W(char *buff, int count);
 // add MenuSelection enum values and then do in plugin.cpp
 #define ENTRY(name, parent) MENU_ ## name
 
-// MASTER MenuSelection PRODUCER OF MANGLED ENUM NAMES
-#define MENU(name) ENTRY(name, NULL)
 enum MenuSelection {
 #include "menus.hpp"
 	MAX_MENU
 };
-extern MenuSelection modeScript[MAX_MENU];
-extern MenuSelection *modeMenu[MAX_MENU];
+
+extern std::atomic<bool> modeTriggers[MAX_MENU];
+extern std::atomic<MenuSelection> *modeMenu[MAX_MENU];
 
 // POINTER TO SELECTED STATE
 #define MENU_SEL(sel) (modeMenu[sel])
 
 // THE MAIN MENU STATE BOOLEAN TEST FOR ACTIVE
-#define MENU_BOOL(sel) (*MENU_SEL(sel) == sel)
+#define MENU_BOOL(sel) ((*MENU_SEL(sel)).load() == sel)
+
+// MASTER MenuSelection PRODUCER OF MANGLED ENUM NAMES
+#define MENU(name) ENTRY(name, NULL)
+
+// yes, clear bool and test (if true make false), std::atomic!
+#define SLOOPIE(boo) boo.load() && (boo.store(false), true)
+
+// GUI CONTROL STRUCTURE (FOLLOW BY BLOCK OR STATEMENT)
+#define on(name) if(SLOOPIE(modeTriggers[MENU(name)]) && MENU_BOOL(MENU(name)))
 
 extern void resetMenu(MenuSelection var);
 extern void appendMenu(MenuSelection var, Menu *menu);

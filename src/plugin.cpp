@@ -201,7 +201,7 @@ int FORK_W(char *buff, int count) {
 
 // modes add one enum MenuSelection to plugin.hpp
 // add names and which &MenuSelection
-MenuSelection modeScript[MAX_MENU];//good enough
+std::atomic<MenuSelection> modeScript[MAX_MENU];//good enough
 
 // fill MenuSelectiion *modeMenu[]
 #define MENU_SET(sel) (&modeScript[sel])
@@ -214,21 +214,29 @@ char *modeNames[MAX_MENU] = {
 
 #undef ENTRY
 #define ENTRY(name, parent) MENU_SET(MENU_ ## parent)
-MenuSelection *modeMenu[MAX_MENU] = {
+std::atomic<MenuSelection> *modeMenu[MAX_MENU] = {
 #include "menus.hpp"
 };
 #undef ENTRY
 //safe to use
 #define ENTRY(name, parent) MENU_ ## name
 
-void resetMenu(MenuSelection var) {
+std::atomic<bool> modeTriggers[MAX_MENU];
+
+void resetMenu(MenuSelection var) {//resets group
 	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
-		*MENU_SEL(var) = MAX_MENU;//false
+		if(*MENU_SEL(var) != MAX_MENU) {
+			*MENU_SEL(var) = MAX_MENU;//false
+			modeTriggers[var].store(true);
+		}
 		return;//pop
 	}
 	for (int i = 0; i < MAX_MENU; i++) {
 		if(MENU_SEL(var) != modeMenu[i]) continue;
-		*MENU_SEL(var) = (MenuSelection)i;
+		if(i != *MENU_SEL(var)) {
+			*MENU_SEL(var) = (MenuSelection)i;
+			modeTriggers[var].store(true);
+		}
 		break;// bool resets as true
 		// ACTUALLY: when extending states a .json load will reset new MAX_MENU (false)
 		// as olderer MAX_MENU might have been taken by extra menus.
@@ -238,18 +246,22 @@ void resetMenu(MenuSelection var) {
 void appendMenu(MenuSelection var, Menu *menu) {
 
 	struct ModeItem : MenuItem {
-		MenuSelection *var;
+		std::atomic<MenuSelection> *var;
 		MenuSelection mode;
 		void onAction(const event::Action& e) override {
-			*var = mode;
+			if(*var != mode) {
+				*var = mode;
+				modeTriggers[mode].store(true);
+			}
 		}
 	};
 
 	struct BoolItem : MenuItem {
-		MenuSelection *var;
+		std::atomic<MenuSelection> *var;
 		MenuSelection mode;
 		void onAction(const event::Action& e) override {
 			*var = MENU_BOOL(*var) ? MAX_MENU : mode;//bool flip
+			modeTriggers[mode].store(true);
 		}
 	};
 
@@ -307,14 +319,23 @@ void menuToJson(json_t* rootJ, MenuSelection var) {
 void menuFromJson(json_t* rootJ, MenuSelection var) {
 	char *named = modeNames[var];
 	json_t* modeJ = json_object_get(rootJ, named);
-	if (modeJ)
-		*MENU_SEL(var) = (MenuSelection)json_integer_value(modeJ);
+	if (modeJ) {
+		MenuSelection i = (MenuSelection)json_integer_value(modeJ);
+		if(i != *MENU_SEL(var)) {
+			*MENU_SEL(var) = (MenuSelection)i;
+			modeTriggers[var].store(true);
+		}
+	}
 	findOrReset(var);
 }
 
 void menuRandomize(MenuSelection var) {
 	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
-		*MENU_SEL(var) = random::u32() & 1 ? MAX_MENU : var;
+		MenuSelection i = random::u32() & 1 ? MAX_MENU : var;
+		if(i != *MENU_SEL(var)) {
+			*MENU_SEL(var) = i;
+			modeTriggers[var].store(true);
+		}
 		return;
 	}
 	int count = 0;
@@ -327,7 +348,10 @@ void menuRandomize(MenuSelection var) {
 		for (int i = 0; i < MAX_MENU; i++) {
 			if(MENU_SEL(var) != modeMenu[i]) continue;
 			if(mode-- == 0) {
-				*MENU_SEL(var) = (MenuSelection)i;
+				if(i != *MENU_SEL(var)) {
+					*MENU_SEL(var) = (MenuSelection)i;
+					modeTriggers[var].store(true);
+				}
 				break;
 			}
 		}
