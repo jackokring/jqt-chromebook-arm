@@ -387,7 +387,8 @@ void appendSubMenu(MenuSelection var, Menu *menu) {
 	menu->addChild(ni);
 }
 
-void matic(MenuSelection var, MenuSelection forceApply) {
+void matic(MenuSelection var, MenuSelection forceApply = MAX_MENU) {
+	// set false default for bool as tick implies running?
 	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
 		if(forceApply != MAX_MENU || forceApply != var) {
 			WARN("bad application of exoply");

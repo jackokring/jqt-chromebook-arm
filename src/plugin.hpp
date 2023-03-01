@@ -260,6 +260,6 @@ extern void menuRandomize(MenuSelection var);
 extern void appendSubMenu(MenuSelection var, Menu *menu);
 
 //totally code controlled dispatch
-extern void matic(MenuSelection var, MenuSelection forceApply);
+extern void matic(MenuSelection var, MenuSelection forceApply = MAX_MENU);
 #define hauto(name, set) matic(MENU(name), MENU(set))
 
