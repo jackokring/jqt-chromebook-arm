@@ -303,6 +303,10 @@ void appendMenuLabel(MenuSelection var, Menu *menu) {
 	menu->addChild(createMenuLabel(modeNames[var]));
 }
 
+void appendMenuSpacer(Menu *menu) {
+	menu->addChild(new MenuSeparator);
+}
+
 void findOrResetMenu(MenuSelection var) {
 	bool found = false;
 	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)

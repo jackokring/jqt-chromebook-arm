@@ -244,6 +244,9 @@ extern void appendMenu(MenuSelection var, Menu *menu);
 // add label from this parent
 extern void appendMenuLabel(MenuSelection var, Menu *menu); 
 
+// fully abstract the API
+extern void appendMenuSpacer(Menu *menu);
+
 // check valid menu or reset it by parent
 extern void findOrResetMenu(MenuSelection var);
 
