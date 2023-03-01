@@ -195,6 +195,9 @@ extern int FORK_W(char *buff, int count);
 ////////////////////
 // add MenuSelection enum values and then do in plugin.cpp
 #define ENTRY(name, parent) MENU_ ## name
+
+// MASTER MenuSelection PRODUCER OF MANGLED ENUM NAMES
+#define MENU(name) ENTRY(name, NULL)
 enum MenuSelection {
 #include "menus.hpp"
 	MAX_MENU

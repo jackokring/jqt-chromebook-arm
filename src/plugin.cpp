@@ -218,7 +218,8 @@ MenuSelection *modeMenu[MAX_MENU] = {
 #include "menus.hpp"
 };
 #undef ENTRY
-//safe?
+//safe to use
+#define ENTRY(name, parent) MENU_ ## name
 
 void resetMenu(MenuSelection var) {
 	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
