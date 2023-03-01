@@ -226,4 +226,7 @@ extern void menuToJson(json_t* rootJ, MenuSelection var);
 extern void menuFromJson(json_t* rootJ, MenuSelection var);
 extern void menuRandomize(MenuSelection var);
 extern void appendSubMenu(MenuSelection var, Menu *menu);
+//totally
+extern void matic(MenuSelection var, MenuSelection forceApply);
+#define haut(name, set) matic(MENU(name), MENU(set))
 

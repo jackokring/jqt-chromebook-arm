@@ -372,3 +372,17 @@ void appendSubMenu(MenuSelection var, Menu *menu) {
 	ni->lvar = var;
 	menu->addChild(ni);
 }
+
+void matic(MenuSelection var, MenuSelection forceApply) {
+	if(MENU_SEL(var) != modeMenu[forceApply]) {
+		WARN("bad application of exoply");
+		return;
+	}
+	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
+		*MENU_SEL(var) = MENU_BOOL(var) ? MAX_MENU : var;//bool flip
+	} else {
+		*MENU_SEL(var) = forceApply;
+	}
+	//always if even same
+	modeTriggers[var].store(true);
+}
