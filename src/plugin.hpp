@@ -259,8 +259,8 @@ extern void menuFromJson(json_t* rootJ, MenuSelection var);
 // randomize menu value by parent
 extern void menuRandomize(MenuSelection var);
 
-// add parent and make sub menu of child options
-extern void appendSubMenu(MenuSelection var, Menu *menu);
+// add parent and make sub menu of child options (optional callback to sub-append more)
+extern void appendSubMenu(MenuSelection var, Menu *menu, void (*extra)(Menu *menu) = NULL);
 
 //totally code controlled dispatch
 extern void matic(MenuSelection var, MenuSelection forceApply = MAX_MENU);

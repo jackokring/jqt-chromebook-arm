@@ -376,18 +376,21 @@ void menuRandomize(MenuSelection var) {
 	}
 }
 
-void appendSubMenu(MenuSelection var, Menu *menu) {
+void appendSubMenu(MenuSelection var, Menu *menu, void (*extra)(Menu *menu) = NULL) {
 	struct NestItem : MenuItem {
 		MenuSelection lvar;
+		void (*lextra)(Menu *menu);
 		Menu *createChildMenu() override {
 			Menu *subMenu = new Menu;
 			appendMenu(lvar, subMenu);
+			if(lextra) lextra(subMenu);
 			return subMenu;
 		}
 	};
 
 	NestItem *ni = createMenuItem<NestItem>(modeNames[var], RIGHT_ARROW);
 	ni->lvar = var;
+	ni->lextra = extra;
 	menu->addChild(ni);
 }
 
