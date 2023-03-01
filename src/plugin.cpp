@@ -257,6 +257,21 @@ void primeMenus() {
 	refreshMenus();
 }
 
+struct MenuAction : history::Action {
+
+	MenuAction(std::atomic<MenuSelection> *var, MenuSelection old, MenuSelection lastest) {
+
+	}
+
+	void undo() override {
+
+	}
+
+	void redo() override {
+
+	}
+};
+
 void appendMenu(MenuSelection var, Menu *menu) {
 
 	struct ModeItem : MenuItem {
@@ -264,8 +279,10 @@ void appendMenu(MenuSelection var, Menu *menu) {
 		MenuSelection mode;
 		void onAction(const event::Action& e) override {
 			if(*var != mode) {
+				MenuSelection old = *var;
 				*var = mode;
 				modeTriggers[mode] = true;
+				APP->history->push(new MenuAction(var, old, mode));
 			}
 		}
 	};
@@ -274,8 +291,10 @@ void appendMenu(MenuSelection var, Menu *menu) {
 		std::atomic<MenuSelection> *var;
 		MenuSelection mode;
 		void onAction(const event::Action& e) override {
+			MenuSelection old = *var;
 			*var = MENU_BOOL(*var) ? MAX_MENU : mode;//bool flip
 			modeTriggers[mode] = true;
+			APP->history->push(new MenuAction(var, old, mode));
 		}
 	};
 
@@ -341,18 +360,40 @@ void menuFromJson(json_t* rootJ, MenuSelection var) {
 		MenuSelection i = (MenuSelection)json_integer_value(modeJ);
 		if(*MENU_SET(var) != i) {
 			*MENU_SET(var) = (MenuSelection)i;
-			modeTriggers[i] = true;
+			findOrResetMenu(var);
+			// bad input from file?
+			// also care on trigger order
+			modeTriggers[*MENU_SET(var)] = true;
 		}
 	}
-	findOrResetMenu(var);
 }
 
+void menuToJson(json_t* rootJ, char* name) {
+	json_t* menu = json_object();
+	for (int i = 0; i < MAX_MENU; i++) {
+		menuToJson(menu, (MenuSelection)i);
+	}
+	json_object_set_new(rootJ, name, menu);
+}
+
+void menuFromJson(json_t* rootJ, char* name) {
+	json_t* menu = json_object_get(rootJ, name);
+	if (menu) {
+		for (int i = 0; i < MAX_MENU; i++) {
+			menuFromJson(menu, (MenuSelection)i);
+		}
+	}
+}
+
+// remembers undo
 void menuRandomize(MenuSelection var) {
 	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
 		MenuSelection i = random::u32() & 1 ? MAX_MENU : var;
 		if(*MENU_SET(var) != i) {
+			MenuSelection old = var;
 			*MENU_SET(var) = i;
 			modeTriggers[i] = true;
+			APP->history->push(new MenuAction(MENU_SET(var), old, i));
 		}
 		return;
 	}
@@ -367,8 +408,10 @@ void menuRandomize(MenuSelection var) {
 			if(MENU_SET(var) != MENU_SEL(i)) continue;
 			if(mode-- == 0) {
 				if(*MENU_SET(var) != i) {
+					MenuSelection old = var;
 					*MENU_SET(var) = (MenuSelection)i;
 					modeTriggers[i] = true;
+					APP->history->push(new MenuAction(MENU_SET(var), old, (MenuSelection)i));
 				}
 				break;
 			}

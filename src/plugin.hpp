@@ -256,8 +256,14 @@ extern void findOrResetMenu(MenuSelection var);
 // save menu value by parent
 extern void menuToJson(json_t* rootJ, MenuSelection var);
 
-// load menu value by parent
+// load menu value by parent (no activation)
 extern void menuFromJson(json_t* rootJ, MenuSelection var);
+
+// save menu
+extern void menuToJson(json_t* rootJ, char* name);
+
+// load menu
+extern void menuFromJson(json_t* rootJ, char* name);
 
 // randomize menu value by parent
 extern void menuRandomize(MenuSelection var);
@@ -269,12 +275,5 @@ extern void appendSubMenu(MenuSelection var, Menu *menu, void (*extra)(Menu *men
 extern void matic(MenuSelection var, MenuSelection forceApply = MAX_MENU);
 #define hauto(name, set) matic(MENU(name), MENU(set))
 
-////////////////////
-// History
-////////////////////
-
-struct MenuHistory : ComplexAction {
-
-}
 
 
