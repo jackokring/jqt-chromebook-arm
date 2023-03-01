@@ -209,13 +209,13 @@ std::atomic<MenuSelection> modeScript[MAX_MENU];//good enough
 #undef ENTRY
 #define ENTRY(name, parent) #name
 char *modeNames[MAX_MENU] = {
-#include "menus.hpp"
+#include "menus.txt"
 };
 
 #undef ENTRY
 #define ENTRY(name, parent) MENU_SET(MENU_ ## parent)
 std::atomic<MenuSelection> *modeMenu[MAX_MENU] = {
-#include "menus.hpp"
+#include "menus.txt"
 };
 #undef ENTRY
 //safe to use
@@ -225,21 +225,31 @@ std::atomic<bool> modeTriggers[MAX_MENU];
 
 void resetMenu(MenuSelection var) {//resets group
 	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
-		if(*MENU_SEL(var) != MAX_MENU) {
-			*MENU_SEL(var) = MAX_MENU;//false
-			modeTriggers[var].store(true);
+		if(*MENU_SET(var) != MAX_MENU) {
+			*MENU_SET(var) = MAX_MENU;//false
+			modeTriggers[var] = true;
 		}
 		return;//pop
 	}
 	for (int i = 0; i < MAX_MENU; i++) {
-		if(MENU_SEL(var) != modeMenu[i]) continue;
-		if(i != *MENU_SEL(var)) {
-			*MENU_SEL(var) = (MenuSelection)i;
-			modeTriggers[var].store(true);
+		if(MENU_SET(var) != MENU_SEL(i)) continue;
+		if(*MENU_SET(var) != i) {
+			*MENU_SET(var) = (MenuSelection)i;
+			modeTriggers[var] = true;
 		}
 		break;// bool resets as true
 		// ACTUALLY: when extending states a .json load will reset new MAX_MENU (false)
 		// as olderer MAX_MENU might have been taken by extra menus.
+	}
+}
+
+void primeMenus() {
+	for (int i = 0; i < MAX_MENU; i++) {
+		resetMenu((MenuSelection)i);
+	}
+	// then activate
+	for (int i = 0; i < MAX_MENU; i++) {
+		if(MENU_BOOL(i)) modeTriggers[i] = true;
 	}
 }
 
@@ -251,7 +261,7 @@ void appendMenu(MenuSelection var, Menu *menu) {
 		void onAction(const event::Action& e) override {
 			if(*var != mode) {
 				*var = mode;
-				modeTriggers[mode].store(true);
+				modeTriggers[mode] = true;
 			}
 		}
 	};
@@ -261,14 +271,14 @@ void appendMenu(MenuSelection var, Menu *menu) {
 		MenuSelection mode;
 		void onAction(const event::Action& e) override {
 			*var = MENU_BOOL(*var) ? MAX_MENU : mode;//bool flip
-			modeTriggers[mode].store(true);
+			modeTriggers[mode] = true;
 		}
 	};
 
 	// special to have a bool tick by MENU_SET(self) in modeMenu[self]
 	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
 		BoolItem* boolItem = createMenuItem<BoolItem>(modeNames[var]);
-		boolItem->var = MENU_SEL(var);
+		boolItem->var = MENU_SET(var);
 		boolItem->mode = var;
 		boolItem->rightText = CHECKMARK(MENU_BOOL(var));
 		menu->addChild(boolItem);
@@ -276,11 +286,11 @@ void appendMenu(MenuSelection var, Menu *menu) {
 	}
 
 	for (int i = 0; i < MAX_MENU; i++) {
-		if(MENU_SEL(var) != modeMenu[i]) continue;
+		if(MENU_SET(var) != MENU_SEL(i)) continue;
 		ModeItem* modeItem = createMenuItem<ModeItem>(modeNames[i]);
-		modeItem->var = MENU_SEL(var);
+		modeItem->var = MENU_SET(var);
 		modeItem->mode = (MenuSelection)i;
-		modeItem->rightText = CHECKMARK(*MENU_SEL(var) == (MenuSelection)i);
+		modeItem->rightText = CHECKMARK(*MENU_SET(var) == (MenuSelection)i);
 		menu->addChild(modeItem);
 	}
 }
@@ -289,16 +299,16 @@ void appendMenuLabel(MenuSelection var, Menu *menu) {
 	menu->addChild(createMenuLabel(modeNames[var]));
 }
 
-void findOrReset(MenuSelection var) {
+void findOrResetMenu(MenuSelection var) {
 	bool found = false;
 	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
-		if(*MENU_SEL(var) == var || *MENU_SEL(var) == MAX_MENU) {
+		if(*MENU_SET(var) == var || *MENU_SET(var) == MAX_MENU) {
 			found = true;
 		}
 	} else {
 		for (int i = 0; i < MAX_MENU; i++) {
-			if(MENU_SEL(var) != modeMenu[i]) continue;
-			if(*MENU_SEL(var) == (MenuSelection)i) {
+			if(MENU_SET(var) != MENU_SEL(i)) continue;
+			if(*MENU_SET(var) == (MenuSelection)i) {
 				found = true;
 				break;
 			}
@@ -312,8 +322,8 @@ void findOrReset(MenuSelection var) {
 
 void menuToJson(json_t* rootJ, MenuSelection var) {
 	char *named = modeNames[var];
-	findOrReset(var);
-	json_object_set_new(rootJ, named, json_integer(*MENU_SEL(var)));
+	findOrResetMenu(var);
+	json_object_set_new(rootJ, named, json_integer(*MENU_SET(var)));
 }
 
 void menuFromJson(json_t* rootJ, MenuSelection var) {
@@ -321,36 +331,36 @@ void menuFromJson(json_t* rootJ, MenuSelection var) {
 	json_t* modeJ = json_object_get(rootJ, named);
 	if (modeJ) {
 		MenuSelection i = (MenuSelection)json_integer_value(modeJ);
-		if(i != *MENU_SEL(var)) {
-			*MENU_SEL(var) = (MenuSelection)i;
-			modeTriggers[var].store(true);
+		if(*MENU_SET(var) != i) {
+			*MENU_SET(var) = (MenuSelection)i;
+			modeTriggers[var] = true;
 		}
 	}
-	findOrReset(var);
+	findOrResetMenu(var);
 }
 
 void menuRandomize(MenuSelection var) {
 	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
 		MenuSelection i = random::u32() & 1 ? MAX_MENU : var;
-		if(i != *MENU_SEL(var)) {
-			*MENU_SEL(var) = i;
-			modeTriggers[var].store(true);
+		if(*MENU_SET(var) != i) {
+			*MENU_SET(var) = i;
+			modeTriggers[var] = true;
 		}
 		return;
 	}
 	int count = 0;
 	for (int i = 0; i < MAX_MENU; i++) {
-		if(MENU_SEL(var) != modeMenu[i]) continue;
+		if(MENU_SET(var) != MENU_SEL(i)) continue;
 		count++;
 	}
 	if(count > 0) {
 		int mode = random::u32() % count;
 		for (int i = 0; i < MAX_MENU; i++) {
-			if(MENU_SEL(var) != modeMenu[i]) continue;
+			if(MENU_SET(var) != MENU_SEL(i)) continue;
 			if(mode-- == 0) {
-				if(i != *MENU_SEL(var)) {
-					*MENU_SEL(var) = (MenuSelection)i;
-					modeTriggers[var].store(true);
+				if(*MENU_SET(var) != i) {
+					*MENU_SET(var) = (MenuSelection)i;
+					modeTriggers[var] = true;
 				}
 				break;
 			}
@@ -374,14 +384,18 @@ void appendSubMenu(MenuSelection var, Menu *menu) {
 }
 
 void matic(MenuSelection var, MenuSelection forceApply) {
-	if(MENU_SEL(var) != modeMenu[forceApply]) {
-		WARN("bad application of exoply");
-		return;
-	}
 	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
-		*MENU_SEL(var) = MENU_BOOL(var) ? MAX_MENU : var;//bool flip
+		if(forceApply != MAX_MENU || forceApply != var) {
+			WARN("bad application of exoply");
+			return;
+		}
+		*MENU_SET(var) = MENU_BOOL(var) ? MAX_MENU : var;//bool flip
 	} else {
-		*MENU_SEL(var) = forceApply;
+		if(MENU_SET(var) != MENU_SEL(forceApply)) {
+			WARN("bad application of exoply");
+			return;
+		}
+		*MENU_SET(var) = forceApply;
 	}
 	//always if even same
 	modeTriggers[var].store(true);

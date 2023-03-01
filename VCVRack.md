@@ -55,7 +55,7 @@ These may be added as the project develops. There are other tools that could pro
 TBD.
 
 ## Atomic GUI Menus and Internals
-The right click menu helper in `plugin.hpp` and by rationale in `plugin.cpp` are defined for a new control statement macro `on(name)` which picks up an un-responded GUI menu trigger and clears it then applies the block or statement following it like an `if`, but it can be in another thread as all the critical writes are `std::atomic` and it should just work. The care of clearing triggers via triggers is abated by guarding the `on(name)` internally by actual eventual certainty of other value ignoring the trigger to sequential two hot. Also available is `matic(MENU(name), MENU(set))` or the macro `haut(name, set)`.
+The right click menu helper in `plugin.hpp` and by rationale in `plugin.cpp` are defined for a new control statement macro `on(name)` which picks up an un-responded GUI menu trigger and clears it then applies the block or statement following it like an `if`, but it can be in another thread as all the critical writes are `std::atomic` and it should just work. The care of clearing triggers via triggers is abated by guarding the `on(name)` internally by actual eventual certainty of other value ignoring the trigger to sequential two hot. Also available is `matic(MENU(name), MENU(set))` or the macro `hauto(name, set)`.
 
 I guess I decided on a word based on maybe some noun from positional action opportunities deciding first focus action roots of verbs based on noun iconography. You speak-a-da-lingo? To 'ave centra loco.
 

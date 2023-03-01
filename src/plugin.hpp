@@ -197,7 +197,7 @@ extern int FORK_W(char *buff, int count);
 #define ENTRY(name, parent) MENU_ ## name
 
 enum MenuSelection {
-#include "menus.hpp"
+#include "menus.txt"
 	MAX_MENU
 };
 
@@ -208,25 +208,55 @@ extern std::atomic<MenuSelection> *modeMenu[MAX_MENU];
 #define MENU_SEL(sel) (modeMenu[sel])
 
 // THE MAIN MENU STATE BOOLEAN TEST FOR ACTIVE
-#define MENU_BOOL(sel) ((*MENU_SEL(sel)).load() == sel)
+#define MENU_BOOL(sel) (*MENU_SEL(sel) == sel)
 
 // MASTER MenuSelection PRODUCER OF MANGLED ENUM NAMES
 #define MENU(name) ENTRY(name, NULL)
 
 // yes, clear bool and test (if true make false), std::atomic!
-#define SLOOPIE(boo) boo.load() && (boo.store(false), true)
+#define SLOOPIE(boo) boo.load() && (boo = false, true)
 
-// GUI CONTROL STRUCTURE (FOLLOW BY BLOCK OR STATEMENT)
+////////////////////
+// Menu API
+////////////////////
+
+// GUI CONTROL STRUCTURE (FOLLOW BY BLOCK {} OR STATEMENT;)
+// check and do perhaps the action when triggered on
 #define on(name) if(SLOOPIE(modeTriggers[MENU(name)]) && MENU_BOOL(MENU(name)))
 
+// GUI CONTROL STRUCTURE (FOLLOWED BY ; AS A COMPLETE STATEMENT)
+// prevent `on` trigger until re-triggered
+// it is not necessary to `off` after an `on`, as `on` clears the trigger
+#define off(name) modeTriggers[MENU(name)] = false
+
+// reset a menu by parent
 extern void resetMenu(MenuSelection var);
+
+// initialize and activate all menus
+extern void primeAllMenus();
+
+// append a complete menu by parent
 extern void appendMenu(MenuSelection var, Menu *menu);
+
+// add label from this parent
 extern void appendMenuLabel(MenuSelection var, Menu *menu); 
+
+// check valid menu or reset it by parent
+extern void findOrResetMenu(MenuSelection var);
+
+// save menu value by parent
 extern void menuToJson(json_t* rootJ, MenuSelection var);
+
+// load menu value by parent
 extern void menuFromJson(json_t* rootJ, MenuSelection var);
+
+// randomize menu value by parent
 extern void menuRandomize(MenuSelection var);
+
+// add parent and make sub menu of child options
 extern void appendSubMenu(MenuSelection var, Menu *menu);
-//totally
+
+//totally code controlled dispatch
 extern void matic(MenuSelection var, MenuSelection forceApply);
-#define haut(name, set) matic(MENU(name), MENU(set))
+#define hauto(name, set) matic(MENU(name), MENU(set))
 
