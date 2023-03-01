@@ -16,9 +16,25 @@ SOURCES += $(wildcard src/*.cpp)
 
 # Add files to the ZIP package when running `make dist`
 # The compiled plugin and "plugin.json" are automatically added.
-DISTRIBUTABLES += res jlibrary jconsole libj.so libtsdll.so x64-versions
+DISTRIBUTABLES += res
 DISTRIBUTABLES += $(wildcard LICENSE*)
 DISTRIBUTABLES += $(wildcard profile.*)
+# J and the file watcher dynamic library
+DISTRIBUTABLES += jlibrary jconsole libj.so libtsdll.so libefsw.so
+
+premake:
+	cd efsw
+	premake4 gmake
+
+libs: premake
+	cd efsw/make/linux
+	make config=release
+	cd ../../..
+	cp efsw/lib/libefsw.so .
+
+proj: libs dist
+
+.PHONY libs proj premake
 
 # Include the Rack plugin Makefile framework
 include $(RACK_DIR)/plugin.mk

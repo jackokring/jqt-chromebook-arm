@@ -1,0 +1,3 @@
+[submodule "efsw"]
+	path = efsw
+	url = git@github.com:SpartanJ/efsw.git
