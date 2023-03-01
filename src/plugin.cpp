@@ -235,11 +235,17 @@ void resetMenu(MenuSelection var) {//resets group
 		if(MENU_SET(var) != MENU_SEL(i)) continue;
 		if(*MENU_SET(var) != i) {
 			*MENU_SET(var) = (MenuSelection)i;
-			modeTriggers[var] = true;
+			modeTriggers[i] = true;
 		}
 		break;// bool resets as true
 		// ACTUALLY: when extending states a .json load will reset new MAX_MENU (false)
 		// as olderer MAX_MENU might have been taken by extra menus.
+	}
+}
+
+void refreshMenus() {
+	for (int i = 0; i < MAX_MENU; i++) {
+		if(MENU_BOOL(i)) modeTriggers[i] = true;
 	}
 }
 
@@ -248,9 +254,7 @@ void primeMenus() {
 		resetMenu((MenuSelection)i);
 	}
 	// then activate
-	for (int i = 0; i < MAX_MENU; i++) {
-		if(MENU_BOOL(i)) modeTriggers[i] = true;
-	}
+	refreshMenus();
 }
 
 void appendMenu(MenuSelection var, Menu *menu) {
@@ -333,7 +337,7 @@ void menuFromJson(json_t* rootJ, MenuSelection var) {
 		MenuSelection i = (MenuSelection)json_integer_value(modeJ);
 		if(*MENU_SET(var) != i) {
 			*MENU_SET(var) = (MenuSelection)i;
-			modeTriggers[var] = true;
+			modeTriggers[i] = true;
 		}
 	}
 	findOrResetMenu(var);
@@ -344,7 +348,7 @@ void menuRandomize(MenuSelection var) {
 		MenuSelection i = random::u32() & 1 ? MAX_MENU : var;
 		if(*MENU_SET(var) != i) {
 			*MENU_SET(var) = i;
-			modeTriggers[var] = true;
+			modeTriggers[i] = true;
 		}
 		return;
 	}
@@ -360,7 +364,7 @@ void menuRandomize(MenuSelection var) {
 			if(mode-- == 0) {
 				if(*MENU_SET(var) != i) {
 					*MENU_SET(var) = (MenuSelection)i;
-					modeTriggers[var] = true;
+					modeTriggers[i] = true;
 				}
 				break;
 			}
@@ -398,5 +402,5 @@ void matic(MenuSelection var, MenuSelection forceApply) {
 		*MENU_SET(var) = forceApply;
 	}
 	//always if even same
-	modeTriggers[var].store(true);
+	modeTriggers[forceApply] = true;
 }

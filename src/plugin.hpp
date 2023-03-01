@@ -227,12 +227,15 @@ extern std::atomic<MenuSelection> *modeMenu[MAX_MENU];
 // GUI CONTROL STRUCTURE (FOLLOWED BY ; AS A COMPLETE STATEMENT)
 // prevent `on` trigger until re-triggered
 // it is not necessary to `off` after an `on`, as `on` clears the trigger
-#define off(name) modeTriggers[MENU(name)] = false
+#define off(name) if(MENU_BOOL(MENU(name))) modeTriggers[MENU(name)] = false
 
 // reset a menu by parent
 extern void resetMenu(MenuSelection var);
 
-// initialize and activate all menus
+// activate the enable trigger on all menus
+extern void refreshMenus();
+
+// initialize (reset) and activate all menus
 extern void primeAllMenus();
 
 // append a complete menu by parent
