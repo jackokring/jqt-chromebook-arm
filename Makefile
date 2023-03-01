@@ -23,16 +23,20 @@ DISTRIBUTABLES += $(wildcard profile.*)
 DISTRIBUTABLES += jlibrary jconsole libj.so libtsdll.so libefsw.so
 
 premake:
+	@# Making build system for efsw
+	git submodule update --init --recursive
 	cd efsw
 	premake4 gmake
 
 libs: premake
+	@# Building efsw
 	cd efsw/make/linux
 	make config=release
 	cd ../../..
 	cp efsw/lib/libefsw.so .
 
 proj: libs dist
+	@# Building project
 
 .PHONY libs proj premake
 
