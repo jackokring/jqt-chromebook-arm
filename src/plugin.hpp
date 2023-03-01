@@ -224,6 +224,9 @@ extern std::atomic<MenuSelection> *modeMenu[MAX_MENU];
 // check and do perhaps the action when triggered on
 #define on(name) if(SLOOPIE(modeTriggers[MENU(name)]) && MENU_BOOL(MENU(name)))
 
+// detect false bool trigger (must follow it by an `on` to clear trigger) 
+#define onf(nmae) if(modeTriggers[MENU(name)) && *MENU_SEL(MENU(name)) == MAX_MENU) 
+
 // GUI CONTROL STRUCTURE (FOLLOWED BY ; AS A COMPLETE STATEMENT)
 // prevent `on` trigger until re-triggered
 // it is not necessary to `off` after an `on`, as `on` clears the trigger
@@ -265,4 +268,13 @@ extern void appendSubMenu(MenuSelection var, Menu *menu, void (*extra)(Menu *men
 //totally code controlled dispatch
 extern void matic(MenuSelection var, MenuSelection forceApply = MAX_MENU);
 #define hauto(name, set) matic(MENU(name), MENU(set))
+
+////////////////////
+// History
+////////////////////
+
+struct MenuHistory : ComplexAction {
+
+}
+
 
