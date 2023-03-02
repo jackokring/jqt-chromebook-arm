@@ -1,6 +1,6 @@
 # VCVRack Plugin
   * Needs a `./jconsole` or other architecture specific version of `J` 9 or greater (not the Java tool but [jsoftware](https://github.com/jsoftware/jsource)).
-  * The plugin is built around `lin-arm64` and as such a default `./jconsole` and a bonus `jqt` are included.
+  * The plugin is built around `lin-arm64` and as such a default `./jconsole`.
   * Insert a `Master` module for the main interpreter thread.
   * Add `Input` and `Output` extenders.
   * The `Master` loads `profile.ijs` form the plugin's directory. (The program and configuration file).

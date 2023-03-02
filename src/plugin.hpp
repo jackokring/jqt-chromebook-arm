@@ -2,6 +2,10 @@
 #include <rack.hpp>
 using namespace rack;
 
+///////////////////////////////////////////////////////////////
+// Eventual backporting to KRTPluginA and hence MIT licence
+///////////////////////////////////////////////////////////////
+
 // Declare the Plugin, defined in plugin.cpp
 extern Plugin* pluginInstance;
 
