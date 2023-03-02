@@ -8,6 +8,7 @@ CXXFLAGS +=
 
 # Careful about linking to shared libraries, since you can't assume much about the user's environment and library search path.
 # Static libraries are fine, but they should be added to this plugin's build system.
+# The efsw file watcher static library
 LDFLAGS += -pthread -L. -l:libefsw.a
 LDLIBS +=
 
@@ -19,17 +20,19 @@ SOURCES += $(wildcard src/*.cpp)
 DISTRIBUTABLES += res
 DISTRIBUTABLES += $(wildcard LICENSE*)
 DISTRIBUTABLES += $(wildcard profile.*)
-# J and the file watcher dynamic library
+# J
 DISTRIBUTABLES += jsource/jlibrary
 
-jclean:
+macjig:
+	@# Special files which affect the build of plugin.cpp
+	@# Force removal of a dependent output so as to make it again with includes
+	rm -rf build/src/*
+	
+jsource/make2/make.txt:
 	git submodule update --init --recursive
 	cd jsource/make2 && ./clean.sh
 	
-sudo-emacs:
-	sudo apt install emacs
-	
-j: 
+jsource/jlibrary/bin/jconsole: jsource/make2/make.txt
 	@# Making jconsole see jsource/make2/make.txt
 	cd jsource/make2 && ./build_jconsole.sh
 	cd jsource/make2 && ./build_libj.sh
@@ -38,25 +41,40 @@ j:
 	@# Bulk trim
 	rm jsource/jlibrary/bin/jconsole-lx
 	@# Binaries for plugin bin at jsource/jlibrary/bin/jconsole
+	
+j: jsource/jlibrary/bin/jconsole
 
-efswclean:
+jclean:
+	rm jsource/make2/make.txt
+
+efsw/make/linux/Makefile:
 	@# Making build system for efsw
 	git submodule update --init --recursive
 	cd efsw && premake4 gmake
 
-efsw: efswclean
+libefsw.a: efsw/make/linux/Makefile
 	@# Building efsw
 	cd efsw/make/linux && make config=release
 	cp efsw/lib/libefsw-static-release.a .
 	mv libefsw-static-release.a libefsw.a
+	
+efsw: libefsw.a
 
-.PHONY: efsw efswclean j jclean sudo-emacs
+efswclean:
+	rm efsw/make/linux/Makefile
+	
+/usr/bin/emacs:
+	sudo apt install emacs
+	
+sudoemacs: /usr/bin/emacs
+
+.PHONY: j jclean efsw efswclean sudoemacs macjig
 
 # Include the Rack plugin Makefile framework
 include $(RACK_DIR)/plugin.mk
 
 # Override all
-all: j sudo-emacs efsw $(TARGET)
+all: j efsw sudoemacs $(TARGET)
 	@# Building project
 	
 .PHONY: all
