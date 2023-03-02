@@ -26,6 +26,7 @@ DISTRIBUTABLES += jsource/jlibrary
 macjig:
 	@# Special files which affect the build of plugin.cpp
 	@# Force removal of a dependent output so as to make it again with includes
+	@# and all because the VSCode lady prog loves application of parser non-exlusions but .txt like wow, oft \'change grovener? 
 	rm -rf build/src/*
 	
 jsource/make2/make.txt:
