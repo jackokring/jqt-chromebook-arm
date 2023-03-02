@@ -179,6 +179,7 @@ pid_t FORK(char* fn, char** args) {
         //int status;
         //(void)waitpid(pid, &status, 0);
     }
+    return pid;
 }
 
 #include <sys/wait.h>
@@ -207,7 +208,7 @@ std::atomic<MenuSelection> modeScript[MAX_MENU];//good enough
 #define MENU_SET(sel) (&modeScript[sel])
 
 #undef ENTRY
-#define ENTRY(name, parent) #name
+#define ENTRY(name, parent) (char*) #name
 char *modeNames[MAX_MENU] = {
 #include "menus.txt"
 };
@@ -419,7 +420,7 @@ void menuRandomize(MenuSelection var) {
 	}
 }
 
-void appendSubMenu(MenuSelection var, Menu *menu, void (*extra)(Menu *menu) = NULL) {
+void appendSubMenu(MenuSelection var, Menu *menu, void (*extra)(Menu *menu)) {
 	struct NestItem : MenuItem {
 		MenuSelection lvar;
 		void (*lextra)(Menu *menu);
@@ -437,7 +438,7 @@ void appendSubMenu(MenuSelection var, Menu *menu, void (*extra)(Menu *menu) = NU
 	menu->addChild(ni);
 }
 
-void matic(MenuSelection var, MenuSelection forceApply = MAX_MENU) {
+void matic(MenuSelection var, MenuSelection forceApply) {
 	// set false default for bool as tick implies running?
 	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
 		if(forceApply != MAX_MENU || forceApply != var) {
@@ -463,6 +464,7 @@ class UpdateListener : public efsw::FileWatchListener {
     void handleFileAction( efsw::WatchID watchid, const std::string& dir,
                            const std::string& filename, efsw::Action action,
                            std::string oldFilename ) override {
+        callbackWatcher(filename);
         switch ( action ) {
             case efsw::Actions::Add:
                 
@@ -477,23 +479,25 @@ class UpdateListener : public efsw::FileWatchListener {
                 
                 break;
             default:
-                
+                break;
         }
     }
 };
 
-// Create the file system watcher instance
-// efsw::FileWatcher allow a first boolean parameter that indicates if it should start with the
-// generic file watcher instead of the platform specific backend
-efsw::FileWatcher* fileWatcher = new efsw::FileWatcher();
+void addPluginFileWatcher() {
+	// Create the file system watcher instance
+	// efsw::FileWatcher allow a first boolean parameter that indicates if it should start with the
+	// generic file watcher instead of the platform specific backend
+	efsw::FileWatcher* fileWatcher = new efsw::FileWatcher();
 
-// Create the instance of your efsw::FileWatcherListener implementation
-UpdateListener* listener = new UpdateListener();
+	// Create the instance of your efsw::FileWatcherListener implementation
+	UpdateListener* listener = new UpdateListener();
 
-// Add a folder to watch, and get the efsw::WatchID
-// It will watch the /tmp folder recursively ( the third parameter indicates that is recursive )
-// Reporting the files and directories changes to the instance of the listener
-efsw::WatchID watchID = fileWatcher->addWatch(asset::plugin(pluginInstance, ""), listener, true);
+	// Add a folder to watch, and get the efsw::WatchID
+	// It will watch the /tmp folder recursively ( the third parameter indicates that is recursive )
+	// Reporting the files and directories changes to the instance of the listener
+	/* efsw::WatchID */ fileWatcher->addWatch(asset::plugin(pluginInstance, ""), listener, true);
 
-// Start watching asynchronously the directories
-fileWatcher->watch();
+	// Start watching asynchronously the directories
+	fileWatcher->watch();
+}

@@ -274,5 +274,13 @@ extern void appendSubMenu(MenuSelection var, Menu *menu, void (*extra)(Menu *men
 extern void matic(MenuSelection var, MenuSelection forceApply = MAX_MENU);
 #define hauto(name, set) matic(MENU(name), MENU(set))
 
+////////////////////
+// Plugin Watch API
+////////////////////
 
+// call to use
+extern void addPluginFileWatcher();
+
+// MAKE SOME MODULE PROVIDE THIS
+extern void callbackWatcher(const std::string& filename);
 

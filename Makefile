@@ -4,11 +4,11 @@ RACK_DIR ?= ../..
 # FLAGS will be passed to both the C and C++ compiler
 FLAGS +=
 CFLAGS +=
-CXXFLAGS += -pthread -lefsw
+CXXFLAGS += 
 
 # Careful about linking to shared libraries, since you can't assume much about the user's environment and library search path.
 # Static libraries are fine, but they should be added to this plugin's build system.
-LDFLAGS += -pthread -lefsw
+LDFLAGS += -pthread -L. -l:libefsw.a
 LDLIBS +=
 
 # Add .cpp files to the build
@@ -20,7 +20,7 @@ DISTRIBUTABLES += res
 DISTRIBUTABLES += $(wildcard LICENSE*)
 DISTRIBUTABLES += $(wildcard profile.*)
 # J and the file watcher dynamic library
-DISTRIBUTABLES += jsource/jlibrary libefsw.so
+DISTRIBUTABLES += jsource/jlibrary
 
 jclean:
 	git submodule update --init --recursive
@@ -39,20 +39,24 @@ j:
 	rm jsource/jlibrary/bin/jconsole-lx
 	@# Binaries for plugin bin at jsource/jlibrary/bin/jconsole
 
-premake:
+efswclean:
 	@# Making build system for efsw
 	git submodule update --init --recursive
 	cd efsw && premake4 gmake
 
-efsw: premake
+efsw: efswclean
 	@# Building efsw
 	cd efsw/make/linux && make config=release
-	cp efsw/lib/libefsw.so .
+	cp efsw/lib/libefsw-static-release.a .
+	mv libefsw-static-release.a libefsw.a
 
-proj: j sudo-emacs efsw dist
-	@# Building project
-
-.PHONY: efsw proj premake j jclean sudo-emacs
+.PHONY: efsw efswclean j jclean sudo-emacs
 
 # Include the Rack plugin Makefile framework
 include $(RACK_DIR)/plugin.mk
+
+# Override all
+all: j sudo-emacs efsw $(TARGET)
+	@# Building project
+	
+.PHONY: all
