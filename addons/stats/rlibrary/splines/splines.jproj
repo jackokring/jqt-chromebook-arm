@@ -1,7 +1,0 @@
-NB. project: ~Addons/stats/rlibrary/splines
-NB.
-NB. defines list of source files.
-NB. path defaults to project directory.
-
-init.ijs
-bs.ijs

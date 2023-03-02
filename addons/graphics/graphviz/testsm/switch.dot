@@ -1,9 +1,0 @@
-digraph abstract {
-  rankdir=LR;
-  node  [shape=circle];
-  start [shape=none, label=""];
-  off [shape=doublecircle];
-  start->on [label=start];
-  on->off [label=press];
-  off->on [label=press];
-}

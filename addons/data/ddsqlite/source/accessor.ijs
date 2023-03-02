@@ -1,7 +1,0 @@
-getDateTimeNull=: 3 : 'DateTimeNull'
-getIntegerNull=: 3 : 'IntegerNull'
-getNumericNull=: 3 : 'NumericNull'
-getUseErrRet=: 3 : 'UseErrRet'
-getUseDayNo=: 3 : 'UseDayNo'
-getUseUnicode=: 3 : 'UseUnicode'
-getCHALL=: 3 : 'CHALL'

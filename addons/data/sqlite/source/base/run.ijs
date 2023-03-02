@@ -1,2 +1,0 @@
-
-load 'data/sqlite/sqlitez'

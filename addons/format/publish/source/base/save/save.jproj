@@ -1,7 +1,0 @@
-NB. project: ~Addons/format/publish/source/base/save
-NB.
-NB. defines list of source files.
-NB. path defaults to project directory.
-
-~Publish/base/save/files.ijs
-~Publish/base/save/runsave.ijs

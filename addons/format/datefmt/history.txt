@@ -1,7 +1,0 @@
-format/datefmt - change history
-
-== 1.0.0 ==
- * addon copied from packages/misc/datefmt
-
-== 1.0.10 ==
- * chg: update for j801

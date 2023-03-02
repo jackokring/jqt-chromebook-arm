@@ -1,1 +1,0 @@
-smoutput '+++ DUMMY ~/Documents/GitHub/math_cal/test/build.ijs'

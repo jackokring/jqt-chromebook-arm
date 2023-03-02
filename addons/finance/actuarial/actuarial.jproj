@@ -1,8 +1,0 @@
-NB. project: ~Addons/finance/actuarial
-NB.
-NB. defines list of source files.
-NB. path defaults to project directory.
-
-actutil.ijs
-actfns.ijs
-actfnsm.ijs

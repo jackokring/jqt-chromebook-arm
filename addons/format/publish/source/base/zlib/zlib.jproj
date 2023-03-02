@@ -1,8 +1,0 @@
-NB. project: ~Addons/format/publish/source/base/zlib
-NB.
-NB. defines list of source files.
-NB. path defaults to project directory.
-
-init.ijs
-api.ijs
-compress.ijs

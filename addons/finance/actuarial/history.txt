@@ -1,7 +1,0 @@
-finance/actuarial - change history
-
-== 1.0.0/2 ==
- * addon for j602, j701 copied from packages/finance
-
-== 1.0.4 ==
- * chg: update for j801

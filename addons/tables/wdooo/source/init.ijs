@@ -1,3 +1,0 @@
-NB. init
-
-require 'dll'

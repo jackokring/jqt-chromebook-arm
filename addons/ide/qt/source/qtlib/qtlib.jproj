@@ -1,9 +1,0 @@
-NB. project:
-NB.
-NB. defines list of source files.
-NB. path defaults to project directory.
-NB. script qtlib.ijs run in jqtide locale
-
-init.ijs
-image.ijs
-wdlib.ijs

@@ -20,25 +20,39 @@ DISTRIBUTABLES += res
 DISTRIBUTABLES += $(wildcard LICENSE*)
 DISTRIBUTABLES += $(wildcard profile.*)
 # J and the file watcher dynamic library
-DISTRIBUTABLES += jlibrary jconsole libj.so libtsdll.so libefsw.so
+DISTRIBUTABLES += jsource/jlibrary libefsw.so
+
+jclean:
+	git submodule update --init --recursive
+	cd jsource/make2 && ./clean.sh
+	
+sudo-emacs:
+	sudo apt install emacs
+	
+j: 
+	@# Making jconsole see jsource/make2/make.txt
+	cd jsource/make2 && ./build_jconsole.sh
+	cd jsource/make2 && ./build_libj.sh
+	cd jsource/make2 && ./build_tsdll.sh
+	cd jsource/make2 && ./cpbin.sh
+	@# Bulk trim
+	rm jsource/jlibrary/bin/jconsole-lx
+	@# Binaries for plugin bin at jsource/jlibrary/bin/jconsole
 
 premake:
 	@# Making build system for efsw
 	git submodule update --init --recursive
-	cd efsw
-	premake4 gmake
+	cd efsw && premake4 gmake
 
-libs: premake
+efsw: premake
 	@# Building efsw
-	cd efsw/make/linux
-	make config=release
-	cd ../../..
+	cd efsw/make/linux && make config=release
 	cp efsw/lib/libefsw.so .
 
-proj: libs dist
+proj: j sudo-emacs efsw dist
 	@# Building project
 
-.PHONY libs proj premake
+.PHONY: efsw proj premake j jclean sudo-emacs
 
 # Include the Rack plugin Makefile framework
 include $(RACK_DIR)/plugin.mk

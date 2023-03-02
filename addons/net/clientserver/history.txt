@@ -1,7 +1,0 @@
-net/clientserver - change history
-
-== 1.0.0 ==
- * addon for j701 copied from j602 classes/cs
-
-== 1.0.2 ==
- * chg: update for j801

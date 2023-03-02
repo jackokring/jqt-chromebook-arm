@@ -1,5 +1,0 @@
-**/lib/
-*.dll
-*.so
-*.c
-.DS_Store

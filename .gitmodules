@@ -1,3 +1,6 @@
 [submodule "efsw"]
 	path = efsw
 	url = git@github.com:SpartanJ/efsw.git
+[submodule "jsource"]
+	path = jsource
+	url = git@github.com:jsoftware/jsource.git

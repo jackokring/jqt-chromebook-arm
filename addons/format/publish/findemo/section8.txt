@@ -1,8 +1,0 @@
-NB. section 8
-
-<h1>PIENJÄNNITEVERKON KESKEYTYKSET</h1>
-<b>Pienjänniteverkon keskeytysten lukumäärä asiakkaalla vuodessa kpl/a (kpl/kp)</b>
-Yhtiökohtaisen pienjänniteverkon maakaapelointiasteen mukaan jaoteltuna
-
-<j>gettable 'tab_8_1'</j>
-NB. <image>plot_8_1_pic1.jpf</image>
