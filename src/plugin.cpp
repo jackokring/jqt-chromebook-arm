@@ -455,3 +455,45 @@ void matic(MenuSelection var, MenuSelection forceApply = MAX_MENU) {
 	//always if even same
 	modeTriggers[forceApply] = true;
 }
+
+#include "../efsw/include/efsw/efsw.hpp"
+// Inherits from the abstract listener class, and implements the the file action handler
+class UpdateListener : public efsw::FileWatchListener {
+  public:
+    void handleFileAction( efsw::WatchID watchid, const std::string& dir,
+                           const std::string& filename, efsw::Action action,
+                           std::string oldFilename ) override {
+        switch ( action ) {
+            case efsw::Actions::Add:
+                
+                break;
+            case efsw::Actions::Delete:
+                
+                break;
+            case efsw::Actions::Modified:
+                
+                break;
+            case efsw::Actions::Moved:
+                
+                break;
+            default:
+                
+        }
+    }
+};
+
+// Create the file system watcher instance
+// efsw::FileWatcher allow a first boolean parameter that indicates if it should start with the
+// generic file watcher instead of the platform specific backend
+efsw::FileWatcher* fileWatcher = new efsw::FileWatcher();
+
+// Create the instance of your efsw::FileWatcherListener implementation
+UpdateListener* listener = new UpdateListener();
+
+// Add a folder to watch, and get the efsw::WatchID
+// It will watch the /tmp folder recursively ( the third parameter indicates that is recursive )
+// Reporting the files and directories changes to the instance of the listener
+efsw::WatchID watchID = fileWatcher->addWatch(asset::plugin(pluginInstance, ""), listener, true);
+
+// Start watching asynchronously the directories
+fileWatcher->watch();
