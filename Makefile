@@ -22,6 +22,11 @@ DISTRIBUTABLES += $(wildcard LICENSE*)
 DISTRIBUTABLES += $(wildcard profile.*)
 # J
 DISTRIBUTABLES += jsource/jlibrary
+
+# linux (done)
+# windows
+# mac-x86
+# mac-m1
 	
 jsource/make2/make.txt:
 	git submodule update --init --recursive
@@ -75,8 +80,8 @@ include $(RACK_DIR)/plugin.mk
 all: j efsw sudoemacs $(TARGET)
 	@# Building project
 	
-# Make headers based on menus.txt
-%.hpp: menus.txt
+# Make header based on menus.txt
+plugin.hpp: menus.txt
 	touch -m $@
 	
 .PHONY: all
