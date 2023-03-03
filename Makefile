@@ -2,18 +2,24 @@
 RACK_DIR ?= ../..
 include $(RACK_DIR)/arch.mk
 
-ARCH_DIR := linux 
+ARCH_DIR = linux 
+SUDO = sudo apt install -y 
+dowindows =
 
 ifdef ARCH_WIN
-ARCH_DIR := windows
+ARCH_DIR = windows
 jplatform = windows
-j64x = j64
+j64x = j64avx512
+# Use fake jconsole strategy to control build on windows to avoid .exe variable hell
+dowindows = cp jsource/bin/$(jplatform)/$(j64x)/* jsource/jlibrary/bin && touch jsource/jlibrary/bin/jsource
 export jplatform
 export j64x
+SUDO = pacman -Syu 
 endif
 
 ifdef ARCH_MAC
-ARCH_DIR := macosx
+ARCH_DIR = macosx
+SUDO = brew install 
 endif
 
 # FLAGS will be passed to both the C and C++ compiler
@@ -40,14 +46,15 @@ DISTRIBUTABLES += jsource/jlibrary
 
 # Rebase submodule command
 REBASE = git submodule update --init --rebase --recursive --
-RESTORE = git restore 
-SUDO = sudo apt install -y 
 
-# Use a file deletion strategy
+# unwind any local edits without a commit
+RESTORE = git restore 
+
+# Use a file deletion strategy to signal repo rebuild
 jsource/make2/make.txt:
 	$(REBASE) jsource
 	$(RESTORE) jsource
-	cd jsource/make2 && ./clean.sh
+	@# cd jsource/make2 && ./clean.sh is not required as rebase restore does it
 	
 jsource/jlibrary/bin/jconsole: jsource/make2/make.txt
 	@# Making jconsole see jsource/make2/make.txt
@@ -56,29 +63,32 @@ jsource/jlibrary/bin/jconsole: jsource/make2/make.txt
 	cd jsource/make2 && ./build_jconsole.sh
 	cd jsource/make2 && ./build_libj.sh
 	cd jsource/make2 && ./build_tsdll.sh
-	@# Windows unmanaged copy
-	cp jsource/bin/windows/j64/* jsource/jlibrary/bin
-	@# Windows fake copy
-	touch jsource/jlibrary/bin/jsource
+	@# Windows unmanaged copy and fake
+	$(dowindows)
 	cd jsource/make2 && ./cpbin.sh
 	@# Bulk trim
-	rm jsource/jlibrary/bin/jconsole-lx$(EXE_EXT)
+	rm jsource/jlibrary/bin/jconsole-lx
 	@# Some mac extra not required
 	rm jsource/jlibrary/bin/jconsole-mac
 	@# Binaries for plugin bin at jsource/jlibrary/bin/jconsole .exe?
 	
-j: jsource/jlibrary/bin/jconsole jsource/make2/make.txt
+j: jsource/jlibrary/bin/jconsole
 
 jclean:
+	rm jsource/make2/make.txt
 	rm jsource/jlibrary/bin/jconsole
 	
 /usr/bin/premake4:
 	$(SUDO) premake4
 
-libefsw.a: /usr/bin/premake4
+# Use a file deletion strategy to signal repo rebuild
+efsw/premake5.lua: /usr/bin/premake4
 	@# Making build system for efsw
 	$(REBASE) efsw
+	$(RESTORE) efsw
 	cd efsw && premake4 gmake
+
+libefsw.a: efsw/premake5.lua
 	@# Building efsw
 	cd efsw/make/$(ARCH_DIR) && make config=release
 	cp efsw/lib/libefsw-static-release.a .
@@ -87,6 +97,7 @@ libefsw.a: /usr/bin/premake4
 efsw: libefsw.a
 
 efswclean:
+	rm efsw/premake5.lua
 	rm libefsw.a
 	
 /usr/bin/emacs:
@@ -94,8 +105,10 @@ efswclean:
 	
 emacs: /usr/bin/emacs
 
-# Bump dependancy versions
+# Bump dependancy versions by clean with a pull
 bump: jclean efswclean
+	cd efsw && git pull
+	cd jsource && git pull
 
 .PHONY: j jclean efsw efswclean emacs bump
 
@@ -106,7 +119,7 @@ include $(RACK_DIR)/plugin.mk
 all: j efsw emacs $(TARGET)
 	@# Building project
 	
-# Make header based on menus.txt
+# Make header based on menus.txt to force inclusion recompilation cascade
 plugin.hpp: menus.txt
 	touch -m $@
 	
