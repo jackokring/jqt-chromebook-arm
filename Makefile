@@ -37,12 +37,15 @@ jsource/jlibrary/bin/jconsole: jsource/make2/make.txt
 	rm jsource/jlibrary/bin/jconsole-lx
 	@# Binaries for plugin bin at jsource/jlibrary/bin/jconsole
 	
-j: jsource/jlibrary/bin/jconsole
+j: jsource/jlibrary/bin/jconsole jsource/make2/make.txt
 
 jclean:
 	rm jsource/make2/make.txt
+	
+/usr/bin/premake4:
+	sudo apt install premake4
 
-efsw/make/linux/Makefile:
+efsw/make/linux/Makefile: /usr/bin/premake4
 	@# Making build system for efsw
 	git submodule update --init --recursive
 	cd efsw && premake4 gmake
@@ -53,7 +56,7 @@ libefsw.a: efsw/make/linux/Makefile
 	cp efsw/lib/libefsw-static-release.a .
 	mv libefsw-static-release.a libefsw.a
 	
-efsw: libefsw.a
+efsw: libefsw.a efsw/make/linux/Makefile
 
 efswclean:
 	rm efsw/make/linux/Makefile
