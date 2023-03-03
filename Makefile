@@ -56,18 +56,19 @@ DISTRIBUTABLES += $(wildcard profile.*)
 DISTRIBUTABLES += jsource/jlibrary
 
 # Rebase submodule command
-REBASE = git submodule update --init --rebase --recursive --
+SUB_REBASE = git submodule update --init --rebase --recursive --
 
 # Unwind any local edits without a commit
-RESTORE = git restore 
+SUB_RESTORE = git submodule foreach "git restore ."
 
 # Use rebase instead of merge for version bump
-PULL = git pull --rebase
+SUB_PULL = git submodule foreach "git pull --rebase"
+
 
 # Use a file deletion strategy to signal repo rebuild
 jsource/make2/make.txt:
-	$(REBASE) jsource
-	$(RESTORE) jsource
+	$(SUB_REBASE) jsource
+	$(SUB_RESTORE)
 	@# cd jsource/make2 && ./clean.sh is not required as rebase restore does it
 	
 jsource/jlibrary/bin/jconsole: jsource/make2/make.txt
@@ -98,8 +99,8 @@ jclean:
 # Use a file deletion strategy to signal repo rebuild
 efsw/premake5.lua: /usr/bin/premake4
 	@# Making build system for efsw
-	$(REBASE) efsw
-	$(RESTORE) efsw
+	$(SUB_REBASE) efsw
+	$(SUB_RESTORE)
 	cd efsw && premake4 gmake
 
 libefsw.a: efsw/premake5.lua
@@ -120,9 +121,9 @@ efswclean:
 emacs: /usr/bin/emacs
 
 # Bump dependancy versions by clean with a pull
-bump: jclean efswclean
-	cd efsw && $(PULL)
-	cd jsource && $(PULL)
+bump:
+	git pull
+	$(SUB_PULL)
 
 .PHONY: j jclean efsw efswclean emacs bump
 
