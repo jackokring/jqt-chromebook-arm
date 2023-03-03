@@ -1,5 +1,20 @@
 # If RACK_DIR is not defined when calling the Makefile, default to two directories above
 RACK_DIR ?= ../..
+include $(RACK_DIR)/arch.mk
+
+ARCH_DIR := linux 
+
+ifdef ARCH_WIN
+ARCH_DIR := windows
+jplatform = windows
+j64x = j64
+export jplatform
+export j64x
+endif
+
+ifdef ARCH_MAC
+ARCH_DIR := macosx
+endif
 
 # FLAGS will be passed to both the C and C++ compiler
 FLAGS +=
@@ -23,61 +38,72 @@ DISTRIBUTABLES += $(wildcard profile.*)
 # J
 DISTRIBUTABLES += jsource/jlibrary
 
-# linux (done)
-# windows
-# mac-x86
-# mac-m1
-	
+# Rebase submodule command
+REBASE = git submodule update --init --rebase --recursive --
+RESTORE = git restore 
+SUDO = sudo apt install -y 
+
+# Use a file deletion strategy
 jsource/make2/make.txt:
-	git submodule update --init --recursive
+	$(REBASE) jsource
+	$(RESTORE) jsource
 	cd jsource/make2 && ./clean.sh
 	
 jsource/jlibrary/bin/jconsole: jsource/make2/make.txt
 	@# Making jconsole see jsource/make2/make.txt
+	@# Clean up before apply
+	rm jsource/jlibrary/bin/*
 	cd jsource/make2 && ./build_jconsole.sh
 	cd jsource/make2 && ./build_libj.sh
 	cd jsource/make2 && ./build_tsdll.sh
+	@# Windows unmanaged copy
+	cp jsource/bin/windows/j64/* jsource/jlibrary/bin
+	@# Windows fake copy
+	touch jsource/jlibrary/bin/jsource
 	cd jsource/make2 && ./cpbin.sh
 	@# Bulk trim
-	rm jsource/jlibrary/bin/jconsole-lx
-	@# Binaries for plugin bin at jsource/jlibrary/bin/jconsole
+	rm jsource/jlibrary/bin/jconsole-lx$(EXE_EXT)
+	@# Some mac extra not required
+	rm jsource/jlibrary/bin/jconsole-mac
+	@# Binaries for plugin bin at jsource/jlibrary/bin/jconsole .exe?
 	
 j: jsource/jlibrary/bin/jconsole jsource/make2/make.txt
 
 jclean:
-	rm jsource/make2/make.txt
+	rm jsource/jlibrary/bin/jconsole
 	
 /usr/bin/premake4:
-	sudo apt install premake4
+	$(SUDO) premake4
 
-efsw/make/linux/Makefile: /usr/bin/premake4
+libefsw.a: /usr/bin/premake4
 	@# Making build system for efsw
-	git submodule update --init --recursive
+	$(REBASE) efsw
 	cd efsw && premake4 gmake
-
-libefsw.a: efsw/make/linux/Makefile
 	@# Building efsw
-	cd efsw/make/linux && make config=release
+	cd efsw/make/$(ARCH_DIR) && make config=release
 	cp efsw/lib/libefsw-static-release.a .
 	mv libefsw-static-release.a libefsw.a
 	
-efsw: libefsw.a efsw/make/linux/Makefile
+efsw: libefsw.a
 
 efswclean:
-	rm efsw/make/linux/Makefile
+	rm libefsw.a
 	
 /usr/bin/emacs:
-	sudo apt install emacs
+	$(SUDO) emacs
 	
-sudoemacs: /usr/bin/emacs
+emacs: /usr/bin/emacs
 
-.PHONY: j jclean efsw efswclean sudoemacs
+# Bump dependancy versions
+bump: jclean efswclean
+
+.PHONY: j jclean efsw efswclean emacs bump
 
 # Include the Rack plugin Makefile framework
 include $(RACK_DIR)/plugin.mk
 
 # Override all
-all: j efsw sudoemacs $(TARGET)
+all: j efsw emacs $(TARGET)
 	@# Building project
 	
 # Make header based on menus.txt
