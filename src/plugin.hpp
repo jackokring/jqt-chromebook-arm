@@ -259,7 +259,7 @@ extern void findOrResetMenu(MenuSelection var);
 // save menu value by parent
 extern void menuToJson(json_t* rootJ, MenuSelection var);
 
-// load menu value by parent (no activation)
+// load menu value by parent
 extern void menuFromJson(json_t* rootJ, MenuSelection var);
 
 // save menu

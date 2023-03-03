@@ -1,4 +1,15 @@
 # If RACK_DIR is not defined when calling the Makefile, default to two directories above
+
+#///////////////////////////////////////////////////////////////
+#// Eventual backporting to KRTPluginA and hence MIT licence
+#///////////////////////////////////////////////////////////////
+
+# Possible project dependancies which make all can make with override in project.mk
+# In a sense the default is all of them, so beware to either change project.mk to match or just use some of them
+# Don't forget to update project.mk as they are added
+PROJ_DEPS = j efsw emacs
+include project.mk
+
 RACK_DIR ?= ../..
 include $(RACK_DIR)/arch.mk
 
@@ -47,8 +58,11 @@ DISTRIBUTABLES += jsource/jlibrary
 # Rebase submodule command
 REBASE = git submodule update --init --rebase --recursive --
 
-# unwind any local edits without a commit
+# Unwind any local edits without a commit
 RESTORE = git restore 
+
+# Use rebase instead of merge for version bump
+PULL = git pull --rebase
 
 # Use a file deletion strategy to signal repo rebuild
 jsource/make2/make.txt:
@@ -107,8 +121,8 @@ emacs: /usr/bin/emacs
 
 # Bump dependancy versions by clean with a pull
 bump: jclean efswclean
-	cd efsw && git pull
-	cd jsource && git pull
+	cd efsw && $(PULL)
+	cd jsource && $(PULL)
 
 .PHONY: j jclean efsw efswclean emacs bump
 
@@ -116,7 +130,7 @@ bump: jclean efswclean
 include $(RACK_DIR)/plugin.mk
 
 # Override all
-all: j efsw emacs $(TARGET)
+all: $(PROJ_DEPS) $(TARGET)
 	@# Building project
 	
 # Make header based on menus.txt to force inclusion recompilation cascade
@@ -124,3 +138,4 @@ plugin.hpp: menus.txt
 	touch -m $@
 	
 .PHONY: all
+
