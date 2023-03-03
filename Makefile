@@ -22,13 +22,6 @@ DISTRIBUTABLES += $(wildcard LICENSE*)
 DISTRIBUTABLES += $(wildcard profile.*)
 # J
 DISTRIBUTABLES += jsource/jlibrary
-
-macjig:
-	@# Special files which affect the build of plugin.cpp
-	@# Force removal of a dependent output so as to make it again with includes
-	@# and all because the VSCode lady prog loves application of parser non-exlusions but .txt like wow, oft \'change grovener?
-	@# Much local mist .. $1 mising 
-	rm -rf build/src/*
 	
 jsource/make2/make.txt:
 	git submodule update --init --recursive
@@ -70,7 +63,7 @@ efswclean:
 	
 sudoemacs: /usr/bin/emacs
 
-.PHONY: j jclean efsw efswclean sudoemacs macjig
+.PHONY: j jclean efsw efswclean sudoemacs
 
 # Include the Rack plugin Makefile framework
 include $(RACK_DIR)/plugin.mk
@@ -78,5 +71,9 @@ include $(RACK_DIR)/plugin.mk
 # Override all
 all: j efsw sudoemacs $(TARGET)
 	@# Building project
+	
+# Make headers based on menus.txt
+%.hpp: menus.txt
+	touch -m $@
 	
 .PHONY: all
