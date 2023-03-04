@@ -31,7 +31,7 @@
 ## Computational Considerations
 The `J` engine uses a string IO interface. Conversion of `char*` to and from `float` can consume CPU, but as the engine runs on its own thread this will be just occasional delay by a number of `Sync` intervals at the worst. Consider it a feature.
 
-There maybe later adaptation to other console language handlers as the sub-process spawned by the engine thread should be quite generic based on some parse and stringify configuration. There is a menu option for the engine selection. Using a sub-process also means that the engine does not need any strange compile doing, just place a suitable `./jconsole` and the associated libraries in the plugin directory.  
+There maybe later adaptation to other console language handlers as the sub-process spawned by the engine thread should be quite generic based on some parse and stringify configuration. There is a menu option for the engine selection. Using a sub-process also means that the engine does not need any strange compile doing, just place a suitable `./jconsole` and the associated libraries in the plugin directory.
 
 Other data formats or errors other than `float` are not supported and should trigger a `Lock` on previous data, needing a press of the `Lock` button to continue processing. The `Master` indicates a returned error condition and also things like infinities, rationals or string data parse errors when technically the return is not a `J` error separately.
 
@@ -43,9 +43,9 @@ If you actually want to take advantage of this effect, include another `.ijs` fi
 This simplifies the design of `Master` and the `Dominate` button clears this effect on the respective `Master` by writing `profile.ijs` from the patch and clearing any `Init` signal on the dominating `Master`. `Saved` helps with not destroying a profile. Nope, never a bug then. Though be aware it is any save including saving machine presets too, not just autosaves and project saves. `Saved` means it saved somewhere for some reason. A `Reload` can clear the `Saved` state, and also can cause an `Init` state. As `Init` is both for `profile.ijs` changes during loading and also profile not matching internal state loaded state (different from `profile.ijs` and so not dominated until a `Reload`, and does not trigger `Lock On`).
 
 ## Other Possible Environments
-As `asset::plugin(pluginInstance, "jconsole")` could get the path if necessary, and other things would use `$PATH` to find them, I think much is possible.
+As `asset::plugin(pluginInstance, "jlibrary/bin/jconsole")` could get the path if necessary, and other things would use `$PATH` to find them, I think much is possible.
 
-  * `j` by `./jconsole` (default original).
+  * `j` by `jlibrary/bin/jconsole` (default original).
   * `python` by `env PYTHONSTARTUP=profile.py python` (uses current virtual environment).
   * `emacs` by `emacs --batch -l profile.el --eval "(while t (print (eval (read))))"` (easy package install on Linux `emacs`).
   
