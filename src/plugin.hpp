@@ -88,6 +88,9 @@ struct LabelWidget : LightWidget {//TransparentWidget {
 			case 1:
 				textColor = SCHEME_RED;
 				break;
+			case 2:
+				textColor = SCHEME_BLUE;
+				break;
 		}
 		nvgFontFaceId(args.vg, font->handle);
 		nvgFontSize(args.vg, LABEL);
@@ -138,11 +141,24 @@ extern int maxPoly(Module *m, const int numIn, const int numOut);
 #define R_HEIGHT (HEIGHT*(1-2*Y_MARGIN))
 #define Y_SPLIT (R_HEIGHT / 2.f / RUNGS)
 
+const int laneIdxHP[] = {
+	1,	// blank panel 0 lane
+	3,	// 1 lane needs 3
+	5,	// 2 lane needs 5
+	7,	// 3 lane needs 7
+	11,	// 4 lane needs 11
+	11,	// 5 lane needs 11
+	13,	// 6 lane needs 13
+	17,	// 7 lane needs 17
+	17	// 8 lane needs 17
+	// maximum of 8 lanes
+};
+
 //placement macro
 #define loc(x,y) mm2px(Vec(X_SPLIT*(1+2*(x-1)), (HEIGHT*Y_MARGIN)+Y_SPLIT*(1+2*(y-1))))
 
 extern void populate(ModuleWidget *m, int hp, int lanes, int rungs, const int ctl[],
-							const char *lbl[], const int kind[]);
+							const char *lbl[], const int kind[], char* named);
 
 ////////////////////
 // Synchronization

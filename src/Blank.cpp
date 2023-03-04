@@ -1,6 +1,6 @@
 #include "plugin.hpp"
 
-// Width by parameter knobs (placing automatic)
+// Width by parameter knobs (placing automatic) maximum of 8 lanes (rungs pack nicely at 7)
 #define LANES 2
 #define SHOW_NAME "Blank"
 // used in the modules.hpp file
@@ -70,7 +70,7 @@ struct MODULE_NAME : Module {
 
 //geometry edit
 //for best auto layout
-#define HP ((int)(LANES*2.f))
+#define HP (laneIdxHP[LANES])
 #define RUNGS 7
 
 struct WIDGET_NAME : ModuleWidget {
@@ -98,7 +98,7 @@ struct WIDGET_NAME : ModuleWidget {
 			
 		};
 
-		populate(this, HP, LANES, RUNGS, ctl, lbl, kind);
+		populate(this, HP, LANES, RUNGS, ctl, lbl, kind, (char*)SHOW_NAME);
 	}
 };
 

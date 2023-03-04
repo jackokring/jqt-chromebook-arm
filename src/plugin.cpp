@@ -56,13 +56,18 @@ int maxPoly(Module *m, const int numIn, const int numOut) {
 
 // control populator
 void populate(ModuleWidget *m, int hp, int lanes, int rungs, const int ctl[],
-							const char *lbl[], const int kind[]) {
+							const char *lbl[], const int kind[], char* named) {
 	LabelWidget *display;
 
 	m->addChild(createWidget<KScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
 	m->addChild(createWidget<KScrewSilver>(Vec(m->box.size.x - 2 * RACK_GRID_WIDTH, 0)));
 	m->addChild(createWidget<KScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 	m->addChild(createWidget<KScrewSilver>(Vec(m->box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+	
+	// Textual Name Display
+	display = new LabelWidget(named, 2);
+	display->fixCentre(locl(lanes / 2 + 0.5f, 0.5f), strlen(named));//chars
+	m->addChild(display);
 
 	for(int x = 1; x <= lanes; x++) {
 		for(int y = 1; y <= rungs; y++) {
