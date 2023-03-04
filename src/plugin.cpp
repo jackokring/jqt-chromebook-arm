@@ -65,7 +65,7 @@ void populate(ModuleWidget *m, int hp, int lanes, int rungs, const int ctl[],
 	m->addChild(createWidget<KScrewSilver>(Vec(m->box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 	
 	// Textual Name Display
-	display = new LabelWidget(named, 2);
+	display = new LabelWidget(named,GR_LED);
 	display->fixCentre(locl(lanes / 2 + 0.5f, 0.5f), strlen(named));//chars
 	m->addChild(display);
 
@@ -78,20 +78,20 @@ void populate(ModuleWidget *m, int hp, int lanes, int rungs, const int ctl[],
 			display->fixCentre(locl(x, y + 0.5f), strlen(lbl[idx]));//chars
 			m->addChild(display);
 			switch(kind[idx]) {
-				case -2:
+				case SNAP_KNOB:
 					// snap knob
 					m->addParam(createParamCentered<KRoundBlackSnapKnob>(locl(x, y), m->module, ctl[idx]));
 					break;
-				case -1:
+				case INPUT_PORT:
 					m->addInput(createInputCentered<KPJ301MPort>(locl(x, y), m->module, ctl[idx]));
 					break;
-				case 0: default:
+				case NORM_KNOB: default:
 					m->addParam(createParamCentered<KRoundBlackKnob>(locl(x, y), m->module, ctl[idx]));
 					break;
-				case 1:
+				case OUTPUT_PORT:
 					m->addOutput(createOutputCentered<KPJ301MPort>(locl(x, y), m->module, ctl[idx]));
 					break;
-				case 2:
+				case GR_LED:
 					// light
 					m->addChild(createLightCentered<KGRLightWidget>(locl(x, y), m->module, ctl[idx]));
 					break;

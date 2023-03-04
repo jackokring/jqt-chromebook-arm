@@ -69,9 +69,18 @@ struct MODULE_NAME : Module {
 };
 
 //geometry edit
-//for best auto layout
+//for best auto layout (MAX 8 lanes) prime HP
 #define HP (laneIdxHP[LANES])
 #define RUNGS 7
+
+// FROM plugin.hpp
+//enum controlKind {
+//	SNAP_KNOB = -2,
+//	INPUT_PORT = -1,
+//	MORM_KNOB = 0,
+//	OUTPUT_PORT = 1,
+//	GR_LED =2
+//};
 
 struct WIDGET_NAME : ModuleWidget {
 	
@@ -82,8 +91,8 @@ struct WIDGET_NAME : ModuleWidget {
 		//using MODULE_NAME::*;
 
 		const int ctl[] = {
-			// param index
-			// -1 is no control and no label
+			// param index grid lanes minor index
+			// use macros CTL(enum_value) or NO_CTL
 			
 		};
 
@@ -94,7 +103,7 @@ struct WIDGET_NAME : ModuleWidget {
 
 		const int kind[] = {
 			// control kind
-			// -1 = sink, +1 = source
+			// use enum controlKind values
 			
 		};
 

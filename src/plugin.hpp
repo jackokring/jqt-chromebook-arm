@@ -157,6 +157,17 @@ const int laneIdxHP[] = {
 //placement macro
 #define loc(x,y) mm2px(Vec(X_SPLIT*(1+2*(x-1)), (HEIGHT*Y_MARGIN)+Y_SPLIT*(1+2*(y-1))))
 
+enum controlKind {
+	SNAP_KNOB = -2,
+	INPUT_PORT = -1,
+	MORM_KNOB = 0,
+	OUTPUT_PORT = 1,
+	GR_LED =2
+};
+
+#define CTL(name) MODULE_NAME::name
+#define NO_CTL -1 
+
 extern void populate(ModuleWidget *m, int hp, int lanes, int rungs, const int ctl[],
 							const char *lbl[], const int kind[], char* named);
 
