@@ -1,3 +1,7 @@
+# Dev Page Captain's Blog
+
+[KRTPluginJ](https://jackokring.github.io/KRTPluginADemo/KRTPluginJ.html)
+
 # VCVRack Plugin
   * Needs a `./jconsole` or other architecture specific version of `J` 9 or greater (not the Java tool but [jsoftware](https://github.com/jsoftware/jsource)).
   * The plugin is built around `lin-arm64` and as such a default `./jconsole`.
