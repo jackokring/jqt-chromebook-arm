@@ -1,7 +1,7 @@
 # Dev Page Captain's Blog
 
   * [KRTPluginJ](https://jackokring.github.io/KRTPluginADemo/KRTPluginJ.html)
-  * Escape the `[dev-bot]` spam of a watch by a filteredn removal of `[dev-bot]` 
+  * Escape the `[dev-bot]` spam of a watch by a filtered removal of `[dev-bot]` 
 
 # VCVRack Plugin
   * Needs a `./jconsole` or other architecture specific version of `J` 9 or greater (not the Java tool but [jsoftware](https://github.com/jsoftware/jsource)).
