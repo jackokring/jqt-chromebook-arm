@@ -209,6 +209,36 @@ int FORK_W(char *buff, int count) {
 	return write(EXEC_W, buff, count);
 }
 
+#define MAX_PROMPT 64
+
+bool FORK_DRAIN(const char *prompt) {
+	if(!prompt || prompt[0] == '\0') return true;
+	char x[MAX_PROMPT];
+	int z = strlen(prompt);
+	if(!FORK_R(x, strlen(prompt))) return false;
+	while(true) {
+		int i;
+		for(i = 0; i < strlen(prompt); i++) {
+			if(i < z && x[i] == prompt[0]) {
+				z = i;//first copy
+			}
+			if(x[i] != prompt[i]) {
+				break;
+			}
+		}
+		if(i == strlen(prompt)) return true;
+		// adjust and loop again
+		i = 0;
+		for(; z < strlen(prompt); z++, i++) {
+			x[i] = x[z];
+		}
+		z = strlen(prompt);
+		for(; i < z; i++) {
+			if(!FORK_R(&x[i], 1)) return false;
+		}
+	}
+}
+
 // modes add one enum MenuSelection to plugin.hpp
 // add names and which &MenuSelection
 std::atomic<MenuSelection> modeScript[MAX_MENU];//good enough

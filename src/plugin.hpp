@@ -222,6 +222,8 @@ extern void JOIN(pid_t pid);
 extern pid_t FORK(char* fn, char** args);
 extern int FORK_R(char *buff, int count);
 extern int FORK_W(char *buff, int count);
+// drain until found prompt
+extern bool FORK_DRAIN(const char *prompt);
 
 ////////////////////
 // Menu Additions
