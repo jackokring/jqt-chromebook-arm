@@ -236,11 +236,28 @@ enum MenuSelection {
 	MAX_MENU
 };
 
-extern std::atomic<bool> modeTriggers[MAX_MENU];
+#undef ENTRY
+#define ENTRY(name, parent) (char*) #name
+char *modeNames[MAX_MENU] = {
+#include "menus.txt"
+};
+
+// place for linking 
 extern std::atomic<MenuSelection> *modeMenu[MAX_MENU];
+
+struct OnMenu {
+
+	// triggers
+	std::atomic<bool> modeTriggers[MAX_MENU];
+	
+	// menu state
+	std::atomic<MenuSelection> modeScript[MAX_MENU];//good enough
 
 // POINTER TO SELECTED STATE
 #define MENU_SEL(sel) (modeMenu[sel])
+
+// fill MenuSelectiion *modeMenu[]
+#define MENU_SET(sel) (&modeScript[sel])
 
 // THE MAIN MENU STATE BOOLEAN TEST FOR ACTIVE
 #define MENU_BOOL(sel) (*MENU_SEL(sel) == sel)
@@ -267,37 +284,80 @@ extern std::atomic<MenuSelection> *modeMenu[MAX_MENU];
 // it is not necessary to `off` after an `on`, as `on` clears the trigger
 #define off(name) if(MENU_BOOL(MENU(name))) modeTriggers[MENU(name)] = false
 
-// activate the enable trigger on all menus (triggers)
-extern void refreshMenus();
+	// activate the enable trigger on all menus (triggers)
+	void refreshMenus();
 
-// initialize (reset) and activate all menus  (triggers)
-extern void primeMenus();
+	// initialize (reset) and activate all menus  (triggers)
+	void primeMenus();
 
-// append a complete menu by parent
-extern void appendMenu(MenuSelection var, Menu *menu);
+	// append a complete menu by parent
+	void appendMenu(MenuSelection var, Menu *menu);
 
-// add label from this parent
-extern void appendMenuLabel(MenuSelection var, Menu *menu); 
+	// add label from this parent
+	void appendMenuLabel(MenuSelection var, Menu *menu); 
 
-// fully abstract the API
-extern void appendMenuSpacer(Menu *menu);
+	// fully abstract the API
+	void appendMenuSpacer(Menu *menu);
 
-// save menus
-extern void menuToJson(json_t* rootJ, char* name);
+	// save menus
+	void menuToJson(json_t* rootJ, char* name);
 
-// load menus (triggers)
-extern void menuFromJson(json_t* rootJ, char* name);
+	// load menus (triggers)
+	void menuFromJson(json_t* rootJ, char* name);
 
-// randomize menu value by parent (triggers)
-extern void menuRandomize(MenuSelection var);
+	// randomize menu value by parent (triggers)
+	void menuRandomize(MenuSelection var);
 
-// add parent and make sub menu of child options (optional callback to sub-append more)
-extern void appendSubMenu(MenuSelection var, Menu *menu, void (*extra)(Menu *menu) = NULL);
+	// add parent and make sub menu of child options (optional callback to sub-append more)
+	void appendSubMenu(MenuSelection var, Menu *menu, void (*extra)(Menu *menu) = NULL);
 
-//totally code controlled dispatch (triggers)
-extern void matic(MenuSelection var, MenuSelection forceApply = MAX_MENU);
+	//totally code controlled dispatch (triggers)
+	void matic(MenuSelection var, MenuSelection forceApply = MAX_MENU);
+	
 #define hauto(name, set) matic(MENU(name), MENU(set))
 
+	// NO NAMESPCE AUTO INJECT PRIVATE
+	private:
+	void resetMenu(MenuSelection var);
+	void findOrResetMenu(MenuSelection var);
+	void menuToJson(json_t* rootJ, MenuSelection var);
+	void menuFromJson(json_t* rootJ, MenuSelection var);
+	// A re-trigger undo/redo action
+	struct MenuAction : history::Action {
+
+		MenuSelection var;
+		MenuSelection old;
+		MenuSelection latest;
+		OnMenu *om;
+
+		MenuAction(OnMenu *om, MenuSelection var, MenuSelection old, MenuSelection latest) {
+			this->var = var;
+			this->old = old;
+			this->latest = latest;
+			this->om = om;
+			if(&(om->modeScript[var]) == MENU_SEL(var)) {//bool self reference (not parent group)
+				if(om->modeScript[var] == var) {
+					this->name = "set " + std::string(modeNames[var]);
+					return;
+				}
+				if(om->modeScript[var] == MAX_MENU) {
+					this->name = "clear " + std::string(modeNames[var]);
+					return;
+				}
+			}
+			this->name = "set " + std::string(modeNames[var]) + " to " + std::string(modeNames[latest]);
+		}
+
+		void undo() override {
+			om->matic(var, old);
+		}
+
+		void redo() override {
+			om->matic(var, latest);
+		}
+	};
+
+};
 ////////////////////
 // Plugin Watch API
 ////////////////////

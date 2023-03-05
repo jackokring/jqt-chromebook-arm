@@ -285,19 +285,6 @@ bool FORK_DRAIN(const char *prompt) {
 	}
 }
 
-// modes add one enum MenuSelection to plugin.hpp
-// add names and which &MenuSelection
-std::atomic<MenuSelection> modeScript[MAX_MENU];//good enough
-
-// fill MenuSelectiion *modeMenu[]
-#define MENU_SET(sel) (&modeScript[sel])
-
-#undef ENTRY
-#define ENTRY(name, parent) (char*) #name
-char *modeNames[MAX_MENU] = {
-#include "menus.txt"
-};
-
 #undef ENTRY
 #define ENTRY(name, parent) MENU_SET(MENU_ ## parent)
 std::atomic<MenuSelection> *modeMenu[MAX_MENU] = {
@@ -307,9 +294,7 @@ std::atomic<MenuSelection> *modeMenu[MAX_MENU] = {
 //safe to use
 #define ENTRY(name, parent) MENU_ ## name
 
-std::atomic<bool> modeTriggers[MAX_MENU];
-
-void resetMenu(MenuSelection var) {//resets group
+void OnMenu::resetMenu(MenuSelection var) {//resets group
 	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
 		if(*MENU_SET(var) != MAX_MENU) {
 			*MENU_SET(var) = MAX_MENU;//false
@@ -325,13 +310,13 @@ void resetMenu(MenuSelection var) {//resets group
 	}
 }
 
-void refreshMenus() {
+void OnMenu::refreshMenus() {
 	for (int i = 0; i < MAX_MENU; i++) {
 		if(MENU_BOOL(i)) modeTriggers[i] = true;
 	}
 }
 
-void primeMenus() {
+void OnMenu::primeMenus() {
 	for (int i = 0; i < MAX_MENU; i++) {
 		resetMenu((MenuSelection)i);
 	}
@@ -339,50 +324,18 @@ void primeMenus() {
 	refreshMenus();
 }
 
-// A re-trigger undo/redo action
-struct MenuAction : history::Action {
-
-	MenuSelection var;
-	MenuSelection old;
-	MenuSelection latest;
-
-	MenuAction(MenuSelection var, MenuSelection old, MenuSelection latest) {
-		this->var = var;
-		this->old = old;
-		this->latest = latest;
-		if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
-			if(*MENU_SET(var) == var) {
-				this->name = "set " + std::string(modeNames[var]);
-				return;
-			}
-			if(*MENU_SET(var) == MAX_MENU) {
-				this->name = "clear " + std::string(modeNames[var]);
-				return;
-			}
-		}
-		this->name = "set " + std::string(modeNames[var]) + " to " + std::string(modeNames[latest]);
-	}
-
-	void undo() override {
-		matic(var, old);
-	}
-
-	void redo() override {
-		matic(var, latest);
-	}
-};
-
-void appendMenu(MenuSelection var, Menu *menu) {
+void OnMenu::appendMenu(MenuSelection var, Menu *menu) {
 
 	struct ModeItem : MenuItem {
 		std::atomic<MenuSelection> *var;
 		MenuSelection mode;
+		OnMenu *that;
 		void onAction(const event::Action& e) override {
 			if(*var != mode) {
 				MenuSelection old = *var;
 				*var = mode;
-				modeTriggers[mode] = true;
-				APP->history->push(new MenuAction(*var, old, mode));
+				that->modeTriggers[mode] = true;
+				APP->history->push(new MenuAction(that, *var, old, mode));
 			}
 		}
 	};
@@ -390,11 +343,12 @@ void appendMenu(MenuSelection var, Menu *menu) {
 	struct BoolItem : MenuItem {
 		std::atomic<MenuSelection> *var;
 		MenuSelection mode;
+		OnMenu *that;
 		void onAction(const event::Action& e) override {
 			MenuSelection old = *var;
 			*var = MENU_BOOL(*var) ? MAX_MENU : mode;//bool flip
-			modeTriggers[mode] = true;
-			APP->history->push(new MenuAction(*var, old, mode));
+			that->modeTriggers[mode] = true;
+			APP->history->push(new MenuAction(that, *var, old, mode));
 		}
 	};
 
@@ -403,6 +357,7 @@ void appendMenu(MenuSelection var, Menu *menu) {
 		BoolItem* boolItem = createMenuItem<BoolItem>(modeNames[var]);
 		boolItem->var = MENU_SET(var);
 		boolItem->mode = var;
+		boolItem->that = this;
 		boolItem->rightText = CHECKMARK(MENU_BOOL(var));
 		menu->addChild(boolItem);
 		return; //pop
@@ -413,20 +368,21 @@ void appendMenu(MenuSelection var, Menu *menu) {
 		ModeItem* modeItem = createMenuItem<ModeItem>(modeNames[i]);
 		modeItem->var = MENU_SET(var);
 		modeItem->mode = (MenuSelection)i;
+		modeItem->that = this;
 		modeItem->rightText = CHECKMARK(*MENU_SET(var) == (MenuSelection)i);
 		menu->addChild(modeItem);
 	}
 }
 
-void appendMenuLabel(MenuSelection var, Menu *menu) {
+void OnMenu::appendMenuLabel(MenuSelection var, Menu *menu) {
 	menu->addChild(createMenuLabel(modeNames[var]));
 }
 
-void appendMenuSpacer(Menu *menu) {
+void OnMenu::appendMenuSpacer(Menu *menu) {
 	menu->addChild(new MenuSeparator);
 }
 
-void findOrResetMenu(MenuSelection var) {
+void OnMenu::findOrResetMenu(MenuSelection var) {
 	bool found = false;
 	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
 		if(*MENU_SET(var) == var || *MENU_SET(var) == MAX_MENU) {
@@ -447,12 +403,12 @@ void findOrResetMenu(MenuSelection var) {
 	}
 }
 
-void menuToJson(json_t* rootJ, MenuSelection var) {
+void OnMenu::menuToJson(json_t* rootJ, MenuSelection var) {
 	char *named = modeNames[var];
 	json_object_set_new(rootJ, named, json_integer(*MENU_SET(var)));
 }
 
-void menuFromJson(json_t* rootJ, MenuSelection var) {
+void OnMenu::menuFromJson(json_t* rootJ, MenuSelection var) {
 	char *named = modeNames[var];
 	json_t* modeJ = json_object_get(rootJ, named);
 	if (modeJ) {
@@ -465,7 +421,7 @@ void menuFromJson(json_t* rootJ, MenuSelection var) {
 	} else resetMenu(var);
 }
 
-void menuToJson(json_t* rootJ, char* name) {
+void OnMenu::menuToJson(json_t* rootJ, char* name) {
 	json_t* menu = json_object();
 	for (int i = 0; i < MAX_MENU; i++) {
 		menuToJson(menu, (MenuSelection)i);
@@ -473,7 +429,7 @@ void menuToJson(json_t* rootJ, char* name) {
 	json_object_set_new(rootJ, name, menu);
 }
 
-void menuFromJson(json_t* rootJ, char* name) {
+void OnMenu::menuFromJson(json_t* rootJ, char* name) {
 	json_t* menu = json_object_get(rootJ, name);
 	if (menu) {
 		for (int i = 0; i < MAX_MENU; i++) {
@@ -485,14 +441,14 @@ void menuFromJson(json_t* rootJ, char* name) {
 }
 
 // remembers undo
-void menuRandomize(MenuSelection var) {
+void OnMenu::menuRandomize(MenuSelection var) {
 	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
 		MenuSelection i = random::u32() & 1 ? MAX_MENU : var;
 		if(*MENU_SET(var) != i) {
 			MenuSelection old = var;
 			*MENU_SET(var) = i;
 			modeTriggers[i] = true;
-			APP->history->push(new MenuAction(var, old, i));
+			APP->history->push(new MenuAction(this, var, old, i));
 		}
 		return;
 	}
@@ -510,7 +466,7 @@ void menuRandomize(MenuSelection var) {
 					MenuSelection old = var;
 					*MENU_SET(var) = (MenuSelection)i;
 					modeTriggers[i] = true;
-					APP->history->push(new MenuAction(var, old, (MenuSelection)i));
+					APP->history->push(new MenuAction(this, var, old, (MenuSelection)i));
 				}
 				break;
 			}
@@ -518,13 +474,14 @@ void menuRandomize(MenuSelection var) {
 	}
 }
 
-void appendSubMenu(MenuSelection var, Menu *menu, void (*extra)(Menu *menu)) {
+void OnMenu::appendSubMenu(MenuSelection var, Menu *menu, void (*extra)(Menu *menu)) {
 	struct NestItem : MenuItem {
 		MenuSelection lvar;
+		OnMenu *om;
 		void (*lextra)(Menu *menu);
 		Menu *createChildMenu() override {
 			Menu *subMenu = new Menu;
-			appendMenu(lvar, subMenu);
+			om->appendMenu(lvar, subMenu);
 			if(lextra) lextra(subMenu);
 			return subMenu;
 		}
@@ -533,10 +490,11 @@ void appendSubMenu(MenuSelection var, Menu *menu, void (*extra)(Menu *menu)) {
 	NestItem *ni = createMenuItem<NestItem>(modeNames[var], RIGHT_ARROW);
 	ni->lvar = var;
 	ni->lextra = extra;
+	ni->om = this;
 	menu->addChild(ni);
 }
 
-void matic(MenuSelection var, MenuSelection forceApply) {
+void OnMenu::matic(MenuSelection var, MenuSelection forceApply) {
 	// set false default for bool as tick implies running?
 	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
 		if(forceApply != MAX_MENU || forceApply != var) {
