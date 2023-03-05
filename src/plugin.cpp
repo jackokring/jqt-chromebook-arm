@@ -5,6 +5,39 @@
 ///////////////////////////////////////////////////////////////
 
 Plugin* pluginInstance;
+#ifdef WATCHER
+#include "../efsw/include/efsw/efsw.hpp"
+efsw::FileWatcher* fileWatcher;
+UpdateListener* listener;
+efsw::WatchID wID;
+
+// File action handler
+class UpdateListener : public efsw::FileWatchListener {
+  public:
+    void handleFileAction( efsw::WatchID watchid, const std::string& dir,
+                           const std::string& filename, efsw::Action action,
+                           std::string oldFilename ) override {
+        // old school
+        callbackWatcher(filename.c_str());
+        switch ( action ) {
+            case efsw::Actions::Add:
+                
+                break;
+            case efsw::Actions::Delete:
+                
+                break;
+            case efsw::Actions::Modified:
+                
+                break;
+            case efsw::Actions::Moved:
+                
+                break;
+            default:
+                break;
+        }
+    }
+};
+#endif
 
 void init(Plugin* p) {
 	pluginInstance = p;
@@ -12,6 +45,12 @@ void init(Plugin* p) {
 #undef MODEL	
 #define MODEL(name) p->addModel(name)
 #include "modules.hpp"
+#ifdef WATCHER
+	fileWatcher = new efsw::FileWatcher();
+	listener = new UpdateListener();
+	wID = fileWatcher->addWatch(asset::plugin(pluginInstance, ""), listener, true);
+	fileWatcher->watch();
+#endif
 }
 
 #define M_PI_F float(M_PI)
@@ -214,11 +253,17 @@ int FORK_W(char *buff, int count) {
 bool FORK_DRAIN(const char *prompt) {
 	if(!prompt || prompt[0] == '\0') return true;
 	char x[MAX_PROMPT];
-	int z = strlen(prompt);
-	if(!FORK_R(x, strlen(prompt))) return false;
+	int z;
+	if((z = strlen(prompt) > MAX_PROMPT) {
+		WARN("Prompt length exceeded");
+		prompt += z - MAX_PROMPT;
+		z = MAX_PROMPT;
+	};
+	int slp = z;
+	if(FORK_R(x, slp) < slp) return false;
 	while(true) {
 		int i;
-		for(i = 0; i < strlen(prompt); i++) {
+		for(i = 0; i < slp; i++) {
 			if(i < z && x[i] == prompt[0]) {
 				z = i;//first copy
 			}
@@ -226,13 +271,13 @@ bool FORK_DRAIN(const char *prompt) {
 				break;
 			}
 		}
-		if(i == strlen(prompt)) return true;
+		if(i == slp) return true;
 		// adjust and loop again
 		i = 0;
-		for(; z < strlen(prompt); z++, i++) {
+		for(; z < slp; z++, i++) {
 			x[i] = x[z];
 		}
-		z = strlen(prompt);
+		z = slp;
 		for(; i < z; i++) {
 			if(!FORK_R(&x[i], 1)) return false;
 		}
@@ -509,50 +554,6 @@ void matic(MenuSelection var, MenuSelection forceApply) {
 	modeTriggers[forceApply] = true;
 }
 
-#ifdef WATCHER
-#include "../efsw/include/efsw/efsw.hpp"
-// Inherits from the abstract listener class, and implements the the file action handler
-class UpdateListener : public efsw::FileWatchListener {
-  public:
-    void handleFileAction( efsw::WatchID watchid, const std::string& dir,
-                           const std::string& filename, efsw::Action action,
-                           std::string oldFilename ) override {
-        callbackWatcher(filename);
-        switch ( action ) {
-            case efsw::Actions::Add:
-                
-                break;
-            case efsw::Actions::Delete:
-                
-                break;
-            case efsw::Actions::Modified:
-                
-                break;
-            case efsw::Actions::Moved:
-                
-                break;
-            default:
-                break;
-        }
-    }
-};
 
-void addPluginFileWatcher() {
-	// Create the file system watcher instance
-	// efsw::FileWatcher allow a first boolean parameter that indicates if it should start with the
-	// generic file watcher instead of the platform specific backend
-	efsw::FileWatcher* fileWatcher = new efsw::FileWatcher();
 
-	// Create the instance of your efsw::FileWatcherListener implementation
-	UpdateListener* listener = new UpdateListener();
 
-	// Add a folder to watch, and get the efsw::WatchID
-	// It will watch the /tmp folder recursively ( the third parameter indicates that is recursive )
-	// Reporting the files and directories changes to the instance of the listener
-	/* efsw::WatchID */ fileWatcher->addWatch(asset::plugin(pluginInstance, ""), listener, true);
-
-	// Start watching asynchronously the directories
-	fileWatcher->watch();
-}
-
-#endif

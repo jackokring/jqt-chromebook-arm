@@ -303,9 +303,6 @@ extern void matic(MenuSelection var, MenuSelection forceApply = MAX_MENU);
 ////////////////////
 
 #ifdef WATCHER
-// call to use
-extern void addPluginFileWatcher();
-
 // MAKE SOME MODULE PROVIDE THIS
-extern void callbackWatcher(const std::string& filename);
+extern void callbackWatcher(const char* filename);
 #endif
