@@ -236,11 +236,7 @@ enum MenuSelection {
 	MAX_MENU
 };
 
-#undef ENTRY
-#define ENTRY(name, parent) (char*) #name
-char *modeNames[MAX_MENU] = {
-#include "menus.txt"
-};
+extern char *modeNames[MAX_MENU];
 
 struct OnMenu {
 
@@ -251,7 +247,12 @@ struct OnMenu {
 	std::atomic<MenuSelection> modeScript[MAX_MENU];//good enough
 	
 	// place for linking 
-	std::atomic<MenuSelection> *modeMenu[MAX_MENU];
+#undef ENTRY
+#define ENTRY(name, parent) &modeScript[MENU_ ## parent]
+	std::atomic<MenuSelection> *modeMenu[MAX_MENU] = {
+#include "menus.txt"
+};
+#undef ENTRY
 
 // POINTER TO SELECTED STATE
 #define MENU_SEL(sel) (modeMenu[sel])
@@ -335,7 +336,7 @@ struct OnMenu {
 			this->old = old;
 			this->latest = latest;
 			this->om = om;
-			if(&(om->modeScript[var]) == MENU_SEL(var)) {//bool self reference (not parent group)
+			if(&(om->modeScript[var]) == om->modeMenu[var]) {//bool self reference (not parent group)
 				if(om->modeScript[var] == var) {
 					this->name = "set " + std::string(modeNames[var]);
 					return;

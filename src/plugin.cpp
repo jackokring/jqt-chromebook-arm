@@ -285,14 +285,11 @@ bool FORK_DRAIN(const char *prompt) {
 	}
 }
 
-#undef ENTRY
-#define ENTRY(name, parent) MENU_SET(MENU_ ## parent)
-std::atomic<MenuSelection> *modeMenu[MAX_MENU] = {
+#define ENTRY(name, parent) (char*) #name
+char *modeNames[MAX_MENU] = {
 #include "menus.txt"
 };
 #undef ENTRY
-//safe to use
-#define ENTRY(name, parent) MENU_ ## name
 
 void OnMenu::resetMenu(MenuSelection var) {//resets group
 	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
@@ -346,7 +343,7 @@ void OnMenu::appendMenu(MenuSelection var, Menu *menu) {
 		OnMenu *that;
 		void onAction(const event::Action& e) override {
 			MenuSelection old = *var;
-			*var = MENU_BOOL(*var) ? MAX_MENU : mode;//bool flip
+			*var = (*that->modeMenu[*var] == *var) ? MAX_MENU : mode;//bool flip
 			that->modeTriggers[mode] = true;
 			APP->history->push(new MenuAction(that, *var, old, mode));
 		}
