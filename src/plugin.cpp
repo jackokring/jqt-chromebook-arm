@@ -237,16 +237,12 @@ void resetMenu(MenuSelection var) {//resets group
 	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
 		if(*MENU_SET(var) != MAX_MENU) {
 			*MENU_SET(var) = MAX_MENU;//false
-			modeTriggers[var] = true;
 		}
 		return;//pop
 	}
 	for (int i = 0; i < MAX_MENU; i++) {
 		if(MENU_SET(var) != MENU_SEL(i)) continue;
-		if(*MENU_SET(var) != i) {
-			*MENU_SET(var) = (MenuSelection)i;
-			modeTriggers[i] = true;
-		}
+		*MENU_SET(var) = (MenuSelection)i;
 		break;// bool resets as true
 		// ACTUALLY: when extending states a .json load will reset new MAX_MENU (false)
 		// as olderer MAX_MENU might have been taken by extra menus.
@@ -267,18 +263,25 @@ void primeMenus() {
 	refreshMenus();
 }
 
+// A re-trigger undo/redo action
 struct MenuAction : history::Action {
 
-	MenuAction(std::atomic<MenuSelection> *var, MenuSelection old, MenuSelection lastest) {
+	MenuSelection var;
+	MenuSelection old;
+	MenuSelection lastest;
 
+	MenuAction(MenuSelection var, MenuSelection old, MenuSelection lastest) {
+		this.var = var;
+		this.old = old;
+		this.latest = latest;
 	}
 
 	void undo() override {
-
+		matic(var, old);
 	}
 
 	void redo() override {
-
+		matic(var, latest);
 	}
 };
 
@@ -359,7 +362,6 @@ void findOrResetMenu(MenuSelection var) {
 
 void menuToJson(json_t* rootJ, MenuSelection var) {
 	char *named = modeNames[var];
-	findOrResetMenu(var);
 	json_object_set_new(rootJ, named, json_integer(*MENU_SET(var)));
 }
 
@@ -372,10 +374,8 @@ void menuFromJson(json_t* rootJ, MenuSelection var) {
 			*MENU_SET(var) = (MenuSelection)i;
 			findOrResetMenu(var);
 			// bad input from file?
-			// also care on trigger order
-			modeTriggers[*MENU_SET(var)] = true;
 		}
-	}
+	} else resetMenu(var);
 }
 
 void menuToJson(json_t* rootJ, char* name) {
@@ -393,6 +393,8 @@ void menuFromJson(json_t* rootJ, char* name) {
 			menuFromJson(menu, (MenuSelection)i);
 		}
 	}
+	// handles re-triggers
+	refreshMenus();
 }
 
 // remembers undo
@@ -403,7 +405,7 @@ void menuRandomize(MenuSelection var) {
 			MenuSelection old = var;
 			*MENU_SET(var) = i;
 			modeTriggers[i] = true;
-			APP->history->push(new MenuAction(MENU_SET(var), old, i));
+			APP->history->push(new MenuAction(var, old, i));
 		}
 		return;
 	}
@@ -421,7 +423,7 @@ void menuRandomize(MenuSelection var) {
 					MenuSelection old = var;
 					*MENU_SET(var) = (MenuSelection)i;
 					modeTriggers[i] = true;
-					APP->history->push(new MenuAction(MENU_SET(var), old, (MenuSelection)i));
+					APP->history->push(new MenuAction(var, old, (MenuSelection)i));
 				}
 				break;
 			}
@@ -451,13 +453,13 @@ void matic(MenuSelection var, MenuSelection forceApply) {
 	// set false default for bool as tick implies running?
 	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
 		if(forceApply != MAX_MENU || forceApply != var) {
-			WARN("bad application of exoply");
+			WARN("bad application of bool automatic menu");
 			return;
 		}
 		*MENU_SET(var) = MENU_BOOL(var) ? MAX_MENU : var;//bool flip
 	} else {
 		if(MENU_SET(var) != MENU_SEL(forceApply)) {
-			WARN("bad application of exoply");
+			WARN("bad application of multi-option automatic menu");
 			return;
 		}
 		*MENU_SET(var) = forceApply;
@@ -466,6 +468,7 @@ void matic(MenuSelection var, MenuSelection forceApply) {
 	modeTriggers[forceApply] = true;
 }
 
+#ifdef WATCHER
 #include "../efsw/include/efsw/efsw.hpp"
 // Inherits from the abstract listener class, and implements the the file action handler
 class UpdateListener : public efsw::FileWatchListener {
@@ -510,3 +513,5 @@ void addPluginFileWatcher() {
 	// Start watching asynchronously the directories
 	fileWatcher->watch();
 }
+
+#endif

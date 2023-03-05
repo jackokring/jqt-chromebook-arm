@@ -2,6 +2,9 @@
 #include <rack.hpp>
 using namespace rack;
 
+// Include the file watcher
+#define WATCHER
+
 ///////////////////////////////////////////////////////////////
 // Eventual backporting to KRTPluginA and hence MIT licence
 ///////////////////////////////////////////////////////////////
@@ -262,14 +265,11 @@ extern std::atomic<MenuSelection> *modeMenu[MAX_MENU];
 // it is not necessary to `off` after an `on`, as `on` clears the trigger
 #define off(name) if(MENU_BOOL(MENU(name))) modeTriggers[MENU(name)] = false
 
-// reset a menu by parent
-extern void resetMenu(MenuSelection var);
-
-// activate the enable trigger on all menus
+// activate the enable trigger on all menus (triggers)
 extern void refreshMenus();
 
-// initialize (reset) and activate all menus
-extern void primeAllMenus();
+// initialize (reset) and activate all menus  (triggers)
+extern void primeMenus();
 
 // append a complete menu by parent
 extern void appendMenu(MenuSelection var, Menu *menu);
@@ -280,28 +280,19 @@ extern void appendMenuLabel(MenuSelection var, Menu *menu);
 // fully abstract the API
 extern void appendMenuSpacer(Menu *menu);
 
-// check valid menu or reset it by parent
-extern void findOrResetMenu(MenuSelection var);
-
-// save menu value by parent
-extern void menuToJson(json_t* rootJ, MenuSelection var);
-
-// load menu value by parent
-extern void menuFromJson(json_t* rootJ, MenuSelection var);
-
-// save menu
+// save menus
 extern void menuToJson(json_t* rootJ, char* name);
 
-// load menu
+// load menus (triggers)
 extern void menuFromJson(json_t* rootJ, char* name);
 
-// randomize menu value by parent
+// randomize menu value by parent (triggers)
 extern void menuRandomize(MenuSelection var);
 
 // add parent and make sub menu of child options (optional callback to sub-append more)
 extern void appendSubMenu(MenuSelection var, Menu *menu, void (*extra)(Menu *menu) = NULL);
 
-//totally code controlled dispatch
+//totally code controlled dispatch (triggers)
 extern void matic(MenuSelection var, MenuSelection forceApply = MAX_MENU);
 #define hauto(name, set) matic(MENU(name), MENU(set))
 
@@ -309,9 +300,10 @@ extern void matic(MenuSelection var, MenuSelection forceApply = MAX_MENU);
 // Plugin Watch API
 ////////////////////
 
+#ifdef WATCHER
 // call to use
 extern void addPluginFileWatcher();
 
 // MAKE SOME MODULE PROVIDE THIS
 extern void callbackWatcher(const std::string& filename);
-
+#endif
