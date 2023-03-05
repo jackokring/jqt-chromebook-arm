@@ -274,6 +274,17 @@ struct MenuAction : history::Action {
 		this.var = var;
 		this.old = old;
 		this.latest = latest;
+		if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
+			if(*MENU_SET(var) == var) {
+				this.name = "set " + modeNames[var];
+				return;
+			}
+			if(*MENU_SET(var) == MAX_MENU) {
+				this.name = "clear " + modeNames[var];
+				return;
+			}
+		}
+		this.name = "set " + modeNames[var] + " to " + modeNmae[latest];
 	}
 
 	void undo() override {
