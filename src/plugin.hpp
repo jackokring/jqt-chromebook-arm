@@ -242,9 +242,6 @@ char *modeNames[MAX_MENU] = {
 #include "menus.txt"
 };
 
-// place for linking 
-extern std::atomic<MenuSelection> *modeMenu[MAX_MENU];
-
 struct OnMenu {
 
 	// triggers
@@ -252,6 +249,9 @@ struct OnMenu {
 	
 	// menu state
 	std::atomic<MenuSelection> modeScript[MAX_MENU];//good enough
+	
+	// place for linking 
+	std::atomic<MenuSelection> *modeMenu[MAX_MENU];
 
 // POINTER TO SELECTED STATE
 #define MENU_SEL(sel) (modeMenu[sel])
