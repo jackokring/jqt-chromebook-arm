@@ -6,6 +6,9 @@
 // used in the modules.hpp file
 #define ASSIGN_NAME modelBlank
 
+// By default. Might need change if you get a link error duplicate symbol
+#define IS_WATCHER
+
 struct MODULE_NAME : Module {
 
 	enum ParamIds {
@@ -110,5 +113,14 @@ struct WIDGET_NAME : ModuleWidget {
 		populate(this, HP, LANES, RUNGS, ctl, lbl, kind, (char*)SHOW_NAME);
 	}
 };
+
+#ifdef WATCHER
+#ifdef IS_WATCHER
+// MAKE SOME MODULE PROVIDE THIS
+void callbackWatcher(const char* filename) {
+	INFO(filename);
+}
+#endif
+#endif
 
 Model* ASSIGN_NAME = createModel<MODULE_NAME, WIDGET_NAME>(SHOW_NAME);

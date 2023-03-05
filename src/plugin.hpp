@@ -163,7 +163,7 @@ const int laneIdxHP[] = {
 enum controlKind {
 	SNAP_KNOB = -2,
 	INPUT_PORT = -1,
-	MORM_KNOB = 0,
+	NORM_KNOB = 0,
 	OUTPUT_PORT = 1,
 	GR_LED =2
 };

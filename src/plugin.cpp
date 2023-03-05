@@ -7,9 +7,6 @@
 Plugin* pluginInstance;
 #ifdef WATCHER
 #include "../efsw/include/efsw/efsw.hpp"
-efsw::FileWatcher* fileWatcher;
-UpdateListener* listener;
-efsw::WatchID wID;
 
 // File action handler
 class UpdateListener : public efsw::FileWatchListener {
@@ -37,6 +34,10 @@ class UpdateListener : public efsw::FileWatchListener {
         }
     }
 };
+
+efsw::FileWatcher* fileWatcher;
+UpdateListener* listener;
+efsw::WatchID wID;
 #endif
 
 void init(Plugin* p) {
@@ -253,8 +254,8 @@ int FORK_W(char *buff, int count) {
 bool FORK_DRAIN(const char *prompt) {
 	if(!prompt || prompt[0] == '\0') return true;
 	char x[MAX_PROMPT];
-	int z;
-	if((z = strlen(prompt) > MAX_PROMPT) {
+	int z = strlen(prompt);
+	if(z > MAX_PROMPT) {
 		WARN("Prompt length exceeded");
 		prompt += z - MAX_PROMPT;
 		z = MAX_PROMPT;
@@ -343,23 +344,23 @@ struct MenuAction : history::Action {
 
 	MenuSelection var;
 	MenuSelection old;
-	MenuSelection lastest;
+	MenuSelection latest;
 
-	MenuAction(MenuSelection var, MenuSelection old, MenuSelection lastest) {
-		this.var = var;
-		this.old = old;
-		this.latest = latest;
+	MenuAction(MenuSelection var, MenuSelection old, MenuSelection latest) {
+		this->var = var;
+		this->old = old;
+		this->latest = latest;
 		if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
 			if(*MENU_SET(var) == var) {
-				this.name = "set " + modeNames[var];
+				this->name = "set " + std::string(modeNames[var]);
 				return;
 			}
 			if(*MENU_SET(var) == MAX_MENU) {
-				this.name = "clear " + modeNames[var];
+				this->name = "clear " + std::string(modeNames[var]);
 				return;
 			}
 		}
-		this.name = "set " + modeNames[var] + " to " + modeNmae[latest];
+		this->name = "set " + std::string(modeNames[var]) + " to " + std::string(modeNames[latest]);
 	}
 
 	void undo() override {
@@ -381,7 +382,7 @@ void appendMenu(MenuSelection var, Menu *menu) {
 				MenuSelection old = *var;
 				*var = mode;
 				modeTriggers[mode] = true;
-				APP->history->push(new MenuAction(var, old, mode));
+				APP->history->push(new MenuAction(*var, old, mode));
 			}
 		}
 	};
@@ -393,7 +394,7 @@ void appendMenu(MenuSelection var, Menu *menu) {
 			MenuSelection old = *var;
 			*var = MENU_BOOL(*var) ? MAX_MENU : mode;//bool flip
 			modeTriggers[mode] = true;
-			APP->history->push(new MenuAction(var, old, mode));
+			APP->history->push(new MenuAction(*var, old, mode));
 		}
 	};
 
