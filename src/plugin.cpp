@@ -35,9 +35,24 @@ class UpdateListener : public efsw::FileWatchListener {
     }
 };
 
-efsw::FileWatcher fileWatcher;//static alloc
-UpdateListener listener;
-efsw::WatchID wID;
+static struct WatcherDo {
+
+	void add() {
+		wID = fileWatcher.addWatch(asset::plugin(pluginInstance, ""), &listener, true);
+		fileWatcher.watch();
+	}
+	
+	~WatcherDo() {
+		fileWatcher.removeWatch(wID);//just to be sure
+	}
+	//didn't alloc anything but keep in focus for use until
+	UpdateListener listener;
+	//de-alloc last (must remove before listener out of focus)
+	//not sure if it would iterate over active watches
+	efsw::FileWatcher fileWatcher;
+	//de-alloc first (auto removed from fileWatcher?)
+	efsw::WatchID wID;
+} watcherInstance;
 #endif
 
 void init(Plugin* p) {
@@ -47,12 +62,7 @@ void init(Plugin* p) {
 #define MODEL(name) p->addModel(name)
 #include "modules.hpp"
 #ifdef WATCHER
-	// install file watcher interface
-	//fileWatcher = new efsw::FileWatcher();
-	//listener = new UpdateListener();
-	wID = fileWatcher.addWatch(asset::plugin(pluginInstance, ""), &listener, true);
-	fileWatcher.watch();
-	//hopefully the static deallocation on unload works to call destructors
+	watcherInstance.add();
 #endif
 }
 

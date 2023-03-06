@@ -280,13 +280,8 @@ struct OnMenu {
 #define on(menu, name) if((menu).onMenu(MENU(name)))
 
 // detect false bool trigger (must follow it by an `on` to clear trigger) 
-// 'onf' before 'on' for else-if kind of test as else of on is when not triggered
+// 'off' before 'on' as `on' else test is when not triggered
 #define onf(menu, name) if((menu).offMenu(MENU(name)))
-
-// GUI CONTROL STRUCTURE (FOLLOWED BY ; AS A COMPLETE STATEMENT)
-// prevent `on` trigger until re-triggered
-// it is not necessary to `off` after an `on`, as `on` clears the trigger
-#define off(menu, name) on(menu, name)
 
 // totally RPC automatic like?
 #define hauto(menu, name, set) (menu).matic(MENU(name), MENU(set))
