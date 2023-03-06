@@ -90,6 +90,9 @@ struct LabelWidget : LightWidget {//TransparentWidget {
 			return;
 		}
 		NVGcolor textColor;
+		// scheme to chop blue on dark modes
+		// keeps things normalized and highlights feedback
+		// and the "LOGO"
 		switch(kind) {
 			case INPUT_PORT:
 				textColor = SCHEME_GREEN;

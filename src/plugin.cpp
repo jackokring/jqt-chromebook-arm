@@ -122,7 +122,12 @@ void populate(ModuleWidget *m, int hp, int lanes, int rungs, const int ctl[],
 	m->addChild(createWidget<KScrewSilver>(Vec(m->box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 	
 	// Textual Name Display
-	display = new LabelWidget(named,GR_LED);
+	// an ego-logo-ism of blue tint when the lights are down
+	// on the star trek there is always enough pupil to see the wonders of space
+	// classic human interaction design
+	// cyan panels, yep, plenty of light mode wake up there
+	// plenty of intense green and wakey blue
+	display = new LabelWidget(named, GR_LED);
 	display->fixCentre(locl(lanes / 2 + 0.5f, 0.5f), strlen(named));//chars
 	m->addChild(display);
 
