@@ -43,6 +43,7 @@ static struct WatcherDo {
 	}
 	
 	~WatcherDo() {
+		//engage in paranoid reclimation as Rack seems to have no destructor handle
 		fileWatcher.removeWatch(wID);//just to be sure
 	}
 	
@@ -56,6 +57,7 @@ static struct WatcherDo {
 } watcherInstance;
 #endif
 
+// constructor handle
 void init(Plugin* p) {
 	pluginInstance = p;
 	// redefine so that correct include happens

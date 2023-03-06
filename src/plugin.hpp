@@ -282,7 +282,7 @@ struct OnMenu {
 
 // detect false bool trigger (must follow it by an `on` to clear trigger) 
 // 'off' before 'on' as `on' else test is when not triggered
-#define onf(menu, name) if((menu).offMenu(MENU(name)))
+#define off(menu, name) if((menu).offMenu(MENU(name)))
 
 // totally RPC automatic like?
 #define hauto(menu, name, set) (menu).matic(MENU(name), MENU(set))
