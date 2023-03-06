@@ -45,6 +45,7 @@ static struct WatcherDo {
 	~WatcherDo() {
 		fileWatcher.removeWatch(wID);//just to be sure
 	}
+	
 	//didn't alloc anything but keep in focus for use until
 	UpdateListener listener;
 	//de-alloc last (must remove before listener out of focus)
@@ -61,6 +62,8 @@ void init(Plugin* p) {
 #undef MODEL	
 #define MODEL(name) p->addModel(name)
 #include "modules.hpp"
+//not required anymore
+#undef MODEL
 #ifdef WATCHER
 	watcherInstance.add();
 #endif

@@ -14,6 +14,7 @@ extern Plugin* pluginInstance;
 
 #define MODEL(name) extern Model *name
 #include "modules.hpp"
+#undef MODEL
 
 extern float tanpif(float f);
 
