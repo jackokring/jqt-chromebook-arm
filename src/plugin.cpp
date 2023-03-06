@@ -35,8 +35,8 @@ class UpdateListener : public efsw::FileWatchListener {
     }
 };
 
-efsw::FileWatcher* fileWatcher;
-UpdateListener* listener;
+efsw::FileWatcher fileWatcher;//static alloc
+UpdateListener listener;
 efsw::WatchID wID;
 #endif
 
@@ -47,10 +47,12 @@ void init(Plugin* p) {
 #define MODEL(name) p->addModel(name)
 #include "modules.hpp"
 #ifdef WATCHER
-	fileWatcher = new efsw::FileWatcher();
-	listener = new UpdateListener();
-	wID = fileWatcher->addWatch(asset::plugin(pluginInstance, ""), listener, true);
-	fileWatcher->watch();
+	// install file watcher interface
+	//fileWatcher = new efsw::FileWatcher();
+	//listener = new UpdateListener();
+	wID = fileWatcher.addWatch(asset::plugin(pluginInstance, ""), &listener, true);
+	fileWatcher.watch();
+	//hopefully the static deallocation on unload works to call destructors
 #endif
 }
 
@@ -285,11 +287,15 @@ bool FORK_DRAIN(const char *prompt) {
 	}
 }
 
+#undef ENTRY
 #define ENTRY(name, parent) (char*) #name
-char *modeNames[MAX_MENU] = {
+const char *modeNames[MAX_MENU] = {
 #include "menus.txt"
 };
+
 #undef ENTRY
+// set up to play naming macros
+#define ENTRY(name, parent) MENU_ ## name
 
 void OnMenu::resetMenu(MenuSelection var) {//resets group
 	if(MENU_SET(var) == MENU_SEL(var)) {//bool self reference (not parent group)
@@ -401,12 +407,12 @@ void OnMenu::findOrResetMenu(MenuSelection var) {
 }
 
 void OnMenu::menuToJson(json_t* rootJ, MenuSelection var) {
-	char *named = modeNames[var];
+	const char *named = modeNames[var];
 	json_object_set_new(rootJ, named, json_integer(*MENU_SET(var)));
 }
 
 void OnMenu::menuFromJson(json_t* rootJ, MenuSelection var) {
-	char *named = modeNames[var];
+	const char *named = modeNames[var];
 	json_t* modeJ = json_object_get(rootJ, named);
 	if (modeJ) {
 		MenuSelection i = (MenuSelection)json_integer_value(modeJ);
@@ -510,6 +516,20 @@ void OnMenu::matic(MenuSelection var, MenuSelection forceApply) {
 	modeTriggers[forceApply] = true;
 }
 
+bool OnMenu::isOn(MenuSelection var) {
+	if(modeTriggers[var]) {
+		modeTriggers[var] = false;//auto off
+		//as a consequence of how bool truth is stored also does on any
+		return MENU_BOOL(var);
+	}
+	return false;
+}
 
-
+bool OnMenu::isOff(MenuSelection var) {
+	if(modeTriggers[var]) {
+		//no auto off as is an else before if construct
+		return !MENU_BOOL(var);
+	}
+	return false;
+}
 

@@ -58,6 +58,14 @@ struct KScrewSilver : ScrewSilver {
 #define LABEL 8.0f
 #define SCALE_LBL (LABEL / 18.0f)
 
+enum controlKind {
+	SNAP_KNOB = -2,
+	INPUT_PORT = -1,
+	NORM_KNOB = 0,
+	OUTPUT_PORT = 1,
+	GR_LED = 2
+};
+
 struct LabelWidget : LightWidget {//TransparentWidget {
 	const char *what;
 	int kind;
@@ -82,16 +90,16 @@ struct LabelWidget : LightWidget {//TransparentWidget {
 		}
 		NVGcolor textColor;
 		switch(kind) {
-			case -1:
+			case INPUT_PORT:
 				textColor = SCHEME_GREEN;
 				break;
-			case 0: default:
+			case NORM_KNOB: case SNAP_KNOB:
 				textColor = SCHEME_YELLOW;
 				break;
-			case 1:
+			case OUTPUT_PORT:
 				textColor = SCHEME_RED;
 				break;
-			case 2:
+			case GR_LED: default:
 				textColor = SCHEME_BLUE;
 				break;
 		}
@@ -159,14 +167,6 @@ const int laneIdxHP[] = {
 
 //placement macro
 #define loc(x,y) mm2px(Vec(X_SPLIT*(1+2*(x-1)), (HEIGHT*Y_MARGIN)+Y_SPLIT*(1+2*(y-1))))
-
-enum controlKind {
-	SNAP_KNOB = -2,
-	INPUT_PORT = -1,
-	NORM_KNOB = 0,
-	OUTPUT_PORT = 1,
-	GR_LED =2
-};
 
 #define CTL(name) MODULE_NAME::name
 #define NO_CTL -1 
@@ -236,7 +236,7 @@ enum MenuSelection {
 	MAX_MENU
 };
 
-extern char *modeNames[MAX_MENU];
+extern const char *modeNames[MAX_MENU];
 
 struct OnMenu {
 
@@ -251,8 +251,10 @@ struct OnMenu {
 #define ENTRY(name, parent) &modeScript[MENU_ ## parent]
 	std::atomic<MenuSelection> *modeMenu[MAX_MENU] = {
 #include "menus.txt"
-};
+	};
 #undef ENTRY
+
+// PRIVATE MACROS
 
 // POINTER TO SELECTED STATE
 #define MENU_SEL(sel) (modeMenu[sel])
@@ -263,11 +265,11 @@ struct OnMenu {
 // THE MAIN MENU STATE BOOLEAN TEST FOR ACTIVE
 #define MENU_BOOL(sel) (*MENU_SEL(sel) == sel)
 
+// set up to play naming macros
+#define ENTRY(name, parent) MENU_ ## name
+
 // MASTER MenuSelection PRODUCER OF MANGLED ENUM NAMES
 #define MENU(name) ENTRY(name, NULL)
-
-// yes, clear bool and test (if true make false), std::atomic!
-#define SLOOPIE(boo) boo.load() && (boo = false, true)
 
 ////////////////////
 // Menu API
@@ -275,15 +277,19 @@ struct OnMenu {
 
 // GUI CONTROL STRUCTURE (FOLLOW BY BLOCK {} OR STATEMENT;)
 // check and do perhaps the action when triggered on
-#define on(name) if(SLOOPIE(modeTriggers[MENU(name)]) && MENU_BOOL(MENU(name)))
+#define on(menu, name) if(menu.onMenu(MENU(name)))
 
 // detect false bool trigger (must follow it by an `on` to clear trigger) 
-#define onf(nmae) if(modeTriggers[MENU(name)) && *MENU_SEL(MENU(name)) == MAX_MENU) 
+// 'onf' before 'on' for else-if kind of test as else of on is when not triggered
+#define onf(menu, name) if(menu.offMenu(MENU(name)))
 
 // GUI CONTROL STRUCTURE (FOLLOWED BY ; AS A COMPLETE STATEMENT)
 // prevent `on` trigger until re-triggered
 // it is not necessary to `off` after an `on`, as `on` clears the trigger
-#define off(name) if(MENU_BOOL(MENU(name))) modeTriggers[MENU(name)] = false
+#define off(menu, name) on(menu, name)
+
+// totally RPC automatic like?
+#define hauto(menu, name, set) menu.matic(MENU(name), MENU(set))
 
 	// activate the enable trigger on all menus (triggers)
 	void refreshMenus();
@@ -315,7 +321,9 @@ struct OnMenu {
 	//totally code controlled dispatch (triggers)
 	void matic(MenuSelection var, MenuSelection forceApply = MAX_MENU);
 	
-#define hauto(name, set) matic(MENU(name), MENU(set))
+	//check
+	bool isOn(MenuSelection var);//is triggered and on (inc bool) state with reset trigger
+	bool isOff(MenuSelection var);//is triggered and bool off state keeping trigger on if was on
 
 	// NO NAMESPCE AUTO INJECT PRIVATE
 	private:
@@ -357,7 +365,9 @@ struct OnMenu {
 			om->matic(var, latest);
 		}
 	};
-
+//#undef MENU_SEL
+//#undef MENU_SET
+//#undef MENU_BOOL
 };
 ////////////////////
 // Plugin Watch API
