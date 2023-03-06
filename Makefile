@@ -48,7 +48,8 @@ LDLIBS +=
 SOURCES += $(wildcard src/*.cpp)
 
 # Add files to the ZIP package when running `make dist`
-# The compiled plugin and "plugin.json" are automatically added.
+# The compiled plugin and "plugin.json" are automatically added
+# added presets as possibility
 DISTRIBUTABLES += res presets
 DISTRIBUTABLES += $(wildcard LICENSE*)
 DISTRIBUTABLES += $(wildcard profile.*)
@@ -56,12 +57,17 @@ DISTRIBUTABLES += $(wildcard profile.*)
 DISTRIBUTABLES += jsource/jlibrary
 
 # Rebase submodule command
+# as rebase just in case there are local edits to keep
+# as it seems possible the default build script might not cover all cases
+# as local edits are unlikely to be big, then this eventually saves on backups
 SUB_REBASE = git submodule update --init --rebase --recursive --
 
 # Unwind any local edits without a commit
+# Yes, if it's not commited then it's gone with a clean
 SUB_RESTORE = git submodule foreach "git restore ."
 
 # Use rebase instead of merge for version bump
+# Same rebase reasons, ...
 SUB_PULL = git submodule foreach "git pull --rebase"
 
 

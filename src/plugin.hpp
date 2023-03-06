@@ -277,11 +277,11 @@ struct OnMenu {
 
 // GUI CONTROL STRUCTURE (FOLLOW BY BLOCK {} OR STATEMENT;)
 // check and do perhaps the action when triggered on
-#define on(menu, name) if(menu.onMenu(MENU(name)))
+#define on(menu, name) if((menu).onMenu(MENU(name)))
 
 // detect false bool trigger (must follow it by an `on` to clear trigger) 
 // 'onf' before 'on' for else-if kind of test as else of on is when not triggered
-#define onf(menu, name) if(menu.offMenu(MENU(name)))
+#define onf(menu, name) if((menu).offMenu(MENU(name)))
 
 // GUI CONTROL STRUCTURE (FOLLOWED BY ; AS A COMPLETE STATEMENT)
 // prevent `on` trigger until re-triggered
@@ -289,7 +289,7 @@ struct OnMenu {
 #define off(menu, name) on(menu, name)
 
 // totally RPC automatic like?
-#define hauto(menu, name, set) menu.matic(MENU(name), MENU(set))
+#define hauto(menu, name, set) (menu).matic(MENU(name), MENU(set))
 
 	// activate the enable trigger on all menus (triggers)
 	void refreshMenus();
