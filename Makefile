@@ -19,8 +19,11 @@ dowindows =
 
 ifdef ARCH_WIN
 ARCH_DIR = windows
+# nope
 jplatform = windows
-j64x = j64avx512
+#j64x = j64avx512
+# Nehalem
+j64x = j64
 # Use fake jconsole strategy to control build on windows to avoid .exe variable hell
 dowindows = cp jsource/bin/$(jplatform)/$(j64x)/* jsource/jlibrary/bin && touch jsource/jlibrary/bin/jsource
 export jplatform
