@@ -4,3 +4,6 @@
 [submodule "jsource"]
 	path = jsource
 	url = git@github.com:jsoftware/jsource.git
+[submodule "mman-win32"]
+	path = mman-win32
+	url = git@github.com:jackokring/mman-win32.git
