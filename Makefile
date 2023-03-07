@@ -17,6 +17,7 @@ ARCH_DIR = linux
 SUDO = sudo apt install -y 
 PREMAKE = premake4
 PREMAKE_RUN = $(premake4)
+CLUE =
 dowindows = rm jsource/jlibrary/bin/jconsole && touch jsource/jlibrary/bin/jconsole
 jplatform = linux
 # Nehalem
@@ -38,8 +39,11 @@ endif
 ifdef ARCH_MAC
 ARCH_DIR = macosx
 jplatform = darwin
-PREMAKE = premake
-PREMAKE_RUN = premake5
+PREMAKE = tonyseek/premake/premake4
+#PREMAKE_RUN = premake5
+# install tonyseek
+CLUE = brew tap tonyseek/premake
+brew tap tonyseek/premake
 ifdef ARCH_ARM64
 j64x = j64arm
 endif
@@ -117,7 +121,8 @@ jclean:
 	rm jsource/jlibrary/bin/jconsole
 	
 /usr/bin/premake4:
-	@# mac will keep doing this
+	@# mac will keep doing this and needs repo from xtra remote
+	$(CLUE)
 	$(SUDO) $(PREMAKE)
 
 # Use a file deletion strategy to signal repo rebuild
