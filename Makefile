@@ -34,7 +34,7 @@ endif
 ifdef ARCH_WIN
 ARCH_DIR = windows
 # nope try posix MYS2
-jplatform = linux
+jplatform = windows
 #j64x = j64avx512
 # Use fake jconsole strategy to control build on windows to avoid .exe variable hell
 dowindows = cp jsource/bin/$(jplatform)/$(j64x)/* jsource/jlibrary/bin && touch jsource/jlibrary/bin/jconsole
