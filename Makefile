@@ -43,7 +43,6 @@ PREMAKE = tonyseek/premake/premake4
 #PREMAKE_RUN = premake5
 # install tonyseek
 CLUE = brew tap tonyseek/premake
-brew tap tonyseek/premake
 ifdef ARCH_ARM64
 j64x = j64arm
 endif
