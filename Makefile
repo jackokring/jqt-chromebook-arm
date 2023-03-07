@@ -16,7 +16,7 @@ include $(RACK_DIR)/arch.mk
 ARCH_DIR = linux 
 SUDO = sudo apt install -y 
 PREMAKE = premake4
-PREMAKE_RUN = $(premake4)
+PREMAKE_RUN = premake4
 CLUE =
 dowindows = rm jsource/jlibrary/bin/jconsole && touch jsource/jlibrary/bin/jconsole
 jplatform = linux
