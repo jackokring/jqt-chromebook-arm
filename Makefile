@@ -118,12 +118,13 @@ jsource/jlibrary/bin/jconsole: jsource/make2/make.txt
 	cd jsource/make2 && ./build_libj.sh
 	cd jsource/make2 && ./build_tsdll.sh
 	@# Windows/mac unmanaged copy and fake
-	$(dowindows)
 	cd jsource/make2 && ./cpbin.sh
 	@# windows/mac does not make
 	@# rm jsource/jlibrary/bin/jconsole-lx
 	@# actual mac bin
 	@# rm jsource/jlibrary/bin/jconsole-mac
+	@# windows copy and all touch inc. linux delete
+	$(dowindows)
 	@# Binaries for plugin bin at jsource/jlibrary/bin/jconsole .exe/-lx/-mac?
 	
 j: jsource/jlibrary/bin/jconsole
