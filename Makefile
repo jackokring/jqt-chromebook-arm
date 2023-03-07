@@ -41,7 +41,6 @@ dowindows = cp jsource/bin/$(jplatform)/$(j64x)/* jsource/jlibrary/bin && touch 
 SUDO = pacman -Syu 
 # mac freeks on -l:libefsw.a
 LDFLAGS += -pthread -L. -l:libefsw.a
-export ARCH_WIN
 endif
 
 ifdef ARCH_MAC
