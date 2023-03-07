@@ -41,6 +41,7 @@ dowindows = cp jsource/bin/$(jplatform)/$(j64x)/* jsource/jlibrary/bin && touch 
 SUDO = pacman -Syu 
 # mac freeks on -l:libefsw.a
 LDFLAGS += -pthread -L. -l:libefsw.a
+export ARCH_WIN
 endif
 
 ifdef ARCH_MAC
@@ -79,7 +80,11 @@ SOURCES += $(wildcard src/*.cpp)
 # Add files to the ZIP package when running `make dist`
 # The compiled plugin and "plugin.json" are automatically added
 # added presets as possibility
-DISTRIBUTABLES += res presets
+DISTRIBUTABLES += res
+
+# must have some to add
+DISTRIBUTABLES += $(wildcard presets/*)
+
 DISTRIBUTABLES += $(wildcard LICENSE*)
 DISTRIBUTABLES += $(wildcard profile.*)
 # J
