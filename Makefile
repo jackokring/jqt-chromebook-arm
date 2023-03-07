@@ -14,7 +14,7 @@ RACK_DIR ?= ../..
 include $(RACK_DIR)/arch.mk
 
 ARCH_DIR = linux 
-SUDO = sudo apt install -y 
+SUDO = apt install -y 
 PREMAKE = premake4
 PREMAKE_RUN = premake4
 CLUE =
