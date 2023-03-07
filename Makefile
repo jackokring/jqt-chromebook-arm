@@ -22,6 +22,7 @@ dowindows = rm jsource/jlibrary/bin/jconsole && touch jsource/jlibrary/bin/jcons
 jplatform = linux
 # Nehalem
 j64x = j64
+BACKTRACE =
 ifdef ARCH_ARM64
 jplatform = raspberry
 endif
@@ -41,6 +42,7 @@ dowindows = cp jsource/bin/$(jplatform)/$(j64x)/* jsource/jlibrary/bin && touch 
 SUDO = pacman -Syu 
 # mac freeks on -l:libefsw.a
 LDFLAGS += -pthread -L. -l:libefsw.a
+BACKTRACE = cp mman-win32/mman.* jsource/libbacktrace
 endif
 
 ifdef ARCH_MAC
@@ -114,6 +116,8 @@ jsource/jlibrary/bin/jconsole: jsource/make2/make.txt
 	@# Clean up before apply
 	rm jsource/jlibrary/bin/*
 	@# MSYS2 includes via rack a duplication of lib defs and a bug to fix dlerror
+	@# copy bactrace dependency windows
+	$(BACKTRACE)
 	cd jsource/make2 && ./build_jconsole.sh
 	cd jsource/make2 && ./build_libj.sh
 	cd jsource/make2 && ./build_tsdll.sh
