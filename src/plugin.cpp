@@ -166,9 +166,9 @@ void populate(ModuleWidget *m, int hp, int lanes, int rungs, const int ctl[],
 template<typename kind>
 void plist<kind>::insertOne(plist<kind>* what) {
 	while(!containedAfter(what)) {
-		plist<kind>* here = this.next.load();
+		plist<kind>* here = this->next.load();
 		what->next.store(here);
-		this.next.store(what);
+		this->next.store(what);
 	}
 }
 
@@ -192,7 +192,7 @@ plist<kind>* plist<kind>::removeAfter(plist<kind>* what) {
 template<typename kind>
 bool plist<kind>::containedAfter(plist<kind>* what) {
 	plist<kind>* here = &this;
-	while(here = here->next.load()) {
+	while((here = here->next.load()) != NULL) {
 		if(here == what) return true; 
 	}
 	return false;
