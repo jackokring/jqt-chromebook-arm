@@ -15,26 +15,39 @@ include $(RACK_DIR)/arch.mk
 
 ARCH_DIR = linux 
 SUDO = sudo apt install -y 
+PREMAKE = premake4
+PREMAKE_RUN = $(premake4)
 dowindows =
+jplatform = linux
+# Nehalem
+j64x = j64
+ifdef ARCH_ARM64
+jplatform = raspberry
+endif
 
 ifdef ARCH_WIN
 ARCH_DIR = windows
 # nope
 jplatform = windows
 #j64x = j64avx512
-# Nehalem
-j64x = j64
 # Use fake jconsole strategy to control build on windows to avoid .exe variable hell
 dowindows = cp jsource/bin/$(jplatform)/$(j64x)/* jsource/jlibrary/bin && touch jsource/jlibrary/bin/jsource
-export jplatform
-export j64x
 SUDO = pacman -Syu 
 endif
 
 ifdef ARCH_MAC
 ARCH_DIR = macosx
+jplatform = darwin
+PREMAKE = premake
+PREMAKE_RUN = premake5
+ifdef ARCH_ARM64
+j64x = j64arm
+endif
 SUDO = brew install 
 endif
+
+export jplatform
+export j64x
 
 # FLAGS will be passed to both the C and C++ compiler
 FLAGS +=
@@ -73,7 +86,6 @@ SUB_RESTORE = git submodule foreach "git restore ."
 # Same rebase reasons, ...
 SUB_PULL = git submodule foreach "git pull --rebase"
 
-
 # Use a file deletion strategy to signal repo rebuild
 jsource/make2/make.txt:
 	$(SUB_REBASE) jsource
@@ -103,14 +115,15 @@ jclean:
 	rm jsource/jlibrary/bin/jconsole
 	
 /usr/bin/premake4:
-	$(SUDO) premake4
+	@# mac will keep doing this
+	$(SUDO) $(PREMAKE)
 
 # Use a file deletion strategy to signal repo rebuild
 efsw/premake5.lua: /usr/bin/premake4
 	@# Making build system for efsw
 	$(SUB_REBASE) efsw
 	$(SUB_RESTORE)
-	cd efsw && premake4 gmake
+	cd efsw && $(PREMAKE_RUN) gmake
 
 libefsw.a: efsw/premake5.lua
 	@# Building efsw
