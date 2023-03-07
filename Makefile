@@ -17,7 +17,7 @@ ARCH_DIR = linux
 SUDO = sudo apt install -y 
 PREMAKE = premake4
 PREMAKE_RUN = $(premake4)
-dowindows =
+dowindows = rm jsource/jlibrary/bin/jconsole && touch jsource/jlibrary/bin/jconsole
 jplatform = linux
 # Nehalem
 j64x = j64
@@ -31,7 +31,7 @@ ARCH_DIR = windows
 jplatform = windows
 #j64x = j64avx512
 # Use fake jconsole strategy to control build on windows to avoid .exe variable hell
-dowindows = cp jsource/bin/$(jplatform)/$(j64x)/* jsource/jlibrary/bin && touch jsource/jlibrary/bin/jsource
+dowindows = cp jsource/bin/$(jplatform)/$(j64x)/* jsource/jlibrary/bin && touch jsource/jlibrary/bin/jconsole
 SUDO = pacman -Syu 
 endif
 
@@ -43,6 +43,7 @@ PREMAKE_RUN = premake5
 ifdef ARCH_ARM64
 j64x = j64arm
 endif
+dowindows = touch jsource/jlibrary/bin/jconsole
 SUDO = brew install 
 endif
 
@@ -96,17 +97,18 @@ jsource/jlibrary/bin/jconsole: jsource/make2/make.txt
 	@# Making jconsole see jsource/make2/make.txt
 	@# Clean up before apply
 	rm jsource/jlibrary/bin/*
+	@# MSYS2 includes via rack a duplication of lib defs and a bug to fix dlerror
 	cd jsource/make2 && ./build_jconsole.sh
 	cd jsource/make2 && ./build_libj.sh
 	cd jsource/make2 && ./build_tsdll.sh
-	@# Windows unmanaged copy and fake
+	@# Windows/mac unmanaged copy and fake
 	$(dowindows)
 	cd jsource/make2 && ./cpbin.sh
-	@# Bulk trim
-	rm jsource/jlibrary/bin/jconsole-lx
-	@# Some mac extra not required
-	rm jsource/jlibrary/bin/jconsole-mac
-	@# Binaries for plugin bin at jsource/jlibrary/bin/jconsole .exe?
+	@# windows/mac does not make
+	@# rm jsource/jlibrary/bin/jconsole-lx
+	@# actual mac bin
+	@# rm jsource/jlibrary/bin/jconsole-mac
+	@# Binaries for plugin bin at jsource/jlibrary/bin/jconsole .exe/-lx/-mac?
 	
 j: jsource/jlibrary/bin/jconsole
 
@@ -128,6 +130,7 @@ efsw/premake5.lua: /usr/bin/premake4
 libefsw.a: efsw/premake5.lua
 	@# Building efsw
 	cd efsw/make/$(ARCH_DIR) && make config=release
+	@# mac name is different
 	cp efsw/lib/libefsw-static-release.a .
 	mv libefsw-static-release.a libefsw.a
 	
