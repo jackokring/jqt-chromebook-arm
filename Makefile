@@ -15,9 +15,7 @@ include $(RACK_DIR)/arch.mk
 
 ARCH_DIR = linux 
 SUDO = apt install -y 
-PREMAKE = premake4
-PREMAKE_RUN = premake4
-CLUE =
+PREMAKE_RUN = ../premake4.3/bin/release/premake4
 dowindows = rm jsource/jlibrary/bin/jconsole && touch jsource/jlibrary/bin/jconsole
 jplatform = linux
 # Nehalem
@@ -48,10 +46,6 @@ endif
 ifdef ARCH_MAC
 ARCH_DIR = macosx
 jplatform = darwin
-PREMAKE = tonyseek/premake/premake4
-#PREMAKE_RUN = premake5
-# install tonyseek
-CLUE = brew tap tonyseek/premake
 ifdef ARCH_ARM64
 j64x = j64arm
 endif
@@ -137,13 +131,11 @@ jclean:
 	rm jsource/make2/make.txt
 	rm jsource/jlibrary/bin/jconsole
 	
-/usr/bin/premake4:
-	@# mac will keep doing this and needs repo from xtra remote
-	$(CLUE)
-	$(SUDO) $(PREMAKE)
+premake4.3/bin/release/premake4:
+	cd premake4.3 && make config=release
 
 # Use a file deletion strategy to signal repo rebuild
-efsw/premake5.lua: /usr/bin/premake4
+efsw/premake5.lua: premake4.3/bin/release/premake4
 	@# Making build system for efsw
 	$(SUB_REBASE) efsw
 	$(SUB_RESTORE)
