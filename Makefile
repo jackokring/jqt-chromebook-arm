@@ -26,6 +26,11 @@ ifdef ARCH_ARM64
 jplatform = raspberry
 endif
 
+ifdef ARCH_LIN
+# mac freeks on -l:libefsw.a
+LDFLAGS += -pthread -L. -l:libefsw.a
+endif
+
 ifdef ARCH_WIN
 ARCH_DIR = windows
 # nope
@@ -34,6 +39,8 @@ jplatform = windows
 # Use fake jconsole strategy to control build on windows to avoid .exe variable hell
 dowindows = cp jsource/bin/$(jplatform)/$(j64x)/* jsource/jlibrary/bin && touch jsource/jlibrary/bin/jconsole
 SUDO = pacman -Syu 
+# mac freeks on -l:libefsw.a
+LDFLAGS += -pthread -L. -l:libefsw.a
 endif
 
 ifdef ARCH_MAC
@@ -48,6 +55,8 @@ j64x = j64arm
 endif
 dowindows = touch jsource/jlibrary/bin/jconsole
 SUDO = brew install 
+# mac freeks on -l:libefsw.a
+LDFLAGS += -pthread -L. -lefsw.a
 endif
 
 export jplatform
@@ -60,8 +69,8 @@ CXXFLAGS +=
 
 # Careful about linking to shared libraries, since you can't assume much about the user's environment and library search path.
 # Static libraries are fine, but they should be added to this plugin's build system.
-# The efsw file watcher static library
-LDFLAGS += -pthread -L. -l:libefsw.a
+# The efsw file watcher static library see above
+
 LDLIBS +=
 
 # Add .cpp files to the build
