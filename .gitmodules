@@ -10,3 +10,6 @@
 [submodule "premake4.3"]
 	path = premake4.3
 	url = git@github.com:kringtech/premake4.3.git
+[submodule "premake-core"]
+	path = premake-core
+	url = git@github.com:jackokring/premake-core.git

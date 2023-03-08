@@ -15,7 +15,7 @@ include $(RACK_DIR)/arch.mk
 
 ARCH_DIR = linux 
 SUDO = apt install -y 
-PREMAKE_RUN = ../premake4.3/bin/release/premake4
+PREMAKE_RUN = ../premake-core/bin/release/premake5
 dowindows = rm jsource/jlibrary/bin/jconsole && touch jsource/jlibrary/bin/jconsole
 jplatform = linux
 # Nehalem
@@ -131,15 +131,15 @@ jclean:
 	rm jsource/make2/make.txt
 	rm jsource/jlibrary/bin/jconsole
 	
-premake4.3/bin/release/premake4:
-	cd premake4.3 && make config=release
+premake-core/bin/release/premake5:
+	cd premake-core && make config=release
 
 # Use a file deletion strategy to signal repo rebuild
 efsw/premake5.lua: premake4.3/bin/release/premake4
 	@# Making build system for efsw
 	$(SUB_REBASE) efsw
 	$(SUB_RESTORE)
-	cd efsw && $(PREMAKE_RUN) gmake
+	cd efsw && $(PREMAKE_RUN) gmake2
 
 libefsw.a: efsw/premake5.lua
 	@# Building efsw
