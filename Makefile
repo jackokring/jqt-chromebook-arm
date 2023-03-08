@@ -135,7 +135,7 @@ premake-core/bin/release/premake5:
 	cd premake-core && make config=release
 
 # Use a file deletion strategy to signal repo rebuild
-efsw/premake5.lua: premake4.3/bin/release/premake4
+efsw/premake5.lua: premake-core/bin/release/premake5
 	@# Making build system for efsw
 	$(SUB_REBASE) efsw
 	$(SUB_RESTORE)
