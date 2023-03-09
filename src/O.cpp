@@ -1,136 +1,131 @@
 #include "plugin.hpp"
 
-struct O : Module {
+// Width by parameter knobs (placing automatic) maximum of 8 lanes (rungs pack nicely at 7)
+#define NAME O
+#define LANES 2
+//indirect macro evaluations
+#define STR_FROM(x) #x
+#define GLUE_HELPER(x, y) x##y
+#define GLUE(x, y) GLUE_HELPER(x, y)
+#define SHOW_NAME(name) STR_FROM(name)
+// used in the modules.hpp file
+#define ASSIGN_NAME(name) GLUE(model, name)
+
+// By default. Might need change if you get a link error duplicate symbol
+//#define IS_WATCHER
+
+struct MODULE_NAME : Module {
+
 	enum ParamIds {
-		ENUMS(FRQ, 3),
-		ENUMS(FBK, 3),
+	
 		NUM_PARAMS
 	};
+
+	// names in constructor
+
 	enum InputIds {
-		CV,
+	
 		NUM_INPUTS
-	};
-	enum OutputIds {
-		OUT,
-		NUM_OUTPUTS
-	};
-	enum LightIds {
-		NUM_LIGHTS
 	};
 
 	const char *instring[NUM_INPUTS] = {
-		"Frequency CV",
+
+	};
+
+	enum OutputIds {
+
+		NUM_OUTPUTS
 	};
 
 	const char *outstring[NUM_OUTPUTS] = {
-		"Audio",
+
+	};
+
+	enum LightIds {
+	
+		NUM_LIGHTS
 	};
 
 	const char *lightstring[NUM_LIGHTS] = {
 
 	};
 
-	void iol(bool lights) {
+	void iol() {
 		for(int i = 0; i < NUM_INPUTS; i++) configInput(i, instring[i]);
 		for(int i = 0; i < NUM_OUTPUTS; i++) configOutput(i, outstring[i]);
-		if(!lights) return;
+		if(NUM_LIGHTS) return;
 		for(int i = 0; i < NUM_LIGHTS; i++) configLight(i, lightstring[i]);
 	}
 
-	O() {
+	MODULE_NAME() {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
-		configParam(FRQ, -4.f, 4.f, 0.f, "Frequency", " Oct");
-		configParam(FBK, 0.f, 100.f, 50.f, "Feedback", " %");
-		for(int i = 1; i < 3; i++) {
-			configParam(FRQ + i, -2.f, 2.f, 0.f, "Relative frequency", " Oct");
-			configParam(FBK + i, 0.f, 100.f, 50.f, "Feedback", " %");
-		}
-		iol(false);
-		for(int i = 0; i < PORT_MAX_CHANNELS; i++) {
-			for(int j = 0; j < 3; j++) {
-				wave[i][j] = 0;
-			}
-		}
+
+		//configParam(P_PLFO, -10.f, 10.f, 0.f, "LFO -> Py");
+
+		iol();
 	}
-
-	//obtain mapped control value
-    float log(float val) {
-        return powf(2.f, val);
-    }
-
-	float modulo(float x, float m) {
-		float div = x / m;
-		long d = (long) div;
-		float rem = x - d * m;
-		return rem;
-	}
-
-	float wave[PORT_MAX_CHANNELS][3];
-	float feed[PORT_MAX_CHANNELS];
 
 	void process(const ProcessArgs& args) override {
-		float fs = args.sampleRate;
 		int maxPort = maxPoly(this, NUM_INPUTS, NUM_OUTPUTS);
-
-		float frq[3], fbk[3];
-#pragma GCC ivdep
-		for(int i = 0; i < 3; i++) {
-			frq[i] = params[FRQ + i].getValue();
-			fbk[i] = params[FBK + i].getValue() * 0.01f;
-		}
 
 		// PARAMETERS (AND IMPLICIT INS)
 #pragma GCC ivdep
 		for(int p = 0; p < maxPort; p++) {
-			float cv = inputs[CV].getPolyVoltage(p);
-			float out = 0.f;
-			float loop = 0.f;
-			for(int i = 0; i < 3; i++) {
-				float xtra = i > 0 ? frq[i] : 0.f;
-				float freq = log(xtra + cv + frq[0]) * dsp::FREQ_C4;
-				float step = freq * 2.f / fs;
-				wave[p][i] += step;
-				wave[p][i] = modulo(wave[p][i], 2.f);
-				float wf = wave[p][i] + feed[p];
-				float tmp3 = modulo(wf, 2.f);
-				float tmp = modulo(wf, 1.f);
-				float tmp2 = tmp * (tmp - 1.f) * (tmp3 - 1.f);
-				out += 10.f * (1.0f - fbk[i]) * tmp2;
-				loop += fbk[i] * tmp2 * 0.3f;
-			}
-			feed[p] = loop;//feedback
-			// OUTS
-			outputs[OUT].setVoltage(out, p);
+
 		}
 	}
 };
 
 //geometry edit
-#define HP 4
-#define LANES 1
+//for best auto layout (MAX 8 lanes) prime HP
+#define HP (laneIdxHP[LANES])
 #define RUNGS 7
 
-struct OWidget : ModuleWidget {
-	OWidget(O* module) {
+// FROM plugin.hpp
+//enum controlKind {
+//	SNAP_KNOB = -2,
+//	INPUT_PORT = -1,
+//	MORM_KNOB = 0,
+//	OUTPUT_PORT = 1,
+//	GR_LED =2
+//};
+
+struct WIDGET_NAME : ModuleWidget {
+	
+	WIDGET_NAME(MODULE_NAME* module) {
 		setModule(module);
-		setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, "res/O.svg")));
+		setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, "res/" + std::to_string(HP) + ".svg")));
 
-		addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-		addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-		addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-		addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+		//using MODULE_NAME::*;
 
-		for(int j = 0; j < 3; j++) {
-			float x = 1.f;
-			float y = j * 2.f + 1.f;
-			addParam(createParamCentered<RoundBlackKnob>(loc(x, y), module, O::FRQ + j));
-			addParam(createParamCentered<RoundBlackKnob>(loc(x, y + 1), module, O::FBK + j));
-		}
+		const int ctl[] = {
+			// param index grid lanes minor index
+			// use macros CTL(enum_value) or NO_CTL
+			
+		};
 
-		addInput(createInputCentered<PJ301MPort>(loc(0.75f, 7), module, O::CV));
-		addOutput(createOutputCentered<PJ301MPort>(loc(1.25f, 7), module, O::OUT));
+		const char *lbl[] = {
+			// labels
+
+		};
+
+		const int kind[] = {
+			// control kind
+			// use enum controlKind values
+			
+		};
+
+		populate(this, HP, LANES, RUNGS, ctl, lbl, kind, (char*)SHOW_NAME(NAME));
 	}
 };
 
+#ifdef WATCHER
+#ifdef IS_WATCHER
+// MAKE SOME MODULE PROVIDE THIS
+void callbackWatcher(const char* filename) {
+	INFO(filename);
+}
+#endif
+#endif
 
-Model* modelO = createModel<O, OWidget>("O");
+Model* ASSIGN_NAME(NAME) = createModel<MODULE_NAME, WIDGET_NAME>(SHOW_NAME(NAME));

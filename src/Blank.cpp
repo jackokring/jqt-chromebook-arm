@@ -1,13 +1,18 @@
 #include "plugin.hpp"
 
 // Width by parameter knobs (placing automatic) maximum of 8 lanes (rungs pack nicely at 7)
+#define NAME Blank
 #define LANES 2
-#define SHOW_NAME "Blank"
+//indirect macro evaluations
+#define STR_FROM(x) #x
+#define GLUE_HELPER(x, y) x##y
+#define GLUE(x, y) GLUE_HELPER(x, y)
+#define SHOW_NAME(name) STR_FROM(name)
 // used in the modules.hpp file
-#define ASSIGN_NAME modelBlank
+#define ASSIGN_NAME(name) GLUE(model, name)
 
 // By default. Might need change if you get a link error duplicate symbol
-#define IS_WATCHER
+//#define IS_WATCHER
 
 struct MODULE_NAME : Module {
 
@@ -110,7 +115,7 @@ struct WIDGET_NAME : ModuleWidget {
 			
 		};
 
-		populate(this, HP, LANES, RUNGS, ctl, lbl, kind, (char*)SHOW_NAME);
+		populate(this, HP, LANES, RUNGS, ctl, lbl, kind, (char*)SHOW_NAME(NAME));
 	}
 };
 
@@ -123,4 +128,4 @@ void callbackWatcher(const char* filename) {
 #endif
 #endif
 
-Model* ASSIGN_NAME = createModel<MODULE_NAME, WIDGET_NAME>(SHOW_NAME);
+Model* ASSIGN_NAME(NAME) = createModel<MODULE_NAME, WIDGET_NAME>(SHOW_NAME(NAME));

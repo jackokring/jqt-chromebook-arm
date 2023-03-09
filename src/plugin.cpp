@@ -62,7 +62,7 @@ void init(Plugin* p) {
 	pluginInstance = p;
 	// redefine so that correct include happens
 #undef MODEL	
-#define MODEL(name) p->addModel(name)
+#define MODEL(name) p->addModel(model ## name)
 #include "modules.hpp"
 //not required anymore
 #undef MODEL

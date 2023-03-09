@@ -139,18 +139,20 @@ jclean:
 premake-core/bin/release/premake5:
 	@# Do not forget to embed first
 	cd premake-core && $(PLATFORM) && $(PREMAKE_RUN) embed && $(PREMAKE_RUN) gmake2 
-	cd premake-core && make config=release
+	cd premake-core && make
 
 # Use a file deletion strategy to signal repo rebuild
 efsw/premake5.lua: premake-core/bin/release/premake5
 	@# Making build system for efsw
 	$(SUB_REBASE) efsw
 	$(SUB_RESTORE)
+	@# Apparently mac does not like config=release
+	@# And linux wants -luuid 
 	cd efsw && $(PREMAKE_RUN) gmake2
 
 libefsw.a: efsw/premake5.lua
 	@# Building efsw
-	cd efsw/make/$(ARCH_DIR) && make config=release
+	cd efsw/make/$(ARCH_DIR) && make
 	@# mac name is different
 	cp efsw/lib/libefsw-static-release.a .
 	mv libefsw-static-release.a libefsw.a

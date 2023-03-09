@@ -12,7 +12,7 @@ using namespace rack;
 // Declare the Plugin, defined in plugin.cpp
 extern Plugin* pluginInstance;
 
-#define MODEL(name) extern Model *name
+#define MODEL(name) extern Model * model ## name
 #include "modules.hpp"
 #undef MODEL
 
