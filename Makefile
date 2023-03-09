@@ -37,7 +37,7 @@ ifdef ARCH_WIN
 ARCH_DIR = windows
 PLATFORM = CC=mingw32-gcc mingw32-make -f Bootstrap.mak mingw
 # nope try posix MYS2
-jplatform = linux
+jplatform = windows
 #j64x = j64avx512
 # Use fake jconsole strategy to control build on windows to avoid .exe variable hell
 dowindows = cp jsource/bin/$(jplatform)/$(j64x)/* jsource/jlibrary/bin && touch jsource/jlibrary/bin/jconsole
@@ -137,7 +137,8 @@ jclean:
 	rm jsource/jlibrary/bin/jconsole
 	
 premake-core/bin/release/premake5:
-	cd premake-core && $(PLATFORM) && $(PREMAKE_RUN) gmake2 && $(PREMAKE_RUN) embed
+	@# Do not forget to embed first
+	cd premake-core && $(PLATFORM) && $(PREMAKE_RUN) embed && $(PREMAKE_RUN) gmake2 
 	cd premake-core && make config=release
 
 # Use a file deletion strategy to signal repo rebuild
