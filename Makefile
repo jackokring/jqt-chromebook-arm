@@ -136,7 +136,7 @@ jclean:
 libefsw.a:
 	@# Building efsw
 	$(MAC_PREMAKE)
-	$(ESCAPE) cd efsw/make/$(ARCH_DIR) && make
+	$(ESCAPE) cd efsw/make/$(ARCH_DIR) && make config=release
 	@# mac name is different
 	$(ESCAPE) cp efsw/lib/libefsw-static-release.a .
 	$(ESCAPE) mv libefsw-static-release.a libefsw.a
