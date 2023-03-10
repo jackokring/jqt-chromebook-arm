@@ -13,41 +13,44 @@ include project.mk
 RACK_DIR ?= ../..
 include $(RACK_DIR)/arch.mk
 
+# supress errors
 OK = || exit 0
 
 MAC_PREMAKE = brew tap jackokring/premake && brew install jackokring/premake/premake4 && cd efsw && premake4 gmake $(OK)
-WIN_PREMAKE = pacman -Syu premake4 && cd efsw && premake4 gmake $(OK)
 
-WIN_PKG = pacman -Syu gmp mingw-w64-dlfcn $(OK)
+# escape if windows support not there
+ESCAPE = 
 
 ARCH_DIR = linux 
+# build server does not find packages
 SUDO = apt install -y 
 dowindows = rm jsource/jlibrary/bin/jconsole && touch jsource/jlibrary/bin/jconsole
 jplatform = linux
 # Nehalem
 j64x = j64
-BACKTRACE =
 ifdef ARCH_ARM64
 jplatform = raspberry
 endif
 
 ifdef ARCH_LIN
 # mac freeks on -l:libefsw.a
-LDFLAGS += -pthread -L. -l:libefsw.a
+LDFLAGS += -pthread -L. -lefsw
 endif
 
 ifdef ARCH_WIN
 ARCH_DIR = windows
-# PLATFORM = CC=mingw32-gcc mingw32-make -f Bootstrap.mak mingw
-# nope try posix MYS2
-jplatform = linux
+# nope build requires things that can't integrate into the CI so binary from jsoftware.com
+jplatform = none
+ESCAPE = exit 0 ||
 #j64x = j64avx512
 # Use fake jconsole strategy to control build on windows to avoid .exe variable hell
-dowindows = cp jsource/bin/$(jplatform)/$(j64x)/* jsource/jlibrary/bin && touch jsource/jlibrary/bin/jconsole
+# dowindows = cp jsource/bin/$(jplatform)/$(j64x)/* jsource/jlibrary/bin && touch jsource/jlibrary/bin/jconsole
+dowindows = touch jsource/jlibrary/bin/jconsole && echo "Obtain a Windows binary fromjsoftware.com" > jsource/jlibrary/bin/jconsole.txt
+# build server has no pacman
 SUDO = pacman -Syu 
-# mac freeks on -l:libefsw.a
-LDFLAGS += -pthread -L. -l:libefsw.a
-BACKTRACE = cp mman-win32/mman.* jsource/libbacktrace
+# No build on server CI with efsw
+LDFLAGS += -pthread 
+# BACKTRACE = cp mman-win32/mman.* jsource/libbacktrace
 endif
 
 ifdef ARCH_MAC
@@ -58,7 +61,6 @@ j64x = j64arm
 endif
 dowindows = touch jsource/jlibrary/bin/jconsole
 SUDO = brew install 
-# mac freeks on -l:libefsw.a
 LDFLAGS += -pthread -L. -lefsw
 endif
 
@@ -114,45 +116,30 @@ jsource/jlibrary/bin/jconsole: jsource/make2/make.txt
 	rm jsource/jlibrary/bin/*
 	@# MSYS2 includes via rack a duplication of lib defs and a bug to fix dlerror
 	@# copy bactrace dependency windows
-	$(BACKTRACE)
-	$(WIN_PKG)
-	cd jsource/make2 && ./build_jconsole.sh
-	cd jsource/make2 && ./build_libj.sh
-	cd jsource/make2 && ./build_tsdll.sh
+	@# $(BACKTRACE)
+	@# $(WIN_PKG)
+	$(ESCAPE) cd jsource/make2 && ./build_jconsole.sh
+	$(ESCAPE) cd jsource/make2 && ./build_libj.sh
+	$(ESCAPE) cd jsource/make2 && ./build_tsdll.sh
 	@# Windows/mac unmanaged copy and fake
-	cd jsource/make2 && ./cpbin.sh
+	$(ESCAPE) cd jsource/make2 && ./cpbin.sh
 	@# windows copy and all touch inc. linux delete
 	$(dowindows)
-	@# Binaries for plugin bin at jsource/jlibrary/bin/jconsole .exe/-lx/-mac?
+	@# Binaries for plugin bin at jsource/jlibrary/bin/jconsole .exe/-lx/-mac? .txt for install win binary self
 	
 j: jsource/jlibrary/bin/jconsole
 
 jclean:
 	rm jsource/make2/make.txt
 	rm jsource/jlibrary/bin/jconsole
-	
-#premake-core/bin/release/premake5:
-#	@# Do not forget to embed first
-#	cd premake-core && $(PLATFORM) && $(PREMAKE_RUN) embed && $(PREMAKE_RUN) gmake2 
-#	cd premake-core && make
-
-# Use a file deletion strategy to signal repo rebuild
-#efsw/premake5.lua: premake-core/bin/release/premake5
-#	@# Making build system for efsw
-#	$(SUB_REBASE) efsw
-#	$(SUB_RESTORE)
-#	@# Apparently mac does not like config=release
-#	@# And linux wants -luuid 
-#	cd efsw && $(PREMAKE_RUN) gmake2
 
 libefsw.a:
 	@# Building efsw
 	$(MAC_PREMAKE)
-	$(WIN_PREMAKE)
-	cd efsw/make/$(ARCH_DIR) && make
+	$(ESCAPE) cd efsw/make/$(ARCH_DIR) && make
 	@# mac name is different
-	cp efsw/lib/libefsw-static-release.a .
-	mv libefsw-static-release.a libefsw.a
+	$(ESCAPE) cp efsw/lib/libefsw-static-release.a .
+	$(ESCAPE) mv libefsw-static-release.a libefsw.a
 	
 efsw: libefsw.a
 

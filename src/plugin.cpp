@@ -5,6 +5,8 @@
 ///////////////////////////////////////////////////////////////
 
 Plugin* pluginInstance;
+#ifndef ARCH_WIN
+//dynamic reload can build
 #ifdef WATCHER
 #include "../efsw/include/efsw/efsw.hpp"
 
@@ -56,6 +58,7 @@ static struct WatcherDo {
 	efsw::WatchID wID;
 } watcherInstance;
 #endif
+#endif
 
 // constructor handle
 void init(Plugin* p) {
@@ -66,8 +69,10 @@ void init(Plugin* p) {
 #include "modules.hpp"
 //not required anymore
 #undef MODEL
+#ifndef ARCH_WIN
 #ifdef WATCHER
 	watcherInstance.add();
+#endif
 #endif
 }
 
