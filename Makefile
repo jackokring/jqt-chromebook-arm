@@ -13,12 +13,13 @@ include project.mk
 RACK_DIR ?= ../..
 include $(RACK_DIR)/arch.mk
 
-BUILD_PKG = uuid-dev
+OK = || exit 0
+
+MAC_PREMAKE = brew tap jackokring/premake && brew install jackokring/premake/premake4 && cd efsw && premake4 gmake $(OK)
+WIN_PREMAKE = pacman -Syu premake4 && cd efsw && premake4 gmake $(OK)
 
 ARCH_DIR = linux 
-PLATFORM = make -f Bootstrap.mak linux
 SUDO = apt install -y 
-PREMAKE_RUN = ../premake-core/bin/release/premake5
 dowindows = rm jsource/jlibrary/bin/jconsole && touch jsource/jlibrary/bin/jconsole
 jplatform = linux
 # Nehalem
@@ -35,7 +36,7 @@ endif
 
 ifdef ARCH_WIN
 ARCH_DIR = windows
-PLATFORM = CC=mingw32-gcc mingw32-make -f Bootstrap.mak mingw
+# PLATFORM = CC=mingw32-gcc mingw32-make -f Bootstrap.mak mingw
 # nope try posix MYS2
 jplatform = windows
 #j64x = j64avx512
@@ -48,10 +49,7 @@ BACKTRACE = cp mman-win32/mman.* jsource/libbacktrace
 endif
 
 ifdef ARCH_MAC
-# Malformed sudo exit without error
-BUILD_PKG = || exit 0
 ARCH_DIR = macosx
-PLATFORM = make -f Bootstrap.mak osx
 jplatform = darwin
 ifdef ARCH_ARM64
 j64x = j64arm
@@ -102,10 +100,6 @@ SUB_REBASE = git submodule update --init --rebase --recursive --
 # Yes, if it's not commited then it's gone with a clean
 SUB_RESTORE = git submodule foreach "git restore ."
 
-# Use rebase instead of merge for version bump
-# Same rebase reasons, ...
-SUB_PULL = git submodule foreach "git pull --rebase"
-
 # Use a file deletion strategy to signal repo rebuild
 jsource/make2/make.txt:
 	$(SUB_REBASE) jsource
@@ -124,10 +118,6 @@ jsource/jlibrary/bin/jconsole: jsource/make2/make.txt
 	cd jsource/make2 && ./build_tsdll.sh
 	@# Windows/mac unmanaged copy and fake
 	cd jsource/make2 && ./cpbin.sh
-	@# windows/mac does not make
-	@# rm jsource/jlibrary/bin/jconsole-lx
-	@# actual mac bin
-	@# rm jsource/jlibrary/bin/jconsole-mac
 	@# windows copy and all touch inc. linux delete
 	$(dowindows)
 	@# Binaries for plugin bin at jsource/jlibrary/bin/jconsole .exe/-lx/-mac?
@@ -138,23 +128,24 @@ jclean:
 	rm jsource/make2/make.txt
 	rm jsource/jlibrary/bin/jconsole
 	
-premake-core/bin/release/premake5:
-	@# Do not forget to embed first
-	$(SUDO) $(BUILD_PKG)
-	cd premake-core && $(PLATFORM) && $(PREMAKE_RUN) embed && $(PREMAKE_RUN) gmake2 
-	cd premake-core && make
+#premake-core/bin/release/premake5:
+#	@# Do not forget to embed first
+#	cd premake-core && $(PLATFORM) && $(PREMAKE_RUN) embed && $(PREMAKE_RUN) gmake2 
+#	cd premake-core && make
 
 # Use a file deletion strategy to signal repo rebuild
-efsw/premake5.lua: premake-core/bin/release/premake5
-	@# Making build system for efsw
-	$(SUB_REBASE) efsw
-	$(SUB_RESTORE)
-	@# Apparently mac does not like config=release
-	@# And linux wants -luuid 
-	cd efsw && $(PREMAKE_RUN) gmake2
+#efsw/premake5.lua: premake-core/bin/release/premake5
+#	@# Making build system for efsw
+#	$(SUB_REBASE) efsw
+#	$(SUB_RESTORE)
+#	@# Apparently mac does not like config=release
+#	@# And linux wants -luuid 
+#	cd efsw && $(PREMAKE_RUN) gmake2
 
-libefsw.a: efsw/premake5.lua
+libefsw.a:
 	@# Building efsw
+	$(MAC_PREMAKE)
+	$(WIN_PREMAKE)
 	cd efsw/make/$(ARCH_DIR) && make
 	@# mac name is different
 	cp efsw/lib/libefsw-static-release.a .
@@ -163,20 +154,15 @@ libefsw.a: efsw/premake5.lua
 efsw: libefsw.a
 
 efswclean:
-	rm efsw/premake5.lua
 	rm libefsw.a
 	
 /usr/bin/emacs:
-	$(SUDO) emacs
+	@# Not critical
+	$(SUDO) emacs $(OK)
 	
 emacs: /usr/bin/emacs
 
-# Bump dependancy versions by clean with a pull
-bump:
-	git pull
-	$(SUB_PULL)
-
-.PHONY: j jclean efsw efswclean emacs bump
+.PHONY: j jclean efsw efswclean emacs
 
 # Include the Rack plugin Makefile framework
 include $(RACK_DIR)/plugin.mk
