@@ -572,7 +572,7 @@ bool isWindows() {
 #endif
 }
 
-char* fileExeTension() {
+std::string fileExeTension() {
 //return j extension if base does not work
 #ifndef ARCH_WIN
 #ifndef ARCH_LIN

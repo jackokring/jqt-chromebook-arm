@@ -383,5 +383,5 @@ extern void callbackWatcher(const char* filename);
 ////////////////////
 
 extern bool isWindows();
-extern char* fileExeTension();
+extern std::string fileExeTension();
 
