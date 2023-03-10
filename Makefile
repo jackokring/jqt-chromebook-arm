@@ -34,7 +34,7 @@ endif
 
 ifdef ARCH_LIN
 # mac freeks on -l:libefsw.a
-LDFLAGS += -pthread -L. -lefsw
+LDFLAGS += -pthread -L. -l:libefsw.a
 endif
 
 ifdef ARCH_WIN

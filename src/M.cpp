@@ -98,18 +98,25 @@ struct WIDGET_NAME : ModuleWidget {
 
 		//using MODULE_NAME::*;
 
-		const int ctl[] = {
+		const int ctl[LANES*RUNGS] = {
 			// param index grid lanes minor index
 			// use macros CTL(enum_value) or NO_CTL
-			
+			-1, -1, -1, -1, -1, -1, -1,
+			-1, -1, -1, -1, -1, -1, -1,
+			-1, -1, -1, -1, -1, -1, -1,
+			-1, -1, -1, -1, -1, -1, -1,
+			-1, -1, -1, -1, -1, -1, -1,
+			-1, -1, -1, -1, -1, -1, -1,
+			-1, -1, -1, -1, -1, -1, -1,
+			-1, -1, -1, -1, -1, -1, -1,
 		};
 
-		const char *lbl[] = {
+		const char *lbl[LANES*RUNGS] = {
 			// labels
 
 		};
 
-		const int kind[] = {
+		const int kind[LANES*RUNGS] = {
 			// control kind
 			// use enum controlKind values
 			
