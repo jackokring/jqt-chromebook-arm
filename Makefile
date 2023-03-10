@@ -13,7 +13,7 @@ include project.mk
 RACK_DIR ?= ../..
 include $(RACK_DIR)/arch.mk
 
-GMAKE = 
+BUILD_PKG = uuid-dev
 
 ARCH_DIR = linux 
 PLATFORM = make -f Bootstrap.mak linux
@@ -48,6 +48,8 @@ BACKTRACE = cp mman-win32/mman.* jsource/libbacktrace
 endif
 
 ifdef ARCH_MAC
+# Malformed sudo exit without error
+BUILD_PKG = || exit 0
 ARCH_DIR = macosx
 PLATFORM = make -f Bootstrap.mak osx
 jplatform = darwin
@@ -138,6 +140,7 @@ jclean:
 	
 premake-core/bin/release/premake5:
 	@# Do not forget to embed first
+	$(SUDO) $(BUILD_PKG)
 	cd premake-core && $(PLATFORM) && $(PREMAKE_RUN) embed && $(PREMAKE_RUN) gmake2 
 	cd premake-core && make
 
