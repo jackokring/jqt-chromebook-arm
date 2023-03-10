@@ -38,7 +38,7 @@ ifdef ARCH_WIN
 ARCH_DIR = windows
 # PLATFORM = CC=mingw32-gcc mingw32-make -f Bootstrap.mak mingw
 # nope try posix MYS2
-jplatform = windows
+jplatform = linux
 #j64x = j64avx512
 # Use fake jconsole strategy to control build on windows to avoid .exe variable hell
 dowindows = cp jsource/bin/$(jplatform)/$(j64x)/* jsource/jlibrary/bin && touch jsource/jlibrary/bin/jconsole
