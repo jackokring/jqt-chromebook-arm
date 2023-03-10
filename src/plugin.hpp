@@ -376,3 +376,5 @@ struct OnMenu {
 // MAKE SOME MODULE PROVIDE THIS
 extern void callbackWatcher(const char* filename);
 #endif
+
+extern bool isWindows();

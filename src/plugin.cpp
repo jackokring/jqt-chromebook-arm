@@ -258,14 +258,14 @@ pid_t FORK(char* fn, char** args) {
     return pid;
 }
 
-#include <sys/wait.h>
+//#include <sys/wait.h>
 // process join
 void JOIN(pid_t pid) {
 	close(EXEC_W);// close stream input
 	char x;
 	while(read(EXEC_R, &x, 1));// EOF?
 	close(EXEC_R);
-	waitpid(pid, NULL, 0);
+	//waitpid(pid, NULL, 0);
 }
 
 int FORK_R(char *buff, int count) {
@@ -556,5 +556,14 @@ bool OnMenu::isOff(MenuSelection var) {
 		return !MENU_BOOL(var);
 	}
 	return false;
+}
+
+// Windows bad support
+bool isWindows() {
+#ifndef ARCH_WIN
+	return false;
+#else
+	return true;
+#endif
 }
 
