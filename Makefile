@@ -53,7 +53,7 @@ dowindows = touch jsource/jlibrary/bin/jconsole && echo "Obtain a Windows binary
 # build server has no pacman
 SUDO = pacman -Syu 
 # No build on server CI with efsw
-LDFLAGS += -pthread -L. -l:libefsw.lib
+LDFLAGS += -pthread -L. -l:libefsw.a
 # BACKTRACE = cp mman-win32/mman.* jsource/libbacktrace
 endif
 
@@ -140,9 +140,9 @@ jclean:
 libefsw.a:
 	@# Building efsw
 	cd efsw/make/$(ARCH_DIR) && make config=release
-	@# mac name is different
-	$(ESCAPE) cp efsw/lib/libefsw-static-release.a libefsw.a
-	$(NESCAPE) cp efsw/lib/efsw-static-release.lib libefsw.lib
+	@# mac name is different?
+	cp efsw/lib/libefsw-static-release.a libefsw.a
+	@# cp efsw/lib/efsw-static-release.lib libefsw.lib
 	
 efsw: libefsw.a
 
