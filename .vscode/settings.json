@@ -17,9 +17,6 @@
         "../**": true,
         "jsource/**": true
     },
-    "C_Cpp.files.exclude": {
-        "jsource/**": true
-    },
     "files.exclude": {
         
     }
