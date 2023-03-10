@@ -17,7 +17,7 @@
   	{
       "slug": "Blank",
       "name": "Blank",
-      "description": "A panel blank.",
+      "description": "A panel blank at 5HP.",
       "tags": [
       	"Blank"
       ]
@@ -25,7 +25,7 @@
     {
       "slug": "M",
       "name": "Master",
-      "description": "A script processing master using J by default.",
+      "description": "A script processing master using J by default.\nWindows does not support all targets\n due to process fork code issues.",
       "tags": [
       	"External",
       	"Sequencer",
