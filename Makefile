@@ -18,6 +18,8 @@ OK = || exit 0
 MAC_PREMAKE = brew tap jackokring/premake && brew install jackokring/premake/premake4 && cd efsw && premake4 gmake $(OK)
 WIN_PREMAKE = pacman -Syu premake4 && cd efsw && premake4 gmake $(OK)
 
+WIN_PKG = pacman -Syu gmp mingw-w64-dlfcn $(OK)
+
 ARCH_DIR = linux 
 SUDO = apt install -y 
 dowindows = rm jsource/jlibrary/bin/jconsole && touch jsource/jlibrary/bin/jconsole
@@ -113,6 +115,7 @@ jsource/jlibrary/bin/jconsole: jsource/make2/make.txt
 	@# MSYS2 includes via rack a duplication of lib defs and a bug to fix dlerror
 	@# copy bactrace dependency windows
 	$(BACKTRACE)
+	$(WIN_PKG)
 	cd jsource/make2 && ./build_jconsole.sh
 	cd jsource/make2 && ./build_libj.sh
 	cd jsource/make2 && ./build_tsdll.sh
