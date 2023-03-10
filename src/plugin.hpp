@@ -368,6 +368,7 @@ struct OnMenu {
 //#undef MENU_SET
 //#undef MENU_BOOL
 };
+
 ////////////////////
 // Plugin Watch API
 ////////////////////
@@ -377,4 +378,10 @@ struct OnMenu {
 extern void callbackWatcher(const char* filename);
 #endif
 
+////////////////////
+// Sys ID API
+////////////////////
+
 extern bool isWindows();
+extern char* fileExeTension();
+

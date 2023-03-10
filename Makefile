@@ -16,7 +16,10 @@ include $(RACK_DIR)/arch.mk
 # supress errors
 OK = || exit 0
 
-MAC_PREMAKE = brew tap jackokring/premake && brew install jackokring/premake/premake4 && cd efsw && premake4 gmake $(OK)
+# not escape windows
+NESCAPE = exit 0 ||
+
+# MAC_PREMAKE = brew tap jackokring/premake && brew install jackokring/premake/premake4 && cd efsw && premake4 gmake $(OK)
 
 # escape if windows support not there
 ESCAPE = 
@@ -42,6 +45,7 @@ ARCH_DIR = windows
 # nope build requires things that can't integrate into the CI so binary from jsoftware.com
 jplatform = none
 ESCAPE = exit 0 ||
+NESCAPE = 
 #j64x = j64avx512
 # Use fake jconsole strategy to control build on windows to avoid .exe variable hell
 # dowindows = cp jsource/bin/$(jplatform)/$(j64x)/* jsource/jlibrary/bin && touch jsource/jlibrary/bin/jconsole
@@ -49,7 +53,7 @@ dowindows = touch jsource/jlibrary/bin/jconsole && echo "Obtain a Windows binary
 # build server has no pacman
 SUDO = pacman -Syu 
 # No build on server CI with efsw
-LDFLAGS += -pthread 
+LDFLAGS += -pthread -L. -l:libefsw.lib
 # BACKTRACE = cp mman-win32/mman.* jsource/libbacktrace
 endif
 
@@ -135,11 +139,10 @@ jclean:
 
 libefsw.a:
 	@# Building efsw
-	$(MAC_PREMAKE)
-	$(ESCAPE) cd efsw/make/$(ARCH_DIR) && make config=release
+	cd efsw/make/$(ARCH_DIR) && make config=release
 	@# mac name is different
-	$(ESCAPE) cp efsw/lib/libefsw-static-release.a .
-	$(ESCAPE) mv libefsw-static-release.a libefsw.a
+	$(ESCAPE) cp efsw/lib/libefsw-static-release.a libefsw.a
+	$(NESCAPE) cp efsw/lib/efsw-static-release.lib libefsw.lib
 	
 efsw: libefsw.a
 

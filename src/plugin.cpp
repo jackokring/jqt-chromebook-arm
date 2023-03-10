@@ -5,7 +5,6 @@
 ///////////////////////////////////////////////////////////////
 
 Plugin* pluginInstance;
-#ifndef ARCH_WIN
 //dynamic reload can build
 #ifdef WATCHER
 #include "../efsw/include/efsw/efsw.hpp"
@@ -58,7 +57,6 @@ static struct WatcherDo {
 	efsw::WatchID wID;
 } watcherInstance;
 #endif
-#endif
 
 // constructor handle
 void init(Plugin* p) {
@@ -69,10 +67,8 @@ void init(Plugin* p) {
 #include "modules.hpp"
 //not required anymore
 #undef MODEL
-#ifndef ARCH_WIN
 #ifdef WATCHER
 	watcherInstance.add();
-#endif
 #endif
 }
 
@@ -573,6 +569,19 @@ bool isWindows() {
 	return false;
 #else
 	return true;
+#endif
+}
+
+char* fileExeTension() {
+//return j extension if base does not work
+#ifndef ARCH_WIN
+#ifndef ARCH_LIN
+	return "-mac";
+#else
+	return "-lin";
+#endif
+#else
+	return ".exe";
 #endif
 }
 
