@@ -233,34 +233,40 @@ int childToParent[MAX_FD];
 
 // process fork
 pid_t FORK(char* fn, char** args) {
+#ifndef ARCH_WIN
 	pid_t pid = fork();
-    if (pid == -1) {
-        WARN("fork failed");
-    } else if (pid == 0) {
-		INFO("child opening");
-		// do fn(), maybe parse args
-		// hook in streams, combine stderr to stdout
-		pipe(parentToChild);
-		pipe(childToParent);
-		dup2(parentToChild[READ_FD], STDIN_FILENO);
-		dup2(childToParent[WRITE_FD], STDOUT_FILENO);
-		dup2(childToParent[WRITE_FD], STDERR_FILENO);
-		// fd duplication, so close down handle count
-		close(parentToChild[READ_FD]);
-		close(childToParent[WRITE_FD]);
-		execvp(fn, args);
-		WARN("child exited with error");
-		_exit(EXIT_SUCCESS);
-    } else {
-        //int status;
-        //(void)waitpid(pid, &status, 0);
-    }
-    return pid;
+  if (pid == -1) {
+      WARN("fork failed");
+  } else if (pid == 0) {
+	INFO("child opening");
+	// do fn(), maybe parse args
+	// hook in streams, combine stderr to stdout
+	pipe(parentToChild);
+	pipe(childToParent);
+	dup2(parentToChild[READ_FD], STDIN_FILENO);
+	dup2(childToParent[WRITE_FD], STDOUT_FILENO);
+	dup2(childToParent[WRITE_FD], STDERR_FILENO);
+	// fd duplication, so close down handle count
+	close(parentToChild[READ_FD]);
+	close(childToParent[WRITE_FD]);
+	execvp(fn, args);
+	WARN("child exited with error");
+	_exit(EXIT_SUCCESS);
+  } else {
+      //int status;
+      //(void)waitpid(pid, &status, 0);
+  }
+  return pid;
+#else
+	WARN("fork failed on Windows as not supported");
+	return -1;
+#endif
 }
 
 //#include <sys/wait.h>
 // process join
 void JOIN(pid_t pid) {
+	if(isWindows()) return;
 	close(EXEC_W);// close stream input
 	char x;
 	while(read(EXEC_R, &x, 1));// EOF?
@@ -269,16 +275,19 @@ void JOIN(pid_t pid) {
 }
 
 int FORK_R(char *buff, int count) {
+	if(isWindows()) return 0;
 	return read(EXEC_R, buff, count);
 }
 
 int FORK_W(char *buff, int count) {
+	if(isWindows()) return 0;
 	return write(EXEC_W, buff, count);
 }
 
 #define MAX_PROMPT 64
 
 bool FORK_DRAIN(const char *prompt) {
+	if(isWindows()) return false;
 	if(!prompt || prompt[0] == '\0') return true;
 	char x[MAX_PROMPT];
 	int z = strlen(prompt);
