@@ -16,7 +16,31 @@ extern Plugin* pluginInstance;
 #include "modules.hpp"
 #undef MODEL
 
+////////////////////
+// Useable Hot Keys
+////////////////////
+
+enum HotKey {
+	//unused raw keys (exclude ISO # as not ANSI)
+	//non US backslash not detected
+	KP_SUB = GLFW_KEY_KP_SUBTRACT,
+	KB_4 = GLFW_KEY_4,
+	KB_8 = GLFW_KEY_8,
+	KB_SUB = GLFW_KEY_MINUS,
+	KB_A = GLFW_KEY_A,
+	KB_F = GLFW_KEY_F,
+	KB_K = GLFW_KEY_K,
+	KB_APOS = GLFW_KEY_APOSTROPHE,
+	//symmetric elimination of use (the true escape key)
+	//KB_BSLH = GLFW_KEY_BACKSLASH,
+};
+
+////////////////////
+// Functions
+////////////////////
+
 extern float tanpif(float f);
+extern int maxPoly(Module *m, const int numIn, const int numOut);
 
 ////////////////////
 // Knobs
@@ -145,7 +169,7 @@ struct KGRLightWidget : KLightWidget {
 	}
 };
 
-extern int maxPoly(Module *m, const int numIn, const int numOut);
+//layout
 
 #define HP_UNIT 5.08
 #define WIDTH (HP*HP_UNIT)
@@ -172,6 +196,7 @@ const int laneIdxHP[] = {
 //placement macro
 #define loc(x,y) mm2px(Vec(X_SPLIT*(1+2*(x-1)), (HEIGHT*Y_MARGIN)+Y_SPLIT*(1+2*(y-1))))
 
+//param and IO macros
 #define CTL(name) MODULE_NAME::name
 #define NO_CTL -1 
 

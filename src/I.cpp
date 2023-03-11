@@ -101,18 +101,23 @@ struct WIDGET_NAME : ModuleWidget {
 		const int ctl[LANES*RUNGS] = {
 			// param index grid lanes minor index
 			// use macros CTL(enum_value) or NO_CTL
-			-1, -1, -1, -1, -1, -1, -1,
-			-1, -1, -1, -1, -1, -1, -1,
+			NO_CTL, NO_CTL,
+			NO_CTL, NO_CTL,
+			NO_CTL, NO_CTL,
+			NO_CTL, NO_CTL,
+			NO_CTL, NO_CTL,
+			NO_CTL, NO_CTL,
+			NO_CTL, NO_CTL
 		};
 
 		const char *lbl[LANES*RUNGS] = {
-			// labels
+			// labels or NULL
 
 		};
 
 		const int kind[LANES*RUNGS] = {
 			// control kind
-			// use enum controlKind values
+			// use enum controlKind values from plugin.hpp
 			
 		};
 
