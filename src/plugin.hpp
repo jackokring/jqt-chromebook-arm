@@ -35,6 +35,11 @@ enum HotKey {
 	//KB_BSLH = GLFW_KEY_BACKSLASH,
 };
 
+// RACK_MOD_SHIFT/CTRL/ALT etc. bitfield or for mods (mac compliant with cmd key which is win key)
+// for if/else else OpaqueWidget::onHover/SelectKey(event);
+extern bool isKeyParam(ParamWidget *pw, HotKey hk, event::SelectKey& se, int mods = 0);
+extern bool isKeyModule(ModuleWidget *mw, HotKey hk, event::HoverKey& he, int mods = 0);
+
 ////////////////////
 // Functions
 ////////////////////
