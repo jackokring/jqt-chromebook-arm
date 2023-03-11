@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../../../KRTPluginADemo"
+		},
+		{
+			"path": "../KRTPluginA"
 		}
 	],
 	"settings": {
