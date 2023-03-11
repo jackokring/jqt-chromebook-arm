@@ -21,22 +21,22 @@ extern Plugin* pluginInstance;
 ////////////////////
 
 enum HotKey {
-	//unused raw keys (exclude ISO # as not ANSI)
-	//non US backslash not detected
+	//unused raw keys (exclude ISO # as not ANSI-60)
+	//non US backslash not detected on ANSI-60
 	KP_SUB = GLFW_KEY_KP_SUBTRACT,
 	KB_4 = GLFW_KEY_4,
 	KB_8 = GLFW_KEY_8,
 	KB_SUB = GLFW_KEY_MINUS,
-	KB_A = GLFW_KEY_A,
-	KB_F = GLFW_KEY_F,
-	KB_K = GLFW_KEY_K,
-	KB_APOS = GLFW_KEY_APOSTROPHE,
+	KB_A = GLFW_KEY_A,// aft <
+	KB_F = GLFW_KEY_F,// fore >
+	KB_K = GLFW_KEY_K,// keel 
+	KB_APOS = GLFW_KEY_APOSTROPHE,// out there ^
 	//symmetric elimination of use (the true escape key)
 	//KB_BSLH = GLFW_KEY_BACKSLASH,
 };
 
 // RACK_MOD_SHIFT/CTRL/ALT etc. bitfield or for mods (mac compliant with cmd key which is win key)
-// for if/else else OpaqueWidget::onHover/SelectKey(event);
+// automatic else OpaqueWidget::onHover/SelectKey(event);
 extern bool isKeyParam(ParamWidget *pw, HotKey hk, event::SelectKey& se, int mods = 0);
 extern bool isKeyModule(ModuleWidget *mw, HotKey hk, event::HoverKey& he, int mods = 0);
 

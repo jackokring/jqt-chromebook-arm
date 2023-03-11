@@ -75,14 +75,22 @@ void init(Plugin* p) {
 //hotkey restrictor
 bool isKeyParam(ParamWidget *pw, HotKey hk, event::SelectKey& se, int mods) {
 	bool rtn = se.action == GLFW_PRESS && se.key == hk && (se.mods & RACK_MOD_MASK) == mods;
-	if(rtn) se.consume(pw);
-	return rtn;
+	if(rtn) {
+		se.consume(pw);
+		return true;
+	}
+	pw->OpaqueWidget::onSelectKey(se);//call base event handler
+	return false;
 }
 
 bool isKeyModule(ModuleWidget *mw, HotKey hk, event::HoverKey& he, int mods) {
 	bool rtn = he.action == GLFW_PRESS && he.key == hk && (he.mods & RACK_MOD_MASK) == mods;
-	if(rtn) he.consume(mw);
-	return rtn;
+	if(rtn) {
+		he.consume(mw);
+		return true;
+	}
+	mw->OpaqueWidget::onHoverKey(he);//call base event handler
+	return false;
 }
 
 #define M_PI_F float(M_PI)
