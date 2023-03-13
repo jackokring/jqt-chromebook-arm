@@ -202,7 +202,7 @@ const int laneIdxHP[] = {
 #define loc(x,y) mm2px(Vec(X_SPLIT*(1+2*(x-1)), (HEIGHT*Y_MARGIN)+Y_SPLIT*(1+2*(y-1))))
 
 //param and IO macros
-#define CTL(name) MODULE_NAME::name
+#define CTL(name) MODULE_NAME(NAME)::name
 #define NO_CTL -1 
 
 extern void populate(ModuleWidget *m, int hp, int lanes, int rungs, const int ctl[],
