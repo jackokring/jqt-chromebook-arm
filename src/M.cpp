@@ -10,11 +10,13 @@
 #define SHOW_NAME(name) STR_FROM(name)
 // used in the modules.hpp file
 #define ASSIGN_NAME(name) GLUE(model, name)
+#define MODULE_NAME(name) GLUE(name, Module)
+#define WIDGET_NAME(name) GLUE(name, Widget)
 
 // By default. Might need change if you get a link error duplicate symbol
 #define IS_WATCHER
 
-struct MODULE_NAME : Module {
+struct MODULE_NAME(NAME) : Module {
 
 	enum ParamIds {
 	
@@ -57,7 +59,7 @@ struct MODULE_NAME : Module {
 		for(int i = 0; i < NUM_LIGHTS; i++) configLight(i, lightstring[i]);
 	}
 
-	MODULE_NAME() {
+	MODULE_NAME(NAME)() {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 
 		//configParam(P_PLFO, -10.f, 10.f, 0.f, "LFO -> Py");
@@ -90,9 +92,9 @@ struct MODULE_NAME : Module {
 //	GR_LED =2
 //};
 
-struct WIDGET_NAME : ModuleWidget {
+struct WIDGET_NAME(NAME) : ModuleWidget {
 	
-	WIDGET_NAME(MODULE_NAME* module) {
+	WIDGET_NAME(NAME)(MODULE_NAME(NAME)* module) {
 		setModule(module);
 		setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, "res/" + std::to_string(HP) + ".svg")));
 
@@ -134,4 +136,4 @@ void callbackWatcher(const char* filename) {
 #endif
 #endif
 
-Model* ASSIGN_NAME(NAME) = createModel<MODULE_NAME, WIDGET_NAME>(SHOW_NAME(NAME));
+Model* ASSIGN_NAME(NAME) = createModel<MODULE_NAME(NAME), WIDGET_NAME(NAME)>(SHOW_NAME(NAME));
