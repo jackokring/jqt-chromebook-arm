@@ -39,7 +39,7 @@ class UpdateListener : public efsw::FileWatchListener {
 static struct WatcherDo {
 
 	void add() {
-		wID = fileWatcher.addWatch(asset::plugin(pluginInstance, ""), &listener, true);
+		wID = fileWatcher.addWatch(pluginFile(pluginDir), &listener, true);
 		fileWatcher.watch();
 	}
 	
@@ -93,6 +93,53 @@ bool isKeyModule(ModuleWidget *mw, HotKey hk, event::HoverKey& he, int mods) {
 	return false;
 }
 
+std::string pluginFile(pluginFileKind kind, const std::string& name) {
+	std::string plug = asset::user(pluginInstance->slug);
+	switch(kind) {
+	case systemDir:
+		return asset::system(name);
+	case pluginDir:
+		return asset::plugin(pluginInstance, name);
+	case userDir://R/W
+		if(!system::isDirectory(plug)) {
+			system::createDirectory(plug);
+		}
+		return asset::user(system::join(pluginInstance->slug, name));
+	case resourceDir:
+		return asset::plugin(pluginInstance, system::join("res", name));
+	}
+	WARN("Access of file outside a standard location.");
+	return NULL;
+}
+
+std::string moduleFile(pluginFileKind kind, Module *m, const std::string& name) {
+	if(!m) return pluginFile(kind, name);//fall back default global
+	std::string slug = m->getModel()->slug;
+	std::string plug = asset::user(pluginInstance->slug);
+	switch(kind) {
+	case systemDir:
+		WARN("Invalid to ask for system module file.");
+		return NULL;
+	case pluginDir://default to presets information for plugin @plugin/presets/@module/...
+		//this is contrary to user presets presets/@plugin/@module/... default
+		return asset::plugin(pluginInstance, system::join("presets", slug, name));
+	case userDir://R/W
+		if(!system::isDirectory(plug)) {
+			system::createDirectory(plug);
+		}
+		plug = system::join(plug, slug);
+		//append module slug
+		if(!system::isDirectory(plug)) {
+			system::createDirectory(plug);
+		}
+		return asset::user(system::join(plug, name));
+	case resourceDir://allow sub-division by module
+		return asset::plugin(pluginInstance, system::join("res", slug, name));
+	}
+	WARN("Access of file outside a standard location.");
+	return NULL;
+}
+
 #define M_PI_F float(M_PI)
 #define M_PI_POW_2 M_PI * M_PI
 #define M_PI_POW_3 M_PI_POW_2 * M_PI
@@ -134,9 +181,13 @@ int maxPoly(Module *m, const int numIn, const int numOut) {
 #define locl(x,y) mm2px(Vec(((hp*HP_UNIT) / 2.f / lanes)*(1+2*(x-1)), (HEIGHT*Y_MARGIN)+(R_HEIGHT / 2.f / rungs)*(1+2*(y-1))))
 
 // control populator
-void populate(ModuleWidget *m, int hp, int lanes, int rungs, const int ctl[],
-							const char *lbl[], const int kind[], char* named) {
+void populate(ModuleWidget *m, int lanes, int rungs, const int ctl[],
+							const char *lbl[], const int kind[]) {
 	LabelWidget *display;
+	
+	int hp = laneIdxHP[lanes]; 
+	
+	m->setPanel(APP->window->loadSvg(pluginFile(resourceDir, std::to_string(hp) + ".svg")));
 
 	m->addChild(createWidget<KScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
 	m->addChild(createWidget<KScrewSilver>(Vec(m->box.size.x - 2 * RACK_GRID_WIDTH, 0)));
@@ -149,6 +200,8 @@ void populate(ModuleWidget *m, int hp, int lanes, int rungs, const int ctl[],
 	// classic human interaction design
 	// cyan panels, yep, plenty of light mode wake up there
 	// plenty of intense green and wakey blue
+	
+	const char* named = m->getModel()->name.c_str();
 	display = new LabelWidget(named, GR_LED);
 	display->fixCentre(locl(lanes / 2 + 0.5f, 0.5f), strlen(named));//chars
 	m->addChild(display);

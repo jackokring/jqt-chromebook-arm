@@ -79,8 +79,6 @@ struct MODULE_NAME(NAME) : Module {
 };
 
 //geometry edit
-//for best auto layout (MAX 8 lanes) prime HP
-#define HP (laneIdxHP[LANES])
 #define RUNGS 7
 
 // FROM plugin.hpp
@@ -96,7 +94,6 @@ struct WIDGET_NAME(NAME) : ModuleWidget {
 	
 	WIDGET_NAME(NAME)(MODULE_NAME(NAME)* module) {
 		setModule(module);
-		setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, "res/" + std::to_string(HP) + ".svg")));
 
 		//using MODULE_NAME::*;
 
@@ -123,7 +120,7 @@ struct WIDGET_NAME(NAME) : ModuleWidget {
 			
 		};
 
-		populate(this, HP, LANES, RUNGS, ctl, lbl, kind, (char*)SHOW_NAME(NAME));
+		populate(this, LANES, RUNGS, ctl, lbl, kind);
 	}
 };
 

@@ -23,7 +23,7 @@
       ]
     },
     {
-      "slug": "M",
+      "slug": "Master",
       "name": "Master",
       "description": "A script processing master using J by default.\nWindows does not support all targets\n due to process fork code issues.",
       "tags": [
@@ -33,7 +33,7 @@
       ]
     },
     {
-      "slug": "I",
+      "slug": "Input",
       "name": "Input",
       "description": "A variable set input expander for the Master.",
       "tags": [
@@ -44,7 +44,7 @@
       ]
     },
     {
-      "slug": "O",
+      "slug": "Output",
       "name": "Output",
       "description": "A set from process output expander for the Master.",
       "tags": [

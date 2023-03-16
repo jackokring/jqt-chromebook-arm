@@ -41,6 +41,20 @@ extern bool isKeyParam(ParamWidget *pw, HotKey hk, event::SelectKey& se, int mod
 extern bool isKeyModule(ModuleWidget *mw, HotKey hk, event::HoverKey& he, int mods = 0);
 
 ////////////////////
+// Files API
+////////////////////
+
+enum pluginFileKind {
+	systemDir,
+	pluginDir,
+	userDir,
+	resourceDir,
+};
+
+extern std::string pluginFile(pluginFileKind kind, const std::string& name = "");
+extern std::string moduleFile(pluginFileKind kind, Module *m, const std::string& name = "");
+
+////////////////////
 // Functions
 ////////////////////
 
@@ -53,8 +67,8 @@ extern int maxPoly(Module *m, const int numIn, const int numOut);
 
 struct KRoundBlackKnob : RoundBlackKnob {
 	KRoundBlackKnob() {
-		setSvg(Svg::load(asset::plugin(pluginInstance, "res/RoundBlackKnob.svg")));
-		bg->setSvg(Svg::load(asset::plugin(pluginInstance, "res/RoundBlackKnob_bg.svg")));
+		setSvg(Svg::load(pluginFile(resourceDir, "RoundBlackKnob.svg")));
+		bg->setSvg(Svg::load(pluginFile(resourceDir, "RoundBlackKnob_bg.svg")));
 	}
 };
 
@@ -70,7 +84,7 @@ struct KRoundBlackSnapKnob : KRoundBlackKnob {
 
 struct KPJ301MPort : PJ301MPort {
 	KPJ301MPort() {
-		setSvg(Svg::load(asset::plugin(pluginInstance, "res/PJ301M.svg")));
+		setSvg(Svg::load(pluginFile(resourceDir, "PJ301M.svg")));
 		shadow->opacity = 0.0f;
 	}
 };
@@ -81,7 +95,7 @@ struct KPJ301MPort : PJ301MPort {
 
 struct KScrewSilver : ScrewSilver {
 	KScrewSilver() {
-		setSvg(Svg::load(asset::plugin(pluginInstance, "res/ScrewSilver.svg")));
+		setSvg(Svg::load(pluginFile(resourceDir, "ScrewSilver.svg")));
 	}
 };
 
@@ -99,7 +113,7 @@ enum controlKind {
 struct LabelWidget : LightWidget {//TransparentWidget {
 	const char *what;
 	int kind;
-	const std::string fontPath = asset::system("res/fonts/DSEG7ClassicMini-Regular.ttf");
+	const std::string fontPath = pluginFile(systemDir, system::join("fonts", "DSEG7ClassicMini-Regular.ttf"));
 
 	LabelWidget(const char *p, const int k) {
 		what = p;
@@ -205,8 +219,8 @@ const int laneIdxHP[] = {
 #define CTL(name) MODULE_NAME(NAME)::name
 #define NO_CTL -1 
 
-extern void populate(ModuleWidget *m, int hp, int lanes, int rungs, const int ctl[],
-							const char *lbl[], const int kind[], char* named);
+extern void populate(ModuleWidget *m, int lanes, int rungs, const int ctl[],
+							const char *lbl[], const int kind[]);
 
 ////////////////////
 // Synchronization
@@ -414,4 +428,3 @@ extern void callbackWatcher(const char* filename);
 
 extern bool isWindows();
 extern std::string fileExeTension();
-
