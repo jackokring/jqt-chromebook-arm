@@ -120,7 +120,7 @@ struct WIDGET_NAME(NAME) : ModuleWidget {
 			
 		};
 
-		populate(this, LANES, RUNGS, ctl, lbl, kind);
+		populate(this, LANES, RUNGS, ctl, lbl, kind, SHOW_NAME(NAME));
 	}
 };
 

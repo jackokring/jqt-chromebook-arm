@@ -96,8 +96,8 @@ bool isKeyModule(ModuleWidget *mw, HotKey hk, event::HoverKey& he, int mods) {
 std::string pluginFile(pluginFileKind kind, const std::string& name) {
 	std::string plug = asset::user(pluginInstance->slug);
 	switch(kind) {
-	case systemDir:
-		return asset::system(name);
+	case systemDir://default resources only
+		return asset::system(system::join("res", name));
 	case pluginDir:
 		return asset::plugin(pluginInstance, name);
 	case userDir://R/W
@@ -112,9 +112,9 @@ std::string pluginFile(pluginFileKind kind, const std::string& name) {
 	return NULL;
 }
 
-std::string moduleFile(pluginFileKind kind, Module *m, const std::string& name) {
+std::string moduleFile(pluginFileKind kind, Model *m, const std::string& name) {
 	if(!m) return pluginFile(kind, name);//fall back default global
-	std::string slug = m->getModel()->slug;
+	std::string slug = m->slug;
 	std::string plug = asset::user(pluginInstance->slug);
 	switch(kind) {
 	case systemDir:
@@ -182,7 +182,7 @@ int maxPoly(Module *m, const int numIn, const int numOut) {
 
 // control populator
 void populate(ModuleWidget *m, int lanes, int rungs, const int ctl[],
-							const char *lbl[], const int kind[]) {
+							const char *lbl[], const int kind[], std::string named) {
 	LabelWidget *display;
 	
 	int hp = laneIdxHP[lanes]; 
@@ -201,9 +201,10 @@ void populate(ModuleWidget *m, int lanes, int rungs, const int ctl[],
 	// cyan panels, yep, plenty of light mode wake up there
 	// plenty of intense green and wakey blue
 	
-	const char* named = m->getModel()->name.c_str();
+	//std::string up = rack::string::uppercase(named);
+	
 	display = new LabelWidget(named, GR_LED);
-	display->fixCentre(locl(lanes / 2 + 0.5f, 0.5f), strlen(named));//chars
+	display->fixCentre(locl(lanes / 2 + 0.5f, 0.5f), named.length());//chars
 	m->addChild(display);
 
 	for(int x = 1; x <= lanes; x++) {

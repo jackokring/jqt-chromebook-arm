@@ -52,7 +52,8 @@ enum pluginFileKind {
 };
 
 extern std::string pluginFile(pluginFileKind kind, const std::string& name = "");
-extern std::string moduleFile(pluginFileKind kind, Module *m, const std::string& name = "");
+//use Model for access from Module and ModuleWidget 
+extern std::string moduleFile(pluginFileKind kind, Model *m, const std::string& name = "");
 
 ////////////////////
 // Functions
@@ -111,11 +112,11 @@ enum controlKind {
 };
 
 struct LabelWidget : LightWidget {//TransparentWidget {
-	const char *what;
+	std::string what;
 	int kind;
 	const std::string fontPath = pluginFile(systemDir, system::join("fonts", "DSEG7ClassicMini-Regular.ttf"));
 
-	LabelWidget(const char *p, const int k) {
+	LabelWidget(std::string p, const int k) {
 		what = p;
 		kind = k;
 	}
@@ -155,7 +156,7 @@ struct LabelWidget : LightWidget {//TransparentWidget {
 
 		Vec textPos = Vec(4 * SCALE_LBL, 22 * SCALE_LBL);
 		nvgFillColor(args.vg, textColor);
-		nvgText(args.vg, textPos.x, textPos.y, what, NULL);
+		nvgText(args.vg, textPos.x, textPos.y, what.c_str(), NULL);
 	}
 
 	void fixCentre(Vec here, int many) {//locate control
@@ -219,8 +220,9 @@ const int laneIdxHP[] = {
 #define CTL(name) MODULE_NAME(NAME)::name
 #define NO_CTL -1 
 
+//must use named as model not valid at contructor time
 extern void populate(ModuleWidget *m, int lanes, int rungs, const int ctl[],
-							const char *lbl[], const int kind[]);
+							const char *lbl[], const int kind[], std::string named);
 
 ////////////////////
 // Synchronization
