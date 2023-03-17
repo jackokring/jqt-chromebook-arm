@@ -94,7 +94,6 @@ DISTRIBUTABLES += res
 DISTRIBUTABLES += $(wildcard presets/*)
 
 DISTRIBUTABLES += $(wildcard LICENSE*)
-DISTRIBUTABLES += $(wildcard profile.*)
 # J
 DISTRIBUTABLES += jsource/jlibrary
 

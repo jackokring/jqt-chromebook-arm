@@ -54,6 +54,8 @@ enum pluginFileKind {
 extern std::string pluginFile(pluginFileKind kind, const std::string& name = "");
 //use Model for access from Module and ModuleWidget 
 extern std::string moduleFile(pluginFileKind kind, Model *m, const std::string& name = "");
+extern std::vector<uint8_t> readFile(pluginFileKind kind, Model *m, const std::string& name);
+extern void writeFile(pluginFileKind kind, Model *m, const std::string& name, std::vector<uint8_t>& data);
 
 ////////////////////
 // Functions

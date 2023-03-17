@@ -39,7 +39,8 @@ class UpdateListener : public efsw::FileWatchListener {
 static struct WatcherDo {
 
 	void add() {
-		wID = fileWatcher.addWatch(pluginFile(pluginDir), &listener, true);
+		//userDir is the read/write area
+		wID = fileWatcher.addWatch(pluginFile(userDir), &listener, true);
 		fileWatcher.watch();
 	}
 	
@@ -104,12 +105,12 @@ std::string pluginFile(pluginFileKind kind, const std::string& name) {
 		if(!system::isDirectory(plug)) {
 			system::createDirectory(plug);
 		}
-		return asset::user(system::join(pluginInstance->slug, name));
+		return asset::user(system::join(plug, name));
 	case resourceDir:
 		return asset::plugin(pluginInstance, system::join("res", name));
 	}
 	WARN("Access of file outside a standard location.");
-	return NULL;
+	return "";
 }
 
 std::string moduleFile(pluginFileKind kind, Model *m, const std::string& name) {
@@ -119,7 +120,7 @@ std::string moduleFile(pluginFileKind kind, Model *m, const std::string& name) {
 	switch(kind) {
 	case systemDir:
 		WARN("Invalid to ask for system module file.");
-		return NULL;
+		return "";
 	case pluginDir://default to presets information for plugin @plugin/presets/@module/...
 		//this is contrary to user presets presets/@plugin/@module/... default
 		return asset::plugin(pluginInstance, system::join("presets", slug, name));
@@ -137,7 +138,35 @@ std::string moduleFile(pluginFileKind kind, Model *m, const std::string& name) {
 		return asset::plugin(pluginInstance, system::join("res", slug, name));
 	}
 	WARN("Access of file outside a standard location.");
-	return NULL;
+	return "";
+}
+
+std::vector<uint8_t> readFile(pluginFileKind kind, Model *m, const std::string& name) {
+	std::string file = moduleFile(kind, m, name);
+	if(file.empty()) {
+		WARN("Impossible to read file.");
+		return std::vector<uint8_t>();//blank
+	}
+	if(kind == userDir) {
+		if(!system::exists(file)) {
+			//make user clone from @plugin/presets/@module/... or @plugin/...
+			system::writeFile(file, system::readFile(moduleFile(pluginDir, m, name)));
+		}
+	}
+	return system::readFile(file);
+}
+
+void writeFile(pluginFileKind kind, Model *m, const std::string& name, std::vector<uint8_t>& data) {
+	if(kind != userDir) {
+		WARN("Can't write a non-user file.");
+		return;
+	}
+	std::string file = moduleFile(userDir, m, name);
+	if(file.empty()) {
+		WARN("Impossible to write file.");
+		return;//blank
+	}
+	system::writeFile(file, data);
 }
 
 #define M_PI_F float(M_PI)
