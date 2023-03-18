@@ -90,10 +90,11 @@ struct MODULE_NAME(NAME) : Module {
 //	GR_LED =2
 //};
 
-struct WIDGET_NAME(NAME) : ModuleWidget {
+struct WIDGET_NAME(NAME) : KModuleWidget {
 	
 	WIDGET_NAME(NAME)(MODULE_NAME(NAME)* module) {
 		setModule(module);
+		hook = &ASSIGN_NAME(NAME);
 
 		//using MODULE_NAME::*;
 
@@ -120,7 +121,7 @@ struct WIDGET_NAME(NAME) : ModuleWidget {
 			
 		};
 
-		populate(this, LANES, RUNGS, ctl, lbl, kind, SHOW_NAME(NAME));
+		populate(this, LANES, RUNGS, ctl, lbl, kind);
 	}
 };
 

@@ -16,7 +16,7 @@
   "modules": [
   	{
       "slug": "Blank",
-      "name": "Blank",
+      "name": "KRT",
       "description": "A panel blank at 5HP.",
       "tags": [
       	"Blank"
@@ -24,7 +24,7 @@
     },
     {
       "slug": "Master",
-      "name": "Master",
+      "name": "Master Processor",
       "description": "A script processing master using J by default.\nWindows does not support all targets\n due to process fork code issues.",
       "tags": [
       	"External",

@@ -210,8 +210,8 @@ int maxPoly(Module *m, const int numIn, const int numOut) {
 #define locl(x,y) mm2px(Vec(((hp*HP_UNIT) / 2.f / lanes)*(1+2*(x-1)), (HEIGHT*Y_MARGIN)+(R_HEIGHT / 2.f / rungs)*(1+2*(y-1))))
 
 // control populator
-void populate(ModuleWidget *m, int lanes, int rungs, const int ctl[],
-							const char *lbl[], const int kind[], std::string named) {
+void populate(KModuleWidget *m, int lanes, int rungs, const int ctl[],
+							const char *lbl[], const int kind[]) /*, std::string named) */ {
 	LabelWidget *display;
 	
 	int hp = laneIdxHP[lanes]; 
@@ -230,10 +230,10 @@ void populate(ModuleWidget *m, int lanes, int rungs, const int ctl[],
 	// cyan panels, yep, plenty of light mode wake up there
 	// plenty of intense green and wakey blue
 	
-	//std::string up = rack::string::uppercase(named);
+	std::string up = (*(m->hook))->name;
 	
-	display = new LabelWidget(named, GR_LED);
-	display->fixCentre(locl(lanes / 2 + 0.5f, 0.5f), named.length());//chars
+	display = new LabelWidget(up, GR_LED);
+	display->fixCentre(locl(lanes / 2 + 0.5f, 0.5f), up.length());//chars
 	m->addChild(display);
 
 	for(int x = 1; x <= lanes; x++) {

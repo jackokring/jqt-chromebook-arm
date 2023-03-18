@@ -222,9 +222,13 @@ const int laneIdxHP[] = {
 #define CTL(name) MODULE_NAME(NAME)::name
 #define NO_CTL -1 
 
+struct KModuleWidget : ModuleWidget {
+	Model** hook;
+};
+
 //must use named as model not valid at contructor time
-extern void populate(ModuleWidget *m, int lanes, int rungs, const int ctl[],
-							const char *lbl[], const int kind[], std::string named);
+extern void populate(KModuleWidget *m, int lanes, int rungs, const int ctl[],
+							const char *lbl[], const int kind[]);//, std::string named);
 
 ////////////////////
 // Synchronization
