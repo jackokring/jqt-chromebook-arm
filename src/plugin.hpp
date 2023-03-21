@@ -46,7 +46,6 @@ extern bool isKeyModule(ModuleWidget *mw, HotKey hk, event::HoverKey& he, int mo
 
 enum pluginFileKind {
 	systemDir,
-	pluginDir,
 	userDir,
 	resourceDir,
 };

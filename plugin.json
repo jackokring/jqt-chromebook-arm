@@ -25,7 +25,7 @@
     {
       "slug": "Master",
       "name": "Master Processor",
-      "description": "A script processing master using J by default.\nWindows does not support all targets\n due to process fork code issues.",
+      "description": "A script processing master using J by default.\nWindows does not support all targets\ndue to process fork code issues.",
       "tags": [
       	"External",
       	"Sequencer",

@@ -96,45 +96,52 @@ bool isKeyModule(ModuleWidget *mw, HotKey hk, event::HoverKey& he, int mods) {
 
 std::string pluginFile(pluginFileKind kind, const std::string& name) {
 	std::string plug = asset::user(pluginInstance->slug);
+	std::string theme = settings::uiTheme;
 	switch(kind) {
-	case systemDir://default resources only
+	case systemDir://default resources only uiTheme?
+		//float settings::rackBrightness
+		//std::string settings::uiTheme light/dark/hcdark/...
+		//specifics of management by rack ...
+		//fonts really
 		return asset::system(system::join("res", name));
-	case pluginDir:
-		return asset::plugin(pluginInstance, name);
 	case userDir://R/W
 		if(!system::isDirectory(plug)) {
 			system::createDirectory(plug);
 		}
 		return asset::user(system::join(plug, name));
-	case resourceDir:
+	case resourceDir://try theme
+		theme = asset::plugin(pluginInstance, system::join("res", theme, name)); 
+		if(system::exists(theme)) return theme;
 		return asset::plugin(pluginInstance, system::join("res", name));
 	}
 	WARN("Access of file outside a standard location.");
 	return "";
 }
 
+//presets information for plugin @plugin/presets/@module/...
+//this is contrary to user presets presets/@plugin/@module/...
 std::string moduleFile(pluginFileKind kind, Model *m, const std::string& name) {
 	if(!m) return pluginFile(kind, name);//fall back default global
 	std::string slug = m->slug;
 	std::string plug = asset::user(pluginInstance->slug);
+	std::string theme = settings::uiTheme;
 	switch(kind) {
 	case systemDir:
 		WARN("Invalid to ask for system module file.");
 		return "";
-	case pluginDir://default to presets information for plugin @plugin/presets/@module/...
-		//this is contrary to user presets presets/@plugin/@module/... default
-		return asset::plugin(pluginInstance, system::join("presets", slug, name));
 	case userDir://R/W
 		if(!system::isDirectory(plug)) {
 			system::createDirectory(plug);
 		}
-		plug = system::join(plug, slug);
+		plug = system::join(plug, slug);//extend by module slug
 		//append module slug
 		if(!system::isDirectory(plug)) {
 			system::createDirectory(plug);
 		}
 		return asset::user(system::join(plug, name));
-	case resourceDir://allow sub-division by module
+	case resourceDir://allow sub-division by module and theme
+		theme = asset::plugin(pluginInstance, system::join("res", theme, slug, name)); 
+		if(system::exists(theme)) return theme;
 		return asset::plugin(pluginInstance, system::join("res", slug, name));
 	}
 	WARN("Access of file outside a standard location.");
