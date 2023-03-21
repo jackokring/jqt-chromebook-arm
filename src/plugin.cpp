@@ -156,8 +156,8 @@ std::vector<uint8_t> readFile(pluginFileKind kind, Model *m, const std::string& 
 	}
 	if(kind == userDir) {
 		if(!system::exists(file)) {
-			//make user clone from @plugin/presets/@module/... or @plugin/...
-			system::writeFile(file, system::readFile(moduleFile(pluginDir, m, name)));
+			//make user clone from @plugin/res/@theme/@module/... or @plugin/res/@module/... or @plugin/res/...
+			system::writeFile(file, system::readFile(moduleFile(resourceDir, m, name)));
 		}
 	}
 	return system::readFile(file);
