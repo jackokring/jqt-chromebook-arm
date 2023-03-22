@@ -129,7 +129,7 @@ struct WIDGET_NAME(NAME) : KModuleWidget {
 #ifdef IS_WATCHER
 // MAKE SOME MODULE PROVIDE THIS
 void callbackWatcher(const char* filename) {
-	INFO(filename);
+	INFO("File changed.");
 }
 #endif
 #endif

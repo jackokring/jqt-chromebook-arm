@@ -96,7 +96,12 @@ bool isKeyModule(ModuleWidget *mw, HotKey hk, event::HoverKey& he, int mods) {
 
 std::string pluginFile(pluginFileKind kind, const std::string& name) {
 	std::string plug = asset::user(pluginInstance->slug);
+#ifdef ARCH_MAC
+	std::string theme = "none";
+	//apparently the theme is not yet in the mac version of the autobuild
+#else
 	std::string theme = settings::uiTheme;
+#endif
 	switch(kind) {
 	case systemDir://default resources only uiTheme?
 		//float settings::rackBrightness
@@ -124,7 +129,12 @@ std::string moduleFile(pluginFileKind kind, Model *m, const std::string& name) {
 	if(!m) return pluginFile(kind, name);//fall back default global
 	std::string slug = m->slug;
 	std::string plug = asset::user(pluginInstance->slug);
+#ifdef ARCH_MAC
+	std::string theme = "none";
+	//apparently the theme is not yet in the mac version of the autobuild
+#else
 	std::string theme = settings::uiTheme;
+#endif
 	switch(kind) {
 	case systemDir:
 		WARN("Invalid to ask for system module file.");
