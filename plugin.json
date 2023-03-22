@@ -53,6 +53,14 @@
       	"Sequencer",
         "Polyphonic"
       ]
+    },
+    {
+      "slug": "PR1",
+      "name": "Changeling",
+      "description": "A plug-poll-pull request.",
+      "tags": [
+        "Polyphonic"
+      ]
     }
   ]
 }
